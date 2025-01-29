@@ -2,7 +2,11 @@
 <module type="GENERAL_MODULE" version="4">
   <component name="FacetManager">
     <facet type="IlluminatedCloud" name="Illuminated Cloud">
-      <configuration />
+      <configuration>
+        <option name="connectionName" value="SF-DEV-JOURNEY" />
+        <option name="connectionType" value="OAUTH" />
+        <option name="defaultSourceRootUrl" value="file://$MODULE_DIR$/force-app/main/default" />
+      </configuration>
     </facet>
   </component>
   <component name="NewModuleRootManager" inherit-compiler-output="true">
@@ -13,6 +17,8 @@
       <excludeFolder url="file://$MODULE_DIR$/.sf" />
       <excludeFolder url="file://$MODULE_DIR$/.sfdx" />
     </content>
+    <orderEntry type="jdk" jdkName="IlluminatedCloud (SF-Dev-Journey/SF-DEV-JOURNEY)" jdkType="IlluminatedCloud" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="SF-Dev-Journey/lwc_types" level="project" />
   </component>
 </module>
