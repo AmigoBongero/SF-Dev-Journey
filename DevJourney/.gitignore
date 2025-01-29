@@ -50,3 +50,5 @@ DevJourney.iml
 
 /.illuminatedCloud/
 /force-app/main/default/lwc/accountsComponent/__tests__/
+/.husky/
+/.vscode/
