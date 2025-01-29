@@ -43,3 +43,12 @@ $RECYCLE.BIN/
 **/__pycache__/
 **/.venv/
 **/venv/
+
+#
+/.idea/
+DevJourney.iml
+
+/.illuminatedCloud/
+/force-app/main/default/lwc/accountsComponent/__tests__/
+/.husky/
+/.vscode/
