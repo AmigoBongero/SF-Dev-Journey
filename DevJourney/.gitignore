@@ -43,3 +43,9 @@ $RECYCLE.BIN/
 **/__pycache__/
 **/.venv/
 **/venv/
+
+#
+/.idea/
+DevJourney.iml
+
+
