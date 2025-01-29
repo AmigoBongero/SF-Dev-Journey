@@ -48,4 +48,5 @@ $RECYCLE.BIN/
 /.idea/
 DevJourney.iml
 
-
+/.illuminatedCloud/
+/force-app/main/default/lwc/accountsComponent/__tests__/
