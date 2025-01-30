@@ -52,3 +52,11 @@ DevJourney.iml
 /force-app/main/default/lwc/accountsComponent/__tests__/
 /.husky/
 /.vscode/
+/DevJourney/
+/IlluminatedCloud/
+
+# Added by Illuminated Cloud
+/out/
+target/
+**/tsconfig*.json
+**/*.tsbuildinfo

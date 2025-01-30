@@ -4,7 +4,15 @@
             <lightning-tab label="Accounts">
                 <lightning-tabset>
                     <lightning-tab label="All Accounts"></lightning-tab>
-                    <lightning-tab label="My Accounts"></lightning-tab>
+                    <lightning-tab label="My Accounts">
+                        <lightning-datatable
+                                key-field="id"
+                                columns={columns}
+                                data={data}
+                                show-row-number-column
+                                hide-checkbox-column>
+                        </lightning-datatable>
+                    </lightning-tab>
                     <lightning-tab label="Recently viewed accounts"></lightning-tab>
                 </lightning-tabset>
             </lightning-tab>
