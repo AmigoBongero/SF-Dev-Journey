@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Description__c</fullName>
+    <label>Description</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>ACCIDENT REPORT CC</fullName>
+                <default>false</default>
+                <label>ACCIDENT REPORT CC</label>
+            </value>
+            <value>
+                <fullName>ACCIDENT REPORT</fullName>
+                <default>false</default>
+                <label>ACCIDENT REPORT</label>
+            </value>
+            <value>
+                <fullName>ADMINISTRATIVE FEE</fullName>
+                <default>false</default>
+                <label>ADMINISTRATIVE FEE</label>
+            </value>
+            <value>
+                <fullName>CD/DVD FEE</fullName>
+                <default>false</default>
+                <label>CD/DVD FEE</label>
+            </value>
+            <value>
+                <fullName>CONFERENCE CALL FEE</fullName>
+                <default>false</default>
+                <label>CONFERENCE CALL FEE</label>
+            </value>
+            <value>
+                <fullName>COPY SERVICE</fullName>
+                <default>false</default>
+                <label>COPY SERVICE</label>
+            </value>
+            <value>
+                <fullName>COURIER</fullName>
+                <default>false</default>
+                <label>COURIER</label>
+            </value>
+            <value>
+                <fullName>COURT COST</fullName>
+                <default>false</default>
+                <label>COURT COST</label>
+            </value>
+            <value>
+                <fullName>COURT REPORTER</fullName>
+                <default>false</default>
+                <label>COURT REPORTER</label>
+            </value>
+            <value>
+                <fullName>DEPOSITION</fullName>
+                <default>false</default>
+                <label>DEPOSITION</label>
+            </value>
+            <value>
+                <fullName>EVIDENCE EXPENSE</fullName>
+                <default>false</default>
+                <label>EVIDENCE EXPENSE</label>
+            </value>
+            <value>
+                <fullName>EXPERT FEE</fullName>
+                <default>false</default>
+                <label>EXPERT FEE</label>
+            </value>
+            <value>
+                <fullName>FAX</fullName>
+                <default>false</default>
+                <label>FAX</label>
+            </value>
+            <value>
+                <fullName>FILING FEE</fullName>
+                <default>false</default>
+                <label>FILING FEE</label>
+            </value>
+            <value>
+                <fullName>FIRM COST</fullName>
+                <default>false</default>
+                <label>FIRM COST</label>
+            </value>
+            <value>
+                <fullName>FOCUS GROUP</fullName>
+                <default>false</default>
+                <label>FOCUS GROUP</label>
+            </value>
+            <value>
+                <fullName>INTEREST EXPENSE</fullName>
+                <default>false</default>
+                <label>INTEREST EXPENSE</label>
+            </value>
+            <value>
+                <fullName>INVESTIGATION</fullName>
+                <default>false</default>
+                <label>INVESTIGATION</label>
+            </value>
+            <value>
+                <fullName>INVESTIGATOR FEE</fullName>
+                <default>false</default>
+                <label>INVESTIGATOR FEE</label>
+            </value>
+            <value>
+                <fullName>ISO CLAIM SEARCH</fullName>
+                <default>false</default>
+                <label>ISO CLAIM SEARCH</label>
+            </value>
+            <value>
+                <fullName>MED RECORDS CC</fullName>
+                <default>false</default>
+                <label>MED RECORDS CC</label>
+            </value>
+            <value>
+                <fullName>MEDIATION</fullName>
+                <default>false</default>
+                <label>MEDIATION</label>
+            </value>
+            <value>
+                <fullName>POSTAGE</fullName>
+                <default>false</default>
+                <label>POSTAGE</label>
+            </value>
+            <value>
+                <fullName>PRINTING</fullName>
+                <default>false</default>
+                <label>PRINTING</label>
+            </value>
+            <value>
+                <fullName>PROCESS SERVICE FEE</fullName>
+                <default>false</default>
+                <label>PROCESS SERVICE FEE</label>
+            </value>
+            <value>
+                <fullName>PROFESSIONAL SERVICES RENDERED</fullName>
+                <default>false</default>
+                <label>PROFESSIONAL SERVICES RENDERED</label>
+            </value>
+            <value>
+                <fullName>RECORDS</fullName>
+                <default>false</default>
+                <label>RECORDS</label>
+            </value>
+            <value>
+                <fullName>REFUND</fullName>
+                <default>false</default>
+                <label>REFUND</label>
+            </value>
+            <value>
+                <fullName>SCANNING FEE</fullName>
+                <default>false</default>
+                <label>SCANNING FEE</label>
+            </value>
+            <value>
+                <fullName>TRAVEL EXPENSE</fullName>
+                <default>false</default>
+                <label>TRAVEL EXPENSE</label>
+            </value>
+            <value>
+                <fullName>WITNESS FEE</fullName>
+                <default>false</default>
+                <label>WITNESS FEE</label>
+            </value>
+            <value>
+                <fullName>WRITE OFFS</fullName>
+                <default>false</default>
+                <label>WRITE OFFS</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Parent_Case_Party__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <label>Parent Case Party</label>
+    <referenceTo>Case_Party__c</referenceTo>
+    <relationshipLabel>Case Party</relationshipLabel>
+    <relationshipName>Case_Party</relationshipName>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>
