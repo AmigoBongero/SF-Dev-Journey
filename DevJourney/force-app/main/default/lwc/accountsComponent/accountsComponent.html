@@ -8,12 +8,20 @@
                         <lightning-datatable
                                 key-field="id"
                                 columns={columns}
-                                data={data}
+                                data={myAccountsData}
                                 show-row-number-column
                                 hide-checkbox-column>
                         </lightning-datatable>
                     </lightning-tab>
-                    <lightning-tab label="Recently viewed accounts"></lightning-tab>
+                    <lightning-tab label="Recently viewed accounts">
+                        <lightning-datatable
+                                key-field="id"
+                                columns={columns}
+                                data={recentlyViewedAccountsData}
+                                show-row-number-column
+                                hide-checkbox-column>
+                        </lightning-datatable>
+                    </lightning-tab>
                 </lightning-tabset>
             </lightning-tab>
             <lightning-tab label="Test"></lightning-tab>
