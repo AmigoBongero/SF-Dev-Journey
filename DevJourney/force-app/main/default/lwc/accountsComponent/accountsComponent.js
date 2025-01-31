@@ -1,37 +1,56 @@
-import { LightningElement} from 'lwc';
-import getMyAccounts from "@salesforce/apex/AccountController.getMyAccounts";
-import getRecentlyViewedAccounts from "@salesforce/apex/AccountController.getRecentlyViewedAccounts";
+import {LightningElement} from 'lwc';
+import {ShowToastEvent} from 'lightning/platformShowToastEvent';
+
+import getMyAccounts from "@salesforce/apex/AccountsComponentController.getMyAccounts";
+import getRecentlyViewedAccounts from "@salesforce/apex/AccountsComponentController.getRecentlyViewedAccounts";
+
+const accountColumns = [
+    {label: 'Name', fieldName: 'Name'},
+    {label: 'Industry', fieldName: 'Industry'},
+    {label: 'Phone', fieldName: 'Phone'}
+];
+
 export default class AccountsComponent extends LightningElement {
-    columns = [
-        {label: 'Name', fieldName: 'Name'},
-        {label: 'Industry', fieldName: 'Industry'},
-        {label: 'Phone', fieldName: 'Phone'}
-    ];
+
+    accountColumns = accountColumns;
     myAccountsData = [];
     recentlyViewedAccountsData = [];
 
     connectedCallback() {
-        this.fetchMyAccounts();
-        this.fetchRecentlyViewedAccounts();
+        this.loadMyAccounts();
+        this.loadRecentlyViewedAccounts();
     }
 
-    fetchMyAccounts() {
+    loadMyAccounts() {
         getMyAccounts()
             .then(result => {
                 this.myAccountsData = result;
             })
             .catch(error => {
+                const showError = new ShowToastEvent({
+                    title: 'Error',
+                    message: 'Error loading accounts.',
+                    variant: 'error'
+                })
+                this.dispatchEvent(showError);
                 console.error(error);
             });
     }
 
-    fetchRecentlyViewedAccounts() {
+    loadRecentlyViewedAccounts() {
         getRecentlyViewedAccounts()
             .then(result => {
                 this.recentlyViewedAccountsData = result;
             })
             .catch(error => {
+                const showError = new ShowToastEvent({
+                    title: 'Error',
+                    message: 'Error loading accounts.',
+                    variant: 'error'
+                })
+                this.dispatchEvent(showError);
                 console.error(error);
             });
     }
+
 }
