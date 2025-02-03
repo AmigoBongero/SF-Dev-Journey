@@ -8,9 +8,8 @@ public with sharing class AccountsComponentController {
                 SELECT   Id, Name, Industry, Phone
                 FROM     Account
                 WHERE    OwnerId = :USER_ID
-                WITH SECURITY_ENFORCED
                 ORDER BY Name
-                LIMIT    500
+                LIMIT    1000
         ];
     }
 
@@ -20,9 +19,8 @@ public with sharing class AccountsComponentController {
                 SELECT   Id, Name, Industry, Phone
                 FROM     Account
                 WHERE    LastViewedDate != NULL
-                WITH SECURITY_ENFORCED
                 ORDER BY LastViewedDate DESC
-                LIMIT    50
+                LIMIT    1000
         ];
     }
 

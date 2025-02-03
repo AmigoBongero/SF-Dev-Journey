@@ -24,10 +24,6 @@
     <tabs>standard-CollaborationGroup</tabs>
     <tabs>standard-Event</tabs>
     <tabs>standard-OtherUserProfile</tabs>
-    <tabs>standard-Case</tabs>
-    <tabs>standard-Forecasting3</tabs>
-    <tabs>Case_Party__c</tabs>
-    <tabs>Expense__c</tabs>
     <uiType>Lightning</uiType>
     <utilityBar>LightningSales_UtilityBar</utilityBar>
 </CustomApplication>
