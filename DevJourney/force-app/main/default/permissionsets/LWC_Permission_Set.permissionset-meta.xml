@@ -10,4 +10,8 @@
     </applicationVisibilities>
     <hasActivationRequired>false</hasActivationRequired>
     <label>LWC Permission Set</label>
+    <tabSettings>
+        <tab>LWC</tab>
+        <visibility>Visible</visibility>
+    </tabSettings>
 </PermissionSet>
