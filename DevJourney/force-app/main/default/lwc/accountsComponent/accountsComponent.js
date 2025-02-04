@@ -1,3 +1,4 @@
+
 import {LightningElement} from 'lwc';
 import {ShowToastEvent} from 'lightning/platformShowToastEvent';
 
@@ -12,7 +13,9 @@ const ACCOUNT_COLUMNS = [
 
 export default class AccountsComponent extends LightningElement {
 
-    accountColumns = ACCOUNT_COLUMNS;
+    get accountColumns() {
+        return ACCOUNT_COLUMNS;
+    }
     myAccountsData = [];
     recentlyViewedAccountsData = [];
 

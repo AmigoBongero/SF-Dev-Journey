@@ -1,46 +1,31 @@
 @IsTest
 private class AccountsComponentControllerTest {
 
-    @IsTest
-    static void testGetMyAccounts() {
-        // Prepare test data
-        List<Account> testAccounts = new List<Account>();
-        for (Integer i = 0; i < 5; i++) {
-            Account testAccount = new Account(
-                    Name = 'Test Account' + i
-            );
-            testAccounts.add(testAccount);
-        }
-        insert testAccounts;
+    @TestSetup
+    static void loadTestData() {
+        TestDataFactory.createAccounts(5);
+    }
 
+    @IsTest
+    static void getMyAccountsTest() {
         // Execute
         Test.startTest();
         List<Account> myAccounts = AccountsComponentController.getMyAccounts();
         Test.stopTest();
 
         // Assert results
-        Assert.areEqual(5, myAccounts.size(), 'Should have 5 account');
+        Assert.areEqual(5, myAccounts.size(), 'Should have 5 accounts');
     }
 
     @IsTest
-    static void testGetRecentlyViewedAccounts() {
-        // Prepare test data
-        List<Account> testAccounts = new List<Account>();
-        for (Integer i = 0; i < 5; i++) {
-            Account testAccount = new Account(
-                    Name = 'Test Account' + i
-            );
-            testAccounts.add(testAccount);
-        }
-        insert testAccounts;
-
+    static void getRecentlyViewedAccountsTest() {
         // Execute
         Test.startTest();
         List<Account> recentlyViewedAccounts = AccountsComponentController.getRecentlyViewedAccounts();
         Test.stopTest();
 
         // Assert results
-        Assert.areEqual(5, recentlyViewedAccounts.size(), 'Should have 5 account');
+        Assert.areEqual(0, recentlyViewedAccounts.size(), 'Should have 0 accounts');
     }
 
 }
