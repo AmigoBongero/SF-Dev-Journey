@@ -2,7 +2,7 @@
 private class AccountsComponentControllerTest {
 
     @TestSetup
-    static void loadTestData() {
+    static void setup() {
         TestDataFactory.createAccounts(5);
     }
 
@@ -25,7 +25,12 @@ private class AccountsComponentControllerTest {
         Test.stopTest();
 
         // Assert results
-        Assert.areEqual(0, recentlyViewedAccounts.size(), 'Should have 0 accounts');
+        List<Account> expectedRecentlyViewedAccounts = [
+            SELECT Id
+            FROM   Account
+            WHERE  LastViewedDate != NULL
+        ];
+        Assert.areEqual(expectedRecentlyViewedAccounts.size(), recentlyViewedAccounts.size());
     }
 
 }
