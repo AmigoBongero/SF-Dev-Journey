@@ -47,8 +47,15 @@ $RECYCLE.BIN/
 #
 /.idea/
 DevJourney.iml
-
 /.illuminatedCloud/
 /force-app/main/default/lwc/accountsComponent/__tests__/
 /.husky/
 /.vscode/
+/DevJourney/DevJourney.iml
+/IlluminatedCloud/
+
+# Added by Illuminated Cloud
+/out/
+target/
+**/tsconfig*.json
+**/*.tsbuildinfo
