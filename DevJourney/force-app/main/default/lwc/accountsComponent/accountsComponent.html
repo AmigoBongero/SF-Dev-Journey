@@ -6,8 +6,24 @@
                     <lightning-tab label="All Accounts">
                         <c-all-accounts-tab></c-all-accounts-tab>
                     </lightning-tab>
-                    <lightning-tab label="My Accounts"></lightning-tab>
-                    <lightning-tab label="Recently viewed accounts"></lightning-tab>
+                    <lightning-tab label="My Accounts">
+                        <lightning-datatable
+                            key-field="id"
+                            columns={accountColumnsGetter}
+                            data={myAccountsData}
+                            show-row-number-column
+                            hide-checkbox-column>
+                        </lightning-datatable>
+                    </lightning-tab>
+                    <lightning-tab label="Recently viewed accounts">
+                        <lightning-datatable
+                            key-field="id"
+                            columns={accountColumnsGetter}
+                            data={recentlyViewedAccountsData}
+                            show-row-number-column
+                            hide-checkbox-column>
+                        </lightning-datatable>
+                    </lightning-tab>
                 </lightning-tabset>
             </lightning-tab>
             <lightning-tab label="Test"></lightning-tab>
