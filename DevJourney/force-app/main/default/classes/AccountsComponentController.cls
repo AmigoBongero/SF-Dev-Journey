@@ -2,14 +2,17 @@ public with sharing class AccountsComponentController {
 
     private static final Id USER_ID = UserInfo.getUserId();
 
+    private static final int LIMIT_CONST = 1000;
+
     @AuraEnabled(cacheable=true)
     public static List<Account> getAccountList() {
         return [
-            SELECT Id, Name,
-                (SELECT Id, Name
-                FROM Contacts)
-            FROM Account
-            ORDER BY Name
+            SELECT      Id, Name,
+                        (SELECT Id, Name
+                        FROM    Contacts)
+            FROM        Account
+            ORDER BY    Name
+            LIMIT       :LIMIT_CONST
         ];
     }
     
@@ -20,7 +23,7 @@ public with sharing class AccountsComponentController {
             FROM     Account
             WHERE    OwnerId = :USER_ID
             ORDER BY Name
-            LIMIT    1000
+            LIMIT    :LIMIT_CONST
         ];
     }
 
@@ -31,7 +34,7 @@ public with sharing class AccountsComponentController {
             FROM     Account
             WHERE    LastViewedDate != NULL
             ORDER BY LastViewedDate DESC
-            LIMIT    1000
+            LIMIT    :LIMIT_CONST
         ];
     }
 

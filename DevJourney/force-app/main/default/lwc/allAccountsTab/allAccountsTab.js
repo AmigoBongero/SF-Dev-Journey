@@ -11,6 +11,7 @@ import CONTACT_PHONE_FIELD from '@salesforce/schema/Contact.Phone';
 import CONTACT_EMAIL_FIELD from '@salesforce/schema/Contact.Email';
 
 export default class AllAccountsTab extends LightningElement {
+    
     //Tree data variables
     @track treeData = [];
     error = null;
