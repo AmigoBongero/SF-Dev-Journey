@@ -1,6 +1,6 @@
 import { LightningElement, track, wire } from 'lwc';
 
-import getAccountList from "@salesforce/apex/AccountComponentController.getAccountList";
+import getAccountList from "@salesforce/apex/AccountsComponentController.getAccountList";
 
 import ACCOUNT_NAME_FIELD from '@salesforce/schema/Account.Name';
 import ACCOUNT_TYPE_FIELD from '@salesforce/schema/Account.Type';
@@ -11,7 +11,7 @@ import CONTACT_PHONE_FIELD from '@salesforce/schema/Contact.Phone';
 import CONTACT_EMAIL_FIELD from '@salesforce/schema/Contact.Email';
 
 export default class AllAccountsTab extends LightningElement {
-    
+
     //Tree data variables
     @track treeData = [];
     error = null;

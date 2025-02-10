@@ -2,7 +2,7 @@ public with sharing class AccountsComponentController {
 
     private static final Id USER_ID = UserInfo.getUserId();
 
-    private static final int LIMIT_CONST = 1000;
+    private static final Integer LIMIT_CONST = 1000;
 
     @AuraEnabled(cacheable=true)
     public static List<Account> getAccountList() {
