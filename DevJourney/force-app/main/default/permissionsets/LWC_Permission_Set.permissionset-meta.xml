@@ -11,6 +11,14 @@
     <hasActivationRequired>false</hasActivationRequired>
     <label>LWC Permission Set</label>
     <tabSettings>
+        <tab>Case_Party__c</tab>
+        <visibility>Visible</visibility>
+    </tabSettings>
+    <tabSettings>
+        <tab>Expense__c</tab>
+        <visibility>Visible</visibility>
+    </tabSettings>
+    <tabSettings>
         <tab>LWC</tab>
         <visibility>Visible</visibility>
     </tabSettings>

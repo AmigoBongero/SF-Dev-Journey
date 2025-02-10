@@ -1,5 +1,5 @@
 import { LightningElement, track, wire } from 'lwc';
-import getAccountList from "@salesforce/apex/AccountController.getAccountList";
+import getAccountList from "@salesforce/apex/AccountComponentController.getAccountList";
 import ACCOUNT_NAME_FIELD from '@salesforce/schema/Account.Name';
 import ACCOUNT_TYPE_FIELD from '@salesforce/schema/Account.Type';
 import ACCOUNT_PHONE_FIELD from '@salesforce/schema/Account.Phone';
@@ -60,9 +60,14 @@ export default class AllAccountsTab extends LightningElement {
                 }))
             }));
             this.error = undefined;
-        } else {
+        } else if (error) {
             this.treeData = [];
-            this.error = error ? error.body.message : 'Unknown error';
+            this.error = error.body.message;
+        }
+        else {
+            this.treeData = [];
+            this.error = 'No data received';
         }
     }
+
 }
