@@ -1,67 +1,68 @@
 import { LightningElement, track, wire } from 'lwc';
 import getAccountList from "@salesforce/apex/AccountController.getAccountList";
-
+import ACCOUNT_NAME_FIELD from '@salesforce/schema/Account.Name';
+import ACCOUNT_TYPE_FIELD from '@salesforce/schema/Account.Type';
+import ACCOUNT_PHONE_FIELD from '@salesforce/schema/Account.Phone';
+import ACCOUNT_WEBSITE_FIELD from '@salesforce/schema/Account.Website';
+import CONTACT_NAME_FIELD from '@salesforce/schema/Contact.Name';
+import CONTACT_PHONE_FIELD from '@salesforce/schema/Contact.Phone';
+import CONTACT_EMAIL_FIELD from '@salesforce/schema/Contact.Email';
 export default class AllAccountsTab extends LightningElement {
-    @track items = [];
-    @track error;
-    @track selectedRecord = null;
-    columns = [
-        { label: 'Field', fieldName: 'label' },
-        { label: 'Value', fieldName: 'value' }
-    ];
+    @track treeData = [];
+    error = null;
+    isVisible = false;
+    records = null;
+    fieldsAccount = [ACCOUNT_NAME_FIELD, ACCOUNT_TYPE_FIELD, ACCOUNT_PHONE_FIELD, ACCOUNT_WEBSITE_FIELD];
+    fieldsContact = [CONTACT_NAME_FIELD, CONTACT_PHONE_FIELD, CONTACT_EMAIL_FIELD];
+
+    handleSelect(event) {
+        this.isVisible = true;
+
+        if (event.detail.name.AccountId != null) {
+            this.records = [
+                {
+                    Id: event.detail.name.AccountId,
+                    fields: this.fieldsAccount,
+                    objectApiName: 'Account',
+                    title: 'Account Info'
+                },
+                {
+                    Id: event.detail.name.Id,
+                    fields: this.fieldsContact,
+                    objectApiName: 'Contact',
+                    title: 'Contact Info'
+                }
+            ];
+        }
+        else {
+            this.records = [
+                {
+                    Id: event.detail.name.Id,
+                    fields: this.fieldsAccount,
+                    objectApiName: 'Account',
+                    title: 'Account Info'
+                }];
+        }
+    }
 
     @wire(getAccountList)
     wiredAccounts({ error, data }) {
         if (data && Array.isArray(data)) {
-            this.items = data.map(account => ({
+            this.treeData = data.map(account => ({
                 label: account.Name,
-                name: account.Id,
+                name: account,
                 accountData: account,
                 items: (account.Contacts || []).map(contact => ({
                     label: contact.Name,
-                    name: contact.Id,
+                    name: contact,
                     contactData: contact,
                     parentAccount: account
                 }))
             }));
             this.error = undefined;
         } else {
-            this.items = [];
+            this.treeData = [];
             this.error = error ? error.body.message : 'Unknown error';
-        }
-    }
-
-    handleSelect(event) {
-        const selectedName = event.detail.name;
-        let found = false;
-
-        for (let acc of this.items) {
-            if (acc.name === selectedName) {
-                this.selectedRecord = {
-                    accountName: acc.accountData.Name,
-                    type: acc.accountData.Type,
-                    phone: acc.accountData.Phone,
-                    website: acc.accountData.Website
-                };
-                found = true;
-                break;
-            }
-            for (let contact of acc.items) {
-                if (contact.name === selectedName) {
-                    this.selectedRecord = {
-                        accountName: contact.parentAccount.Name,
-                        type: contact.parentAccount.Type,
-                        phone: contact.parentAccount.Phone,
-                        website: contact.parentAccount.Website,
-                        contactName: contact.contactData.Name,
-                        contactPhone: contact.contactData.Phone,
-                        contactEmail: contact.contactData.Email
-                    };
-                    found = true;
-                    break;
-                }
-            }
-            if (found) break;
         }
     }
 }

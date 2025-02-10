@@ -1,50 +1,22 @@
 <template>
     <div class="slds-grid">
         <div class="slds-col slds-size_1-of-2 slds-m-vertical_medium slds-m-right_margin">
-            <template lwc:if={items}>
-                <h2>Available Accounts</h2>
-                <lightning-tree class="my-tree" items={items} onselect={handleSelect}></lightning-tree>
+            <template lwc:if={treeData}>
+                <h2 class="slds-m-bottom_medium slds-text-align_center slds-text-heading_small slds-text-title_bold">
+                    Available Accounts
+                </h2>
+                <lightning-tree class="my-tree" items={treeData} onselect={handleSelect}></lightning-tree>
             </template>
             <template lwc:if={error}>
                 <p>{error}</p>
             </template>
         </div>
         <div class="slds-col slds-size_1-of-2 slds-m-vertical_medium">
-            <template lwc:if={selectedRecord}>
-                <h2>Summary</h2>
-                <lightning-card>
-                    <p><strong>Account Info</strong></p>
-                    <div class="container slds-m-bottom_medium">
-                        <div class="column">
-                            <p>Account Name</p>
-                            <p>Type</p>
-                            <p>Phone</p>
-                            <p>Website</p>
-                        </div>
-                        <div class="column">
-                            <p>{selectedRecord.accountName}</p>
-                            <p>{selectedRecord.type}</p>
-                            <p><a href="#">{selectedRecord.phone}</a></p>
-                            <p><a href="#">{selectedRecord.website}</a></p>
-                        </div>
-                    </div>
-
-                    <template lwc:if={selectedRecord.contactName}>
-                        <p><strong>Contact Info</strong></p>
-                        <div class="container">
-                            <div class="column">
-                                <p>Contact Name</p>
-                                <p>Phone</p>
-                                <p>Email</p>
-                            </div>
-                            <div class="column">
-                                <p>{selectedRecord.contactName}</p>
-                                <p><a href="#">{selectedRecord.contactPhone}</a></p>
-                                <p><a href="#">{selectedRecord.contactEmail}</a></p>
-                            </div>
-                        </div>
-                    </template>
-                </lightning-card>
+            <template lwc:if={isVisible}>
+                <h2 class="slds-m-bottom_medium slds-text-align_center slds-text-heading_small slds-text-title_bold">
+                    Summary
+                </h2>
+                <c-summary-info records={records}></c-summary-info>
             </template>
         </div>
     </div>
