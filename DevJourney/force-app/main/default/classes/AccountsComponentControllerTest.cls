@@ -1,11 +1,32 @@
 @IsTest
 private class AccountsComponentControllerTest {
-
+    
     @TestSetup
     static void setup() {
-        TestDataFactory.createAccounts(5);
+        TestDataFactory.createAccounts(5, true);
     }
 
+    @IsTest
+    static void getAccountsWithRelatedContactsTest() {
+        // Prepare test data
+        TestDataFactory.createAccountsWithRelatedContacts(3, 2, true);
+
+        // Execute
+        Test.startTest();
+        List<Account> accounts = AccountsComponentController.getAccountsWithRelatedContacts();
+        Test.stopTest();
+
+        // Assert results
+        Boolean containsContacts = false;
+        for (Account acc : accounts) {
+            if (acc.Contacts.size() != 0) {
+                containsContacts = true;
+                break;
+            }
+        }
+        Assert.isTrue(containsContacts, 'At least one account should have contacts');
+    }
+    
     @IsTest
     static void getMyAccountsTest() {
         // Execute

@@ -1,0 +1,20 @@
+<template>
+    <div class="slds-grid">
+        <div class="slds-col slds-size_1-of-2 slds-m-vertical_medium slds-m-right_margin">
+            <template lwc:if={treeData}>
+                <h2 class="slds-m-bottom_medium slds-text-align_center slds-text-heading_small slds-text-title_bold">
+                    Available Accounts
+                </h2>
+                <lightning-tree items={treeData} onselect={handleSelect}></lightning-tree>
+            </template>
+        </div>
+        <div class="slds-col slds-size_1-of-2 slds-m-vertical_medium">
+            <template lwc:if={isVisible}>
+                <h2 class="slds-m-bottom_medium slds-text-align_center slds-text-heading_small slds-text-title_bold">
+                    Summary
+                </h2>
+                <c-summary-info records={records}></c-summary-info>
+            </template>
+        </div>
+    </div>
+</template>
