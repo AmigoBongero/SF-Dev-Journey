@@ -10,12 +10,14 @@ private class AccountsComponentControllerTest {
     static void getAccountListTest() {
         // Execute
         Test.startTest();
-        List<Account> accounts = AccountsComponentController.getAccountList();
         List<Contact> contacts = TestDataFactory.createAccountsWithRelatedContacts(3, 2, true);
+        List<Account> accounts = AccountsComponentController.getAccountsWithRelatedContacts();
         Test.stopTest();
 
         // Assert results
-        Assert.areEqual(6, contacts.size(), 'Contacts size should be 6');
+        Assert.areEqual(2, accounts[0].Contacts.size(), 'For fist account contacts size should be 2');
+        Assert.areEqual(2, accounts[1].Contacts.size(), 'For seconds account contacts size should be 2');
+        Assert.areEqual(2, accounts[2].Contacts.size(), 'For third account contacts size should be 2');
     }
     
     @IsTest

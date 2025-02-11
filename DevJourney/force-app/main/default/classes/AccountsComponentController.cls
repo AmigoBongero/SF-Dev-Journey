@@ -4,11 +4,12 @@ public with sharing class AccountsComponentController {
     private static final Integer LIMIT_CONST = 1000;
 
     @AuraEnabled(cacheable=true)
-    public static List<Account> getAccountList() {
+    public static List<Account> getAccountsWithRelatedContacts() {
         return [
             SELECT      Id, Name,
                         (SELECT Id, Name
-                        FROM    Contacts)
+                        FROM    Contacts
+                        LIMIT :LIMIT_CONST)
             FROM        Account
             ORDER BY    Name
             LIMIT       :LIMIT_CONST

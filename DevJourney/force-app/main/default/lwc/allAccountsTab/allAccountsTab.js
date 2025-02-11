@@ -1,7 +1,7 @@
 import { LightningElement, track, wire } from 'lwc';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 
-import getAccountList from "@salesforce/apex/AccountsComponentController.getAccountList";
+import getAccountsWithRelatedContacts from "@salesforce/apex/AccountsComponentController.getAccountsWithRelatedContacts";
 
 import ACCOUNT_NAME_FIELD from '@salesforce/schema/Account.Name';
 import ACCOUNT_TYPE_FIELD from '@salesforce/schema/Account.Type';
@@ -30,7 +30,7 @@ export default class AllAccountsTab extends LightningElement {
     /*
     * @description  Wire function. 
     */
-    @wire(getAccountList)
+    @wire(getAccountsWithRelatedContacts)
     wiredAccounts({ error, data }) {
         if (data && Array.isArray(data)) {
             this.treeData = data.map(account => ({
