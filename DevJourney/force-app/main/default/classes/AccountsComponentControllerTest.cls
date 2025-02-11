@@ -21,8 +21,7 @@ private class AccountsComponentControllerTest {
         for (Account acc : accounts) {
             if (acc.Contacts.size() != 0) {
                 containsContacts = true;
-                Assert.isTrue(containsContacts, 'At least one account has contacts');
-                return;
+                break;
             }
         }
         Assert.isTrue(containsContacts, 'At least one account should have contacts');
