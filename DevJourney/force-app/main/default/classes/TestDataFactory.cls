@@ -4,8 +4,8 @@ public class TestDataFactory {
     public static List<Account> createAccounts(Integer numAccounts, Boolean isInserted) {
         List<Account> accounts = new List<Account>();
         for (Integer i = 0; i < numAccounts; i++) {
-            Account a = new Account(Name = 'TestAccount' + i);
-            accounts.add(a);
+            Account account = new Account(Name = 'TestAccount' + i);
+            accounts.add(account);
         }
         if (isInserted) {
             insert accounts;
@@ -20,8 +20,8 @@ public class TestDataFactory {
         for (Account account : accounts) {
             for(Integer i = 0; i < numContacts; i++) {
                 contacts.add(new Contact(
-                        LastName = 'Contact' + i,	
-                        AccountId = account.Id
+                    LastName = 'Contact' + i,	
+                    AccountId = account.Id
                 ));
             }
         }  
