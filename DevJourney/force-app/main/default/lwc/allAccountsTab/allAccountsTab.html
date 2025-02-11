@@ -5,10 +5,9 @@
                 <h2 class="slds-m-bottom_medium slds-text-align_center slds-text-heading_small slds-text-title_bold">
                     Available Accounts
                 </h2>
-                <lightning-tree class="my-tree" items={treeData} onselect={handleSelect}></lightning-tree>
+                <lightning-tree items={treeData} onselect={handleSelect}></lightning-tree>
             </template>
             <template lwc:if={error}>
-                <p>{error}</p>
             </template>
         </div>
         <div class="slds-col slds-size_1-of-2 slds-m-vertical_medium">

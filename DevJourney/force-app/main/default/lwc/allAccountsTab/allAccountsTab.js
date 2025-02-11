@@ -1,4 +1,5 @@
 import { LightningElement, track, wire } from 'lwc';
+import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 
 import getAccountList from "@salesforce/apex/AccountsComponentController.getAccountList";
 
@@ -21,9 +22,13 @@ export default class AllAccountsTab extends LightningElement {
     records = null;
     fieldsAccount = [ACCOUNT_NAME_FIELD, ACCOUNT_TYPE_FIELD, ACCOUNT_PHONE_FIELD, ACCOUNT_WEBSITE_FIELD];
     fieldsContact = [CONTACT_NAME_FIELD, CONTACT_PHONE_FIELD, CONTACT_EMAIL_FIELD];
-    
+    accountObjectApiName = 'Account';
+    contactObjectApiName = 'Contact';
+    titleForAccount = 'Account Info';
+    titleForContact = 'Contact Info';
+
     /*
-    * @description Wire function. 
+    * @description  Wire function. 
     */
     @wire(getAccountList)
     wiredAccounts({ error, data }) {
@@ -31,27 +36,25 @@ export default class AllAccountsTab extends LightningElement {
             this.treeData = data.map(account => ({
                 label: account.Name,
                 name: account,
-                accountData: account,
                 items: (account.Contacts || []).map(contact => ({
                     label: contact.Name,
-                    name: contact,
-                    contactData: contact,
-                    parentAccount: account
+                    name: contact
                 }))
             }));
             this.error = undefined;
         } else if (error) {
             this.treeData = [];
-            this.error = error.body.message;
-        }
-        else {
-            this.treeData = [];
-            this.error = 'No data received';
+            const showError = new ShowToastEvent({
+                title: 'Error occurred while loading data',
+                message: `Error: ${error.message}`,
+                variant: 'error'
+            });
+            this.dispatchEvent(showError);
         }
     }
 
     /*
-    * @description Handler.
+    * @description  Handler.
     */
     handleSelect(event) {
         this.isVisible = true;
@@ -61,14 +64,14 @@ export default class AllAccountsTab extends LightningElement {
                 {
                     Id: event.detail.name.AccountId,
                     fields: this.fieldsAccount,
-                    objectApiName: 'Account',
-                    title: 'Account Info'
+                    objectApiName: this.accountObjectApiName,
+                    title: this.titleForAccount
                 },
                 {
                     Id: event.detail.name.Id,
                     fields: this.fieldsContact,
-                    objectApiName: 'Contact',
-                    title: 'Contact Info'
+                    objectApiName: this.contactObjectApiName,
+                    title: this.titleForContact
                 }
             ];
         }
@@ -77,8 +80,8 @@ export default class AllAccountsTab extends LightningElement {
                 {
                     Id: event.detail.name.Id,
                     fields: this.fieldsAccount,
-                    objectApiName: 'Account',
-                    title: 'Account Info'
+                    objectApiName: this.accountObjectApiName,
+                    title: this.titleForAccount
                 }];
         }
     }

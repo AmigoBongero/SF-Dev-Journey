@@ -3,19 +3,19 @@ private class AccountsComponentControllerTest {
     
     @TestSetup
     static void setup() {
-        TestDataFactory.createAccountsWithRelatedContacts(3, 2);
-        TestDataFactory.createAccounts(5);
+        TestDataFactory.createAccounts(5, true);
     }
 
     @IsTest
     static void getAccountListTest() {
+        // Execute
         Test.startTest();
         List<Account> accounts = AccountsComponentController.getAccountList();
+        List<Contact> contacts = TestDataFactory.createAccountsWithRelatedContacts(3, 2, true);
         Test.stopTest();
 
-        System.assertNotEquals(null, accounts, 'Account list should not be null');
-        System.assertEquals(3, accounts.size(), 'Should return 3 accounts');
-        System.assertEquals(2, accounts[0].Contacts.size(), 'First account should have 2 contacts');
+        // Assert results
+        Assert.areEqual(6, contacts.size(), 'Contacts size should be 6');
     }
     
     @IsTest

@@ -8,9 +8,10 @@
                     <template for:each={record.fields} for:item="field">
                         <div key={field}>
                             <lightning-output-field 
-                            variant="label-inline" 
-                            field-name={field}
-                            class="slds-m-bottom_none slds-p-left_none"></lightning-output-field>
+                                variant="label-inline" 
+                                field-name={field}
+                                class="slds-m-bottom_none slds-p-left_none">
+                            </lightning-output-field>
                         </div>
                     </template>
                 </lightning-record-view-form>
