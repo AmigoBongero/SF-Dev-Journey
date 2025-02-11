@@ -6,13 +6,11 @@
             </h3>
                 <lightning-record-view-form record-id={record.Id} object-api-name={record.objectApiName}>
                     <template for:each={record.fields} for:item="field">
-                        <div key={field}>
                             <lightning-output-field 
                                 variant="label-inline" 
-                                field-name={field}
+                                key={field}
                                 class="slds-m-bottom_none slds-p-left_none">
                             </lightning-output-field>
-                        </div>
                     </template>
                 </lightning-record-view-form>
         </lightning-card>

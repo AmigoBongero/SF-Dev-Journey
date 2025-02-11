@@ -9,7 +9,7 @@ public with sharing class AccountsComponentController {
             SELECT      Id, Name,
                         (SELECT Id, Name
                         FROM    Contacts
-                        LIMIT :LIMIT_CONST)
+                        LIMIT   :LIMIT_CONST)
             FROM        Account
             ORDER BY    Name
             LIMIT       :LIMIT_CONST

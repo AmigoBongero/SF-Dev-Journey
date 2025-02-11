@@ -11,6 +11,14 @@ import CONTACT_NAME_FIELD from '@salesforce/schema/Contact.Name';
 import CONTACT_PHONE_FIELD from '@salesforce/schema/Contact.Phone';
 import CONTACT_EMAIL_FIELD from '@salesforce/schema/Contact.Email';
 
+//Record-view-form constants
+const accountObjectApiName = 'Account';
+const contactObjectApiName = 'Contact';
+const titleForAccount = 'Account Info';
+const titleForContact = 'Contact Info';
+const fieldsAccount = [ACCOUNT_NAME_FIELD, ACCOUNT_TYPE_FIELD, ACCOUNT_PHONE_FIELD, ACCOUNT_WEBSITE_FIELD];
+const fieldsContact = [CONTACT_NAME_FIELD, CONTACT_PHONE_FIELD, CONTACT_EMAIL_FIELD];
+
 export default class AllAccountsTab extends LightningElement {
 
     //Tree data variables
@@ -20,13 +28,7 @@ export default class AllAccountsTab extends LightningElement {
 
     //Record-view-form fields	
     records = null;
-    fieldsAccount = [ACCOUNT_NAME_FIELD, ACCOUNT_TYPE_FIELD, ACCOUNT_PHONE_FIELD, ACCOUNT_WEBSITE_FIELD];
-    fieldsContact = [CONTACT_NAME_FIELD, CONTACT_PHONE_FIELD, CONTACT_EMAIL_FIELD];
-    accountObjectApiName = 'Account';
-    contactObjectApiName = 'Contact';
-    titleForAccount = 'Account Info';
-    titleForContact = 'Contact Info';
-
+    
     /*
     * @description  Wire function. 
     */
@@ -63,25 +65,24 @@ export default class AllAccountsTab extends LightningElement {
             this.records = [
                 {
                     Id: event.detail.name.AccountId,
-                    fields: this.fieldsAccount,
-                    objectApiName: this.accountObjectApiName,
-                    title: this.titleForAccount
+                    fields: fieldsAccount,
+                    objectApiName: accountObjectApiName,
+                    title: titleForAccount
                 },
                 {
                     Id: event.detail.name.Id,
-                    fields: this.fieldsContact,
-                    objectApiName: this.contactObjectApiName,
-                    title: this.titleForContact
+                    fields: fieldsContact,
+                    objectApiName: contactObjectApiName,
+                    title: titleForContact
                 }
             ];
-        }
-        else {
+        } else {
             this.records = [
                 {
                     Id: event.detail.name.Id,
-                    fields: this.fieldsAccount,
-                    objectApiName: this.accountObjectApiName,
-                    title: this.titleForAccount
+                    fields: fieldsAccount,
+                    objectApiName: accountObjectApiName,
+                    title: titleForAccount
                 }];
         }
     }
