@@ -30,4 +30,34 @@ public class TestDataFactory {
         }
         return contacts;
     }
+
+    public static List<Expense__c> createExpenses(Integer numExpenses, Boolean isInserted) {
+        Account acc = new Account(Name = 'Test Account');
+        insert acc;
+
+        Case_Party__c payee = new Case_Party__c(
+            Name = 'Test Case',
+            Parent_Account__c = acc.Id
+        );
+        insert payee;
+
+        List<Expense__c> expensesList = new List<Expense__c>();
+        for (Integer i = 0; i < numExpenses; i++) {
+            Expense__c expense = new Expense__c(
+                Name = 'Test Expense ' + i,
+                Status__c = 'Pending',
+                Amount__c = 100,
+                Check_Date__c = Date.today(),
+                Description__c = 'COPY SERVICE',
+                Payee__c = payee.Id
+            );
+            expensesList.add(expense);
+        }
+
+        if(isInserted) {
+            insert expensesList;
+        }
+        return expensesList;
+    }
+
 }

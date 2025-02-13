@@ -1,0 +1,15 @@
+<template>
+    <lightning-modal-header label="Delete Expense"></lightning-modal-header>
+    <lightning-modal-body>
+        <lightning-messages></lightning-messages>
+        <div class="slds-align_absolute-center slds-p-top_small">
+            Are you sure you want to delete this expense?
+        </div>
+    </lightning-modal-body>
+    <lightning-modal-footer>
+        <div class="slds-grid slds-wrap slds-grid_align-spread slds-align_absolute-center slds-p-around_xx-small">
+            <lightning-button label="Cancel" onclick={handleCancel} class="slds-m-right_small"></lightning-button>
+            <lightning-button label="Delete" onclick={handleDelete} variant="brand" class="slds-m-right_small"></lightning-button>
+        </div>
+    </lightning-modal-footer>
+</template>

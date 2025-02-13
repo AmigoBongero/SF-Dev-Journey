@@ -1,0 +1,21 @@
+<template>
+    <lightning-modal-header label="Create new expense"></lightning-modal-header>
+    <lightning-modal-body>
+        <lightning-record-edit-form object-api-name="Expense__c" onsuccess={handleSuccess}>
+            <lightning-messages></lightning-messages>
+            <lightning-input-field field-name="Name"></lightning-input-field>
+            <lightning-input-field field-name="Payee__c"></lightning-input-field>
+            <lightning-input-field field-name="Status__c"></lightning-input-field>
+            <lightning-input-field field-name="Description__c"></lightning-input-field>
+            <lightning-input-field field-name="Amount__c"></lightning-input-field>
+            <lightning-input-field field-name="Check_Date__c"></lightning-input-field>
+        </lightning-record-edit-form>
+    </lightning-modal-body>
+    <lightning-modal-footer>
+        <div class="slds-grid slds-wrap slds-grid_align-spread slds-align_absolute-center slds-p-around_xx-small">
+            <lightning-button label="Cancel" onclick={handleCancel} class="slds-m-right_small"></lightning-button>
+            <lightning-button label="Save & New" onclick={handleSaveAndNew} class="slds-m-right_small"></lightning-button>
+            <lightning-button label="Save" onclick={handleSave} variant="brand" class="slds-m-right_small"></lightning-button>
+        </div>
+    </lightning-modal-footer>
+</template>
