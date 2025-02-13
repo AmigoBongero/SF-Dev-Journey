@@ -26,7 +26,14 @@
                     </lightning-tab>
                 </lightning-tabset>
             </lightning-tab>
-            <lightning-tab label="Test"></lightning-tab>
+            <lightning-tab label="Financial Info">
+                <lightning-tabset>
+                    <lightning-tab label="Expenses">
+                        <c-expenses-tab-component></c-expenses-tab-component>
+                    </lightning-tab>
+                    <lightning-tab label="Summary"></lightning-tab>
+                </lightning-tabset>
+            </lightning-tab>
         </lightning-tabset>
     </lightning-card>
 </template>
