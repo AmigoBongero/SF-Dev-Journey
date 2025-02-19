@@ -16,13 +16,21 @@ export default class DeleteExpenseModal extends LightningModal {
     }
 
     async handleDelete() {
-        await deleteRecord(this.selectedExpense);
-        this.close('update');
-        this.dispatchEvent(new ShowToastEvent({
-            title: 'Expense has been successfully deleted',
-            message: '',
-            variant: 'success'
-        }));
+        try {
+            await deleteRecord(this.selectedExpense);
+            this.close('update');
+            this.dispatchEvent(new ShowToastEvent({
+                title: 'Expense has been successfully deleted',
+                message: '',
+                variant: 'success'
+            }));
+        } catch (error) {
+            this.dispatchEvent(new ShowToastEvent({
+                title: 'Error occurred while deleting record',
+                message: 'Error: ' + error,
+                variant: 'error'
+            }));
+        }
     }
 
 }

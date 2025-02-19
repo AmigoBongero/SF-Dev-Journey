@@ -1,14 +1,23 @@
 <template>
-    <lightning-modal-header label="Create new expense"></lightning-modal-header>
+    <lightning-modal-header label={label}></lightning-modal-header>
     <lightning-modal-body>
-        <lightning-record-edit-form object-api-name="Expense__c" onsuccess={handleSuccess}>
-            <lightning-messages></lightning-messages>
-            <lightning-input-field field-name="Name"></lightning-input-field>
-            <lightning-input-field field-name="Payee__c"></lightning-input-field>
-            <lightning-input-field field-name="Status__c"></lightning-input-field>
-            <lightning-input-field field-name="Description__c"></lightning-input-field>
-            <lightning-input-field field-name="Amount__c"></lightning-input-field>
-            <lightning-input-field field-name="Check_Date__c"></lightning-input-field>
+        <lightning-spinner
+            lwc:if={isLoading}
+            alternative-text="Loading..."
+            class="slds-is-relative slds-align_absolute-center slds-m-top_medium">
+        </lightning-spinner>
+        <lightning-record-edit-form
+            object-api-name="Expense__c"
+            onsuccess={handleSuccess}
+            lwc:ref="recordEditForm"
+            record-id={selectedExpense}
+            onload={handleLoad}>
+            <lightning-input-field field-name={expenseName} onchange={handleFieldChange}></lightning-input-field>
+            <lightning-input-field field-name={expensePayee} onchange={handleFieldChange}></lightning-input-field>
+            <lightning-input-field field-name={expenseStatus} onchange={handleFieldChange}></lightning-input-field>
+            <lightning-input-field field-name={expenseDescription} onchange={handleFieldChange}></lightning-input-field>
+            <lightning-input-field field-name={expenseAmount} onchange={handleFieldChange}></lightning-input-field>
+            <lightning-input-field field-name={expenseCheckDate} onchange={handleFieldChange}></lightning-input-field>
         </lightning-record-edit-form>
     </lightning-modal-body>
     <lightning-modal-footer>

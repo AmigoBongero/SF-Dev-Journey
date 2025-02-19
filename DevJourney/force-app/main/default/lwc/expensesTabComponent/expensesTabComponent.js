@@ -1,9 +1,8 @@
 import { LightningElement } from 'lwc';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 
-import createNewExpenseModal from 'c/createNewExpenseModal';
-import editExpenseModal from 'c/editExpenseModal';
-import deleteExpenseModal from 'c/deleteExpenseModal';
+import CreateNewExpenseModal from 'c/createNewExpenseModal';
+import DeleteExpenseModal from 'c/deleteExpenseModal';
 
 import getExpenses from '@salesforce/apex/AccountsComponentController.getExpenses';
 
@@ -17,6 +16,13 @@ const EXPENSES_COLUMNS = [
 
 export default class ExpensesTabComponent extends LightningElement {
 
+    // Table data Variables.
+    expensesData = [];
+    selectedExpenseId = [];
+
+    // Other Variables,
+    isLoading;
+
     /*
      * @description     Getters.
      */
@@ -25,116 +31,133 @@ export default class ExpensesTabComponent extends LightningElement {
     }
 
     /*
-     * @description     Variables.
+     * @description     Callbacks.
      */
-    expensesData = [];
-    selectedExpense = [];
+    connectedCallback() {
+        this.loadExpenses();
+    }
 
     /*
      * @description     Handlers.
      */
     handleRowSelection(event) {
-        this.selectedExpense = event.detail.selectedRows.map(row => row.Id);
+        this.selectedExpenseId = event.detail.selectedRows.map(row => row.Id);
     }
 
     async handleNewClick() {
         try {
-            const result = await createNewExpenseModal.open({
+            const modalResponse = await CreateNewExpenseModal.open({
                 size: 'small',
-                description: 'Create new expense',
+                label: 'Create new expense',
+                isLoading: true
             });
-            if (result === 'update') {
+            if (modalResponse === 'update') {
+                this.toastNewExpenseMessage();
                 this.loadExpenses();
-            } else if (result === 'saveAndNew') {
+            } else if (modalResponse === 'saveAndNew') {
+                this.toastNewExpenseMessage();
                 await this.loadExpenses();
-                setTimeout(() => {
-                    this.handleNewClick();
-                }, 800)
+                await this.handleNewClick();
             }
         } catch (error) {
-            this.dispatchEvent(new ShowToastEvent({
-                title: 'Error occurred',
-                message: 'Error: ' + error.message,
-                variant: 'error'
-            }));
+            this.toastErrorMessage();
         }
     }
 
     async handleEditClick() {
         try {
-            if (this.selectedExpense.length > 0) {
-                const result = await editExpenseModal.open({
+            if (this.selectedExpenseId.length > 0) {
+                const modalResponse = await CreateNewExpenseModal.open({
                     size: 'small',
-                    description: 'Edit expense',
-                    selectedExpense: this.selectedExpense[0],
+                    label: 'Edit expense',
+                    selectedExpense: this.selectedExpenseId[0],
                     isLoading: true
                 });
-                if (result === 'update') {
+                if (modalResponse === 'update') {
+                    this.toastEditExpenseMessage();
                     this.loadExpenses();
+                } else if (modalResponse === 'saveAndNew') {
+                    this.toastEditExpenseMessage();
+                    await this.loadExpenses();
+                    await this.handleNewClick();
                 }
             } else {
-                this.dispatchEvent(new ShowToastEvent({
-                    title: 'The record is not selected!',
-                    message: 'Please select a record.',
-                    variant: 'info'
-                }));
+                this.toastIsNotSelectedMessage();
             }
         } catch (error) {
-            this.dispatchEvent(new ShowToastEvent({
-                title: 'Error occurred',
-                message: 'Error: ' + error.message,
-                variant: 'error'
-            }));
+            this.toastErrorMessage(error);
         }
     }
 
     async handleDeleteClick() {
         try {
-            if (this.selectedExpense.length > 0) {
-                const result = await deleteExpenseModal.open({
+            if (this.selectedExpenseId.length > 0) {
+                const modalResponse = await DeleteExpenseModal.open({
                     size: 'small',
-                    description: 'Delete expense',
-                    selectedExpense: this.selectedExpense[0]
+                    selectedExpense: this.selectedExpenseId[0]
                 });
-                if (result === 'update') {
+                if (modalResponse === 'update') {
                     this.loadExpenses();
                 }
             } else {
-                this.dispatchEvent(new ShowToastEvent({
-                    title: 'The record is not selected!',
-                    message: 'Please select a record.',
-                    variant: 'info'
-                }));
+                this.toastIsNotSelectedMessage();
             }
         } catch (error) {
-            this.dispatchEvent(new ShowToastEvent({
-                title: 'Error occurred',
-                message: 'Error: ' + error.message,
-                variant: 'error'
-            }));
+            this.toastErrorMessage(error);
         }
     }
 
     /*
      * @description     Reusable Code.
      */
-    connectedCallback() {
-        this.loadExpenses();
+    loadExpenses() {
+        this.isLoading = true;
+        getExpenses()
+          .then(result => {
+              this.expensesData = result;
+              this.selectedExpenseId = [];
+              this.isLoading = false;
+          })
+          .catch(error => {
+              this.dispatchEvent(new ShowToastEvent({
+                  title: 'Error occurred while loading expenses',
+                  message: `Error: ${error.message}`,
+                  variant: 'error'
+              }));
+              this.isLoading = false;
+          });
     }
 
-    loadExpenses() {
-        getExpenses()
-            .then(result => {
-                this.expensesData = result;
-                this.selectedExpense = [];
-            })
-            .catch(error => {
-                this.dispatchEvent(new ShowToastEvent({
-                    title: 'Error occurred while loading expenses',
-                    message: `Error: ${error.message}`,
-                    variant: 'error'
-                }));
-            })
+    toastIsNotSelectedMessage() {
+        this.dispatchEvent(new ShowToastEvent({
+            title: 'The record is not selected!',
+            message: 'Please select a record.',
+            variant: 'info'
+        }));
+    }
+
+    toastErrorMessage(error) {
+        this.dispatchEvent(new ShowToastEvent({
+            title: 'Error occurred',
+            message: 'Error: ' + error.message,
+            variant: 'error'
+        }));
+    }
+
+    toastNewExpenseMessage() {
+        this.dispatchEvent(new ShowToastEvent({
+            title: 'New expanse has been successfully created',
+            message: '',
+            variant: 'success'
+        }));
+    }
+
+    toastEditExpenseMessage() {
+        this.dispatchEvent(new ShowToastEvent({
+            title: 'Expanse has been successfully updated',
+            message: '',
+            variant: 'success'
+        }));
     }
 
 }

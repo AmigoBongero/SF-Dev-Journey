@@ -31,13 +31,13 @@ public class TestDataFactory {
         return contacts;
     }
 
-    public static List<Expense__c> createExpenses(Integer numExpenses, Boolean isInserted) {
-        Account acc = new Account(Name = 'Test Account');
-        insert acc;
+    public static List<Expense__c> createExpensesWithRelatedCasePartyAndAccount(Integer numExpenses, Boolean isInserted) {
+        Account account = new Account(Name = 'Test Account');
+        insert account;
 
         Case_Party__c payee = new Case_Party__c(
             Name = 'Test Case',
-            Parent_Account__c = acc.Id
+            Parent_Account__c = account.Id
         );
         insert payee;
 

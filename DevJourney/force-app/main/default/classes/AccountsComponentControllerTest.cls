@@ -51,13 +51,13 @@ private class AccountsComponentControllerTest {
             FROM   Account
             WHERE  LastViewedDate != NULL
         ];
-        Assert.areEqual(expectedRecentlyViewedAccounts.size(), recentlyViewedAccounts.size());
+        Assert.areEqual(expectedRecentlyViewedAccounts.size(), recentlyViewedAccounts.size(), 'Should have 5 recently viewed accounts');
     }
 
     @IsTest
     static void testGetExpenses() {
         // Prepare test data
-        TestDataFactory.createExpenses(5,true);
+        TestDataFactory.createExpensesWithRelatedCasePartyAndAccount(5, true);
 
         // Execute
         Test.startTest();
@@ -65,12 +65,14 @@ private class AccountsComponentControllerTest {
         Test.stopTest();
 
         // Assert results
-        Assert.areEqual(5, expenses.size());
-        Assert.areEqual('Test Expense 0', expenses[0].Name);
-        Assert.areEqual('Pending', expenses[0].Status__c);
-        Assert.areEqual(100, expenses[0].Amount__c);
-        Assert.areEqual(Date.today(), expenses[0].Check_Date__c);
-        Assert.areEqual('COPY SERVICE', expenses[0].Description__c);
+        Assert.areEqual(5, expenses.size(), 'Should have 5 expenses');
+        for(Integer i = 0; i < 5; i++) {
+            Assert.areEqual('Test Expense ' + i, expenses.get(i).Name, 'Expense name should match');
+            Assert.areEqual('Pending', expenses.get(i).Status__c, 'Expense status should match');
+            Assert.areEqual(100, expenses.get(i).Amount__c, 'Expense amount should match');
+            Assert.areEqual(Date.today(), expenses.get(i).Check_Date__c, 'Expense check date should match');
+            Assert.areEqual('COPY SERVICE', expenses.get(i).Description__c, 'Expense description should match');
+        }
     }
 
 }

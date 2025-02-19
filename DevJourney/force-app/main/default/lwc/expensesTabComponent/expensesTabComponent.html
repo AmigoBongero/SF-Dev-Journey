@@ -12,7 +12,7 @@
         </lightning-button>
         <lightning-button
             label="Delete"
-            variant="destructive"
+            variant="brand"
             icon-name="utility:delete"
             onclick={handleDeleteClick}>
         </lightning-button>
@@ -21,8 +21,9 @@
         key-field="Id"
         columns={expensesColumnsGetter}
         data={expensesData}
-        selected-rows={selectedExpense}
+        selected-rows={selectedExpenseId}
         onrowselection={handleRowSelection}
+        is-loading={isLoading}
         max-row-selection="1"
         show-row-number-column>
     </lightning-datatable>
