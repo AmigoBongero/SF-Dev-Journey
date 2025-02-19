@@ -1,7 +1,7 @@
 import { LightningElement } from 'lwc';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 
-import CreateNewExpenseModal from 'c/createNewExpenseModal';
+import CreateAndEditExpenseModal from 'c/createAndEditExpenseModal';
 import DeleteExpenseModal from 'c/deleteExpenseModal';
 
 import getExpenses from '@salesforce/apex/AccountsComponentController.getExpenses';
@@ -46,7 +46,7 @@ export default class ExpensesTabComponent extends LightningElement {
 
     async handleNewClick() {
         try {
-            const modalResponse = await CreateNewExpenseModal.open({
+            const modalResponse = await CreateAndEditExpenseModal.open({
                 size: 'small',
                 label: 'Create new expense',
                 isLoading: true
@@ -67,7 +67,7 @@ export default class ExpensesTabComponent extends LightningElement {
     async handleEditClick() {
         try {
             if (this.selectedExpenseId.length > 0) {
-                const modalResponse = await CreateNewExpenseModal.open({
+                const modalResponse = await CreateAndEditExpenseModal.open({
                     size: 'small',
                     label: 'Edit expense',
                     selectedExpense: this.selectedExpenseId[0],
@@ -113,19 +113,19 @@ export default class ExpensesTabComponent extends LightningElement {
     loadExpenses() {
         this.isLoading = true;
         getExpenses()
-          .then(result => {
-              this.expensesData = result;
-              this.selectedExpenseId = [];
-              this.isLoading = false;
-          })
-          .catch(error => {
-              this.dispatchEvent(new ShowToastEvent({
-                  title: 'Error occurred while loading expenses',
-                  message: `Error: ${error.message}`,
-                  variant: 'error'
-              }));
-              this.isLoading = false;
-          });
+            .then(result => {
+                this.expensesData = result;
+                this.selectedExpenseId = [];
+                this.isLoading = false;
+            })
+            .catch(error => {
+                this.dispatchEvent(new ShowToastEvent({
+                    title: 'Error occurred while loading expenses',
+                    message: `Error: ${error.message}`,
+                    variant: 'error'
+                }));
+                this.isLoading = false;
+            });
     }
 
     toastIsNotSelectedMessage() {

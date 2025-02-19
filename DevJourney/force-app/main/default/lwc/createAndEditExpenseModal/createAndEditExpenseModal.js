@@ -27,18 +27,23 @@ export default class CreateNewExpenseModal extends LightningModal {
     get expenseName() {
         return EXPENSE_NAME;
     }
+
     get expensePayee() {
         return EXPENSE_PAYEE;
     }
+
     get expenseStatus() {
         return EXPENSE_STATUS;
     }
+
     get expenseDescription() {
         return EXPENSE_DESCRIPTION;
     }
+
     get expenseAmount() {
-        return EXPENSE_AMOUNT
+        return EXPENSE_AMOUNT;
     }
+
     get expenseCheckDate() {
         return EXPENSE_CHECK_DATE;
     }
@@ -66,7 +71,7 @@ export default class CreateNewExpenseModal extends LightningModal {
 
     handleSave() {
         this.saveAndNew = false;
-        if(this.selectedExpense && this.selectedExpense.length > 0) {
+        if (this.selectedExpense && this.selectedExpense.length > 0) {
             this.updateRecordForm();
         } else {
             this.submitRecordForm();
@@ -75,7 +80,7 @@ export default class CreateNewExpenseModal extends LightningModal {
 
     handleSaveAndNew() {
         this.saveAndNew = true;
-        if(this.selectedExpense && this.selectedExpense.length > 0) {
+        if (this.selectedExpense && this.selectedExpense.length > 0) {
             this.updateRecordForm();
         } else {
             this.submitRecordForm();
@@ -102,7 +107,7 @@ export default class CreateNewExpenseModal extends LightningModal {
 
     submitRecordForm() {
         let isValid = this.isInputValid();
-        if(isValid) {
+        if (isValid) {
             this.isLoading = true;
             this.refs.recordEditForm.submit();
         } else {
@@ -113,36 +118,36 @@ export default class CreateNewExpenseModal extends LightningModal {
 
     updateRecordForm() {
         let isValid = this.isInputValid();
-        if(isValid) {
+        if (isValid) {
             this.isLoading = true;
             const recordInput = {
                 fields: {
                     Id: this.selectedExpense,
                     ...this.fieldsToUpdate
                 }
-            }
+            };
             updateRecord(recordInput)
-              .then(() => {
-                  this.handleSuccess();
-              })
-              .catch(error => {
-                  this.dispatchEvent(new ShowToastEvent({
-                      title: 'Error occurred while updating record',
-                      message: 'Error: ' + error,
-                      variant: 'error'
-                  }));
-              });
+                .then(() => {
+                    this.handleSuccess();
+                })
+                .catch(error => {
+                    this.dispatchEvent(new ShowToastEvent({
+                        title: "Error occurred while updating record",
+                        message: "Error: " + error,
+                        variant: "error"
+                    }));
+                });
         } else {
             this.isLoading = false;
             this.toastFieldValidationMessage();
         }
-    }
+      }
 
     toastFieldValidationMessage() {
         this.dispatchEvent(new ShowToastEvent({
-            title: 'There is field validation error!',
-            message: 'Check the fields values',
-            variant: 'info'
+            title: "There is field validation error!",
+            message: "Check the fields values",
+            variant: "info"
         }));
     }
 
