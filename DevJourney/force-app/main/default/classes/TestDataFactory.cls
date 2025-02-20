@@ -68,8 +68,8 @@ public class TestDataFactory {
         List<Case_Party__c> caseParties = new List<Case_Party__c>();
         for (Id accountId : accountIds) {
             caseParties.add(new Case_Party__c(
-                    Name = 'Test Case ' + accountId,
-                    Parent_Account__c = accountId
+                Name = 'Test Case ' + accountId,
+                Parent_Account__c = accountId
             ));
         }
         insert caseParties;
