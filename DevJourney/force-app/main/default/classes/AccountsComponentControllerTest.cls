@@ -57,21 +57,23 @@ private class AccountsComponentControllerTest {
     @IsTest
     static void testGetExpenses() {
         // Prepare test data
-        TestDataFactory.createExpensesWithRelatedCasePartyAndAccount(5, true);
+        Id accountId = TestDataFactory.createAccount();
+        Id casePartyId = TestDataFactory.createCaseParty(accountId);
+        List<Expense__c> expenses = TestDataFactory.createExpensesWithCasePartyAndAccount(accountId, casePartyId, 5, true);
 
         // Execute
         Test.startTest();
-        List<Expense__c> expenses = AccountsComponentController.getExpenses();
+        List<Expense__c> testResult = AccountsComponentController.getExpenses();
         Test.stopTest();
 
         // Assert results
         Assert.areEqual(5, expenses.size(), 'Should have 5 expenses');
         for(Integer i = 0; i < 5; i++) {
-            Assert.areEqual('Test Expense ' + i, expenses.get(i).Name, 'Expense name should match');
-            Assert.areEqual('Pending', expenses.get(i).Status__c, 'Expense status should match');
-            Assert.areEqual(100, expenses.get(i).Amount__c, 'Expense amount should match');
-            Assert.areEqual(Date.today(), expenses.get(i).Check_Date__c, 'Expense check date should match');
-            Assert.areEqual('COPY SERVICE', expenses.get(i).Description__c, 'Expense description should match');
+            Assert.areEqual(expenses.get(i).Name, testResult.get(i).Name, 'Expense name should match');
+            Assert.areEqual(expenses.get(i).Status__c, testResult.get(i).Status__c, 'Expense status should match');
+            Assert.areEqual(expenses.get(i).Amount__c, testResult.get(i).Amount__c, 'Expense amount should match');
+            Assert.areEqual(expenses.get(i).Check_Date__c, testResult.get(i).Check_Date__c, 'Expense check date should match');
+            Assert.areEqual(expenses.get(i).Description__c, testResult.get(i).Description__c, 'Expense description should match');
         }
     }
 

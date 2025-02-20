@@ -24,27 +24,27 @@ export default class CreateNewExpenseModal extends LightningModal {
     /*
      * @description     Getters.
      */
-    get expenseName() {
+    get expenseNameGetter() {
         return EXPENSE_NAME;
     }
 
-    get expensePayee() {
+    get expensePayeeGetter() {
         return EXPENSE_PAYEE;
     }
 
-    get expenseStatus() {
+    get expenseStatusGetter() {
         return EXPENSE_STATUS;
     }
 
-    get expenseDescription() {
+    get expenseDescriptionGetter() {
         return EXPENSE_DESCRIPTION;
     }
 
-    get expenseAmount() {
+    get expenseAmountGetter() {
         return EXPENSE_AMOUNT;
     }
 
-    get expenseCheckDate() {
+    get expenseCheckDateGetter() {
         return EXPENSE_CHECK_DATE;
     }
 
@@ -71,24 +71,16 @@ export default class CreateNewExpenseModal extends LightningModal {
 
     handleSave() {
         this.saveAndNew = false;
-        if (this.selectedExpense && this.selectedExpense.length > 0) {
-            this.updateRecordForm();
-        } else {
-            this.submitRecordForm();
-        }
+        this.submitOrUpdateRecordForm();
     }
 
     handleSaveAndNew() {
         this.saveAndNew = true;
-        if (this.selectedExpense && this.selectedExpense.length > 0) {
-            this.updateRecordForm();
-        } else {
-            this.submitRecordForm();
-        }
+        this.submitOrUpdateRecordForm();
     }
 
     handleCancel() {
-        this.close('');
+        this.close();
     }
 
     /*
@@ -105,50 +97,38 @@ export default class CreateNewExpenseModal extends LightningModal {
         return isValid;
     }
 
-    submitRecordForm() {
-        let isValid = this.isInputValid();
-        if (isValid) {
-            this.isLoading = true;
-            this.refs.recordEditForm.submit();
+    submitOrUpdateRecordForm() {
+        if (this.isInputValid()) {
+            if (this.selectedExpense && this.selectedExpense.length > 0) {
+                this.isLoading = true;
+                const recordInput = {
+                    fields: {
+                        Id: this.selectedExpense,
+                        ...this.fieldsToUpdate
+                    }
+                };
+                updateRecord(recordInput)
+                    .then(() => {
+                        this.handleSuccess();
+                    }).catch(error => {
+                        this.dispatchEvent(new ShowToastEvent({
+                            title: "Error occurred while updating record",
+                            message: "Error: " + error,
+                            variant: "error"
+                        }));
+                    });
+            } else {
+                this.isLoading = true;
+                this.refs.recordEditForm.submit();
+            }
         } else {
             this.isLoading = false;
-            this.toastFieldValidationMessage();
+            this.dispatchEvent(new ShowToastEvent({
+                title: "There is field validation error!",
+                message: "Check the fields values",
+                variant: "info"
+            }));
         }
-    }
-
-    updateRecordForm() {
-        let isValid = this.isInputValid();
-        if (isValid) {
-            this.isLoading = true;
-            const recordInput = {
-                fields: {
-                    Id: this.selectedExpense,
-                    ...this.fieldsToUpdate
-                }
-            };
-            updateRecord(recordInput)
-                .then(() => {
-                    this.handleSuccess();
-                })
-                .catch(error => {
-                    this.dispatchEvent(new ShowToastEvent({
-                        title: "Error occurred while updating record",
-                        message: "Error: " + error,
-                        variant: "error"
-                    }));
-                });
-        } else {
-            this.isLoading = false;
-            this.toastFieldValidationMessage();
-        }
-      }
-
-    toastFieldValidationMessage() {
-        this.dispatchEvent(new ShowToastEvent({
-            title: "There is field validation error!",
-            message: "Check the fields values",
-            variant: "info"
-        }));
     }
 
 }

@@ -12,19 +12,32 @@
             lwc:ref="recordEditForm"
             record-id={selectedExpense}
             onload={handleLoad}>
-            <lightning-input-field field-name={expenseName} onchange={handleFieldChange}></lightning-input-field>
-            <lightning-input-field field-name={expensePayee} onchange={handleFieldChange}></lightning-input-field>
-            <lightning-input-field field-name={expenseStatus} onchange={handleFieldChange}></lightning-input-field>
-            <lightning-input-field field-name={expenseDescription} onchange={handleFieldChange}></lightning-input-field>
-            <lightning-input-field field-name={expenseAmount} onchange={handleFieldChange}></lightning-input-field>
-            <lightning-input-field field-name={expenseCheckDate} onchange={handleFieldChange}></lightning-input-field>
+            <lightning-input-field field-name={expenseNameGetter} onchange={handleFieldChange}></lightning-input-field>
+            <lightning-input-field field-name={expensePayeeGetter} onchange={handleFieldChange}></lightning-input-field>
+            <lightning-input-field field-name={expenseStatusGetter} onchange={handleFieldChange}></lightning-input-field>
+            <lightning-input-field field-name={expenseDescriptionGetter} onchange={handleFieldChange}></lightning-input-field>
+            <lightning-input-field field-name={expenseAmountGetter} onchange={handleFieldChange}></lightning-input-field>
+            <lightning-input-field field-name={expenseCheckDateGetter} onchange={handleFieldChange}></lightning-input-field>
         </lightning-record-edit-form>
     </lightning-modal-body>
     <lightning-modal-footer>
         <div class="slds-grid slds-wrap slds-grid_align-spread slds-align_absolute-center slds-p-around_xx-small">
-            <lightning-button label="Cancel" onclick={handleCancel} class="slds-m-right_small"></lightning-button>
-            <lightning-button label="Save & New" onclick={handleSaveAndNew} class="slds-m-right_small"></lightning-button>
-            <lightning-button label="Save" onclick={handleSave} variant="brand" class="slds-m-right_small"></lightning-button>
+            <lightning-button
+                label="Cancel"
+                onclick={handleCancel}
+                class="slds-m-right_small">
+            </lightning-button>
+            <lightning-button
+                label="Save & New"
+                onclick={handleSaveAndNew}
+                class="slds-m-right_small">
+            </lightning-button>
+            <lightning-button
+                label="Save"
+                onclick={handleSave}
+                variant="brand"
+                class="slds-m-right_small">
+            </lightning-button>
         </div>
     </lightning-modal-footer>
 </template>

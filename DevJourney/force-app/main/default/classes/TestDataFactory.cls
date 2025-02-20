@@ -31,16 +31,7 @@ public class TestDataFactory {
         return contacts;
     }
 
-    public static List<Expense__c> createExpensesWithRelatedCasePartyAndAccount(Integer numExpenses, Boolean isInserted) {
-        Account account = new Account(Name = 'Test Account');
-        insert account;
-
-        Case_Party__c payee = new Case_Party__c(
-            Name = 'Test Case',
-            Parent_Account__c = account.Id
-        );
-        insert payee;
-
+    public static List<Expense__c> createExpensesWithCasePartyAndAccount(Id accountId, Id casePartyId, Integer numExpenses, Boolean isInserted) {
         List<Expense__c> expensesList = new List<Expense__c>();
         for (Integer i = 0; i < numExpenses; i++) {
             Expense__c expense = new Expense__c(
@@ -49,15 +40,30 @@ public class TestDataFactory {
                 Amount__c = 100,
                 Check_Date__c = Date.today(),
                 Description__c = 'COPY SERVICE',
-                Payee__c = payee.Id
+                Payee__c = casePartyId
             );
             expensesList.add(expense);
         }
 
-        if(isInserted) {
+        if (isInserted) {
             insert expensesList;
         }
         return expensesList;
+    }
+
+    public static Id createAccount() {
+        Account account = new Account(Name = 'Test Account');
+        insert account;
+        return account.Id;
+    }
+
+    public static Id createCaseParty(Id accountId) {
+        Case_Party__c payee = new Case_Party__c(
+            Name = 'Test Case',
+            Parent_Account__c = accountId
+        );
+        insert payee;
+        return payee.Id;
     }
 
 }
