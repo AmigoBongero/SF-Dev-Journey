@@ -11,41 +11,30 @@ import EXPENSE_DESCRIPTION from '@salesforce/schema/Expense__c.Description__c';
 import EXPENSE_AMOUNT from '@salesforce/schema/Expense__c.Amount__c';
 import EXPENSE_CHECK_DATE from '@salesforce/schema/Expense__c.Check_Date__c';
 
+const EXPENSE_FIELDS = [
+    EXPENSE_NAME,
+    EXPENSE_PAYEE,
+    EXPENSE_STATUS,
+    EXPENSE_DESCRIPTION,
+    EXPENSE_AMOUNT,
+    EXPENSE_CHECK_DATE
+];
+
 export default class CreateNewExpenseModal extends LightningModal {
 
     // API Variables
-    @api selectedExpense;
+    @api recordId;
     @api isLoading;
 
     // Other Variables.
-    saveAndNew = false;
+    isSaveAndNew = false;
     fieldsToUpdate = {};
 
     /*
      * @description     Getters.
      */
-    get expenseNameGetter() {
-        return EXPENSE_NAME;
-    }
-
-    get expensePayeeGetter() {
-        return EXPENSE_PAYEE;
-    }
-
-    get expenseStatusGetter() {
-        return EXPENSE_STATUS;
-    }
-
-    get expenseDescriptionGetter() {
-        return EXPENSE_DESCRIPTION;
-    }
-
-    get expenseAmountGetter() {
-        return EXPENSE_AMOUNT;
-    }
-
-    get expenseCheckDateGetter() {
-        return EXPENSE_CHECK_DATE;
+    get expenseFieldsGetter() {
+        return EXPENSE_FIELDS;
     }
 
     /*
@@ -61,21 +50,20 @@ export default class CreateNewExpenseModal extends LightningModal {
 
     handleSuccess() {
         this.isLoading = false;
-        if (!this.saveAndNew) {
+        if (!this.isSaveAndNew) {
             this.close('update');
         } else {
             this.close('saveAndNew');
-            this.saveAndNew = false;
         }
     }
 
     handleSave() {
-        this.saveAndNew = false;
+        this.isSaveAndNew = false;
         this.submitOrUpdateRecordForm();
     }
 
     handleSaveAndNew() {
-        this.saveAndNew = true;
+        this.isSaveAndNew = true;
         this.submitOrUpdateRecordForm();
     }
 
@@ -99,11 +87,11 @@ export default class CreateNewExpenseModal extends LightningModal {
 
     submitOrUpdateRecordForm() {
         if (this.isInputValid()) {
-            if (this.selectedExpense && this.selectedExpense.length > 0) {
-                this.isLoading = true;
+            this.isLoading = true;
+            if (this.recordId && this.recordId.length > 0) {
                 const recordInput = {
                     fields: {
-                        Id: this.selectedExpense,
+                        Id: this.recordId,
                         ...this.fieldsToUpdate
                     }
                 };
@@ -118,7 +106,6 @@ export default class CreateNewExpenseModal extends LightningModal {
                         }));
                     });
             } else {
-                this.isLoading = true;
                 this.refs.recordEditForm.submit();
             }
         } else {

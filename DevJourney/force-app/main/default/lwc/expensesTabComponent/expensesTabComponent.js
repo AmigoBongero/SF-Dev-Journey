@@ -71,7 +71,7 @@ export default class ExpensesTabComponent extends LightningElement {
                 const modalResponse = await CreateAndEditExpenseModal.open({
                     size: 'small',
                     label: 'Edit expense',
-                    selectedExpense: this.selectedExpenseId[0],
+                    recordId: this.selectedExpenseId[0],
                     isLoading: true
                 });
                 if (modalResponse === 'update') {

@@ -10,14 +10,15 @@
             object-api-name="Expense__c"
             onsuccess={handleSuccess}
             lwc:ref="recordEditForm"
-            record-id={selectedExpense}
+            record-id={recordId}
             onload={handleLoad}>
-            <lightning-input-field field-name={expenseNameGetter} onchange={handleFieldChange}></lightning-input-field>
-            <lightning-input-field field-name={expensePayeeGetter} onchange={handleFieldChange}></lightning-input-field>
-            <lightning-input-field field-name={expenseStatusGetter} onchange={handleFieldChange}></lightning-input-field>
-            <lightning-input-field field-name={expenseDescriptionGetter} onchange={handleFieldChange}></lightning-input-field>
-            <lightning-input-field field-name={expenseAmountGetter} onchange={handleFieldChange}></lightning-input-field>
-            <lightning-input-field field-name={expenseCheckDateGetter} onchange={handleFieldChange}></lightning-input-field>
+            <template for:each={expenseFieldsGetter} for:item="expenseField">
+                <lightning-input-field
+                    key={expenseField}
+                    field-name={expenseField}
+                    onchange={handleFieldChange}>
+                </lightning-input-field>
+            </template>
         </lightning-record-edit-form>
     </lightning-modal-body>
     <lightning-modal-footer>

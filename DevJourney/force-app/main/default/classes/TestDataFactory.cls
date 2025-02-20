@@ -31,7 +31,7 @@ public class TestDataFactory {
         return contacts;
     }
 
-    public static List<Expense__c> createExpensesWithCasePartyAndAccount(Id accountId, Id casePartyId, Integer numExpenses, Boolean isInserted) {
+    public static List<Expense__c> createExpensesWithCasePartyAndAccount(Id casePartyId, Integer numExpenses, Boolean isInserted) {
         List<Expense__c> expensesList = new List<Expense__c>();
         for (Integer i = 0; i < numExpenses; i++) {
             Expense__c expense = new Expense__c(
@@ -51,19 +51,33 @@ public class TestDataFactory {
         return expensesList;
     }
 
-    public static Id createAccount() {
-        Account account = new Account(Name = 'Test Account');
-        insert account;
-        return account.Id;
+    public static List<Id> createAccountsIds(Integer numAccounts) {
+        List<Account> accounts = new List<Account>();
+        for (Integer i = 0; i < numAccounts; i++) {
+            accounts.add(new Account(Name = 'Test Account ' + i));
+        }
+        insert accounts;
+        List<Id> accountIds = new List<Id>();
+        for (Account account : accounts) {
+            accountIds.add(account.Id);
+        }
+        return accountIds;
     }
 
-    public static Id createCaseParty(Id accountId) {
-        Case_Party__c payee = new Case_Party__c(
-            Name = 'Test Case',
-            Parent_Account__c = accountId
-        );
-        insert payee;
-        return payee.Id;
+    public static List<Id> createCasePartiesIds(List<Id> accountIds) {
+        List<Case_Party__c> caseParties = new List<Case_Party__c>();
+        for (Id accountId : accountIds) {
+            caseParties.add(new Case_Party__c(
+                    Name = 'Test Case ' + accountId,
+                    Parent_Account__c = accountId
+            ));
+        }
+        insert caseParties;
+        List<Id> casePartyIds = new List<Id>();
+        for (Case_Party__c caseParty : caseParties) {
+            casePartyIds.add(caseParty.Id);
+        }
+        return casePartyIds;
     }
 
 }
