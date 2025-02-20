@@ -1,0 +1,43 @@
+<template>
+    <lightning-modal-header label={label}></lightning-modal-header>
+    <lightning-modal-body>
+        <lightning-spinner
+            lwc:if={isLoading}
+            alternative-text="Loading..."
+            class="slds-is-relative slds-align_absolute-center slds-m-top_medium">
+        </lightning-spinner>
+        <lightning-record-edit-form
+            object-api-name="Expense__c"
+            onsuccess={handleSuccess}
+            lwc:ref="recordEditForm"
+            record-id={selectedExpense}
+            onload={handleLoad}>
+            <lightning-input-field field-name={expenseNameGetter} onchange={handleFieldChange}></lightning-input-field>
+            <lightning-input-field field-name={expensePayeeGetter} onchange={handleFieldChange}></lightning-input-field>
+            <lightning-input-field field-name={expenseStatusGetter} onchange={handleFieldChange}></lightning-input-field>
+            <lightning-input-field field-name={expenseDescriptionGetter} onchange={handleFieldChange}></lightning-input-field>
+            <lightning-input-field field-name={expenseAmountGetter} onchange={handleFieldChange}></lightning-input-field>
+            <lightning-input-field field-name={expenseCheckDateGetter} onchange={handleFieldChange}></lightning-input-field>
+        </lightning-record-edit-form>
+    </lightning-modal-body>
+    <lightning-modal-footer>
+        <div class="slds-grid slds-wrap slds-grid_align-spread slds-align_absolute-center slds-p-around_xx-small">
+            <lightning-button
+                label="Cancel"
+                onclick={handleCancel}
+                class="slds-m-right_small">
+            </lightning-button>
+            <lightning-button
+                label="Save & New"
+                onclick={handleSaveAndNew}
+                class="slds-m-right_small">
+            </lightning-button>
+            <lightning-button
+                label="Save"
+                onclick={handleSave}
+                variant="brand"
+                class="slds-m-right_small">
+            </lightning-button>
+        </div>
+    </lightning-modal-footer>
+</template>
