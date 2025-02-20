@@ -7,22 +7,34 @@
                         <c-all-accounts-tab></c-all-accounts-tab>
                     </lightning-tab>
                     <lightning-tab label="My Accounts">
-                        <lightning-datatable
-                            key-field="id"
-                            columns={accountColumnsGetter}
-                            data={myAccountsData}
-                            show-row-number-column
-                            hide-checkbox-column>
-                        </lightning-datatable>
+                        <div class="slds-scrollable">
+                            <lightning-datatable
+                                key-field="id"
+                                columns={accountColumnsGetter}
+                                data={myAccountsData}
+                                onloadmore={handleLoadMoreMyAccounts}
+                                show-row-number-column
+                                resize-column-disabled
+                                hide-checkbox-column
+                                enable-infinite-loading
+                                lwc:ref="myAccountsTable">
+                            </lightning-datatable>
+                        </div>
                     </lightning-tab>
                     <lightning-tab label="Recently viewed accounts">
-                        <lightning-datatable
-                            key-field="id"
-                            columns={accountColumnsGetter}
-                            data={recentlyViewedAccountsData}
-                            show-row-number-column
-                            hide-checkbox-column>
-                        </lightning-datatable>
+                        <div class="slds-scrollable">
+                            <lightning-datatable
+                                key-field="id"
+                                columns={accountColumnsGetter}
+                                data={recentlyViewedAccountsData}
+                                onloadmore={handleLoadMoreRecentlyViewedAccounts}
+                                show-row-number-column
+                                resize-column-disabled
+                                hide-checkbox-column
+                                enable-infinite-loading
+                                lwc:ref="recentlyViewedAccountsTable">
+                            </lightning-datatable>
+                        </div>
                     </lightning-tab>
                 </lightning-tabset>
             </lightning-tab>

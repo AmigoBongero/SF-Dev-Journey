@@ -12,47 +12,83 @@ const ACCOUNT_COLUMNS = [
 
 export default class AccountsComponent extends LightningElement {
 
+    // Datatable variables.
+    myAccountsData = [];
+    recentlyViewedAccountsData = [];
+    rowLimit = 20;
+    rowOffSet = 0;
+
+    /*
+     * @description     Getters.
+     */
     get accountColumnsGetter() {
         return ACCOUNT_COLUMNS;
     }
-    myAccountsData = [];
-    recentlyViewedAccountsData = [];
 
+    /*
+     * @description     Callbacks.
+     */
     connectedCallback() {
         this.loadMyAccounts();
         this.loadRecentlyViewedAccounts();
     }
 
-    loadMyAccounts() {
-        getMyAccounts()
-            .then(result => {
-                this.myAccountsData = result;
+    /*
+     * @description     Handlers.
+     */
+    handleLoadMoreMyAccounts(event) {
+        const { target } = event;
+        target.isLoading = true;
+        this.rowOffSet = this.rowOffSet + this.rowLimit;
+        this.loadMyAccounts()
+            .then(() => {
+            target.isLoading = false;
+        })
+    }
+
+    handleLoadMoreRecentlyViewedAccounts(event) {
+        const { target } = event;
+        target.isLoading = true;
+        this.rowOffSet = this.rowOffSet + this.rowLimit;
+        this.loadRecentlyViewedAccounts()
+            .then(() => {
+                target.isLoading = false;
             })
-            .catch(error => {
-                const showError = new ShowToastEvent({
-                    title: 'Error occurred while loading accounts',
-                    message: `Error: ${error.message}`,
-                    variant: 'error'
-                })
-                this.dispatchEvent(showError);
-                console.error(error);
+    }
+
+    /*
+     * @description     Reusable code.
+     */
+    loadMyAccounts() {
+        return getMyAccounts({limitSize: this.rowLimit, offset: this.rowOffSet})
+            .then(result => {
+                this.myAccountsData = [...this.myAccountsData, ...result];
+                if (result.length === 0) {
+                    this.refs.myAccountsTable.enableInfiniteLoading = false;
+                }
+            }).catch(error => {
+                this.toastErrorMessage(error);
             });
     }
 
     loadRecentlyViewedAccounts() {
-        getRecentlyViewedAccounts()
+        return getRecentlyViewedAccounts({limitSize: this.rowLimit, offset: this.rowOffSet})
             .then(result => {
-                this.recentlyViewedAccountsData = result;
-            })
-            .catch(error => {
-                const showError = new ShowToastEvent({
-                    title: 'Error occurred while loading accounts',
-                    message: `Error: ${error.message}`,
-                    variant: 'error'
-                })
-                this.dispatchEvent(showError);
-                console.error(error);
+                this.recentlyViewedAccountsData = [...this.recentlyViewedAccountsData, ...result];
+                if (result.length === 0) {
+                    this.refs.recentlyViewedAccountsTable.enableInfiniteLoading = false;
+                }
+            }).catch(error => {
+                this.toastErrorMessage(error);
             });
+    }
+
+    toastErrorMessage(error) {
+        this.dispatchEvent(new ShowToastEvent({
+            title: 'Error occurred while loading accounts',
+            message: `Error: ${error.message}`,
+            variant: 'error'
+        }));
     }
 
 }

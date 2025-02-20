@@ -1,4 +1,4 @@
-public with sharing class AccountsComponentController {  
+public with sharing class AccountsComponentController {
 
     private static final Id USER_ID = UserInfo.getUserId();
     private static final Integer LIMIT_CONST = 1000;
@@ -15,37 +15,40 @@ public with sharing class AccountsComponentController {
             LIMIT       :LIMIT_CONST
         ];
     }
-    
+
     @AuraEnabled
-    public static List<Account> getMyAccounts() {
+    public static List<Account> getMyAccounts(Integer limitSize, Integer offset) {
         return [
             SELECT   Id, Name, Industry, Phone
             FROM     Account
             WHERE    OwnerId = :USER_ID
             ORDER BY Name
-            LIMIT    :LIMIT_CONST
+            LIMIT    :limitSize
+            OFFSET   :offset
         ];
     }
 
     @AuraEnabled
-    public static List<Account> getRecentlyViewedAccounts() {
+    public static List<Account> getRecentlyViewedAccounts(Integer limitSize, Integer offset) {
         return [
             SELECT   Id, Name, Industry, Phone
             FROM     Account
             WHERE    LastViewedDate != NULL
             ORDER BY LastViewedDate DESC
-            LIMIT    :LIMIT_CONST
+            LIMIT    :limitSize
+            OFFSET   :offset
         ];
     }
 
     @AuraEnabled
-    public static List<Expense__c> getExpenses() {
+    public static List<Expense__c> getExpenses(Integer limitSize, Integer offset) {
         return [
             SELECT   Name, Status__c, Amount__c,
                      Check_Date__c, Description__c
             FROM     Expense__c
             ORDER BY Name
-            LIMIT    :LIMIT_CONST
+            LIMIT    :limitSize
+            OFFSET   :offset
         ];
     }
 
