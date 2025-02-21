@@ -1,0 +1,53 @@
+<template>
+    <lightning-modal-header label="New Account"></lightning-modal-header>
+    <lightning-modal-body> 
+        <p class="slds-text-align_right"><abbr class="slds-required">*</abbr> = Required Information</p>
+        <h3 class="slds-section__title slds-theme--shade slds-p-horizontal_small slds-m-top_x-small">Account Information</h3>
+        <div class="slds-grid slds-wrap slds-p-around_medium">
+            <div class="slds-size_1-of-2 slds-p-horizontal_medium lgc-bg slds-m-bottom_x-small">
+                <lightning-input 
+                    type="text" 
+                    label="Account Name" 
+                    name="accountName" 
+                    value={accountName} 
+                    onchange={handleFieldChange} 
+                    required>
+                </lightning-input>
+            </div>
+            <div class="slds-size_1-of-2 slds-p-horizontal_medium lgc-bg slds-m-bottom_x-small">
+                <lightning-combobox
+                    name="accountType"
+                    label="Type"
+                    value={accountType}
+                    options={options}
+                    onchange={handleFieldChange}>
+                </lightning-combobox>
+            </div>
+            <div class="slds-size_1-of-2 slds-p-horizontal_medium lgc-bg slds-m-bottom_x-small">
+                <lightning-input
+                    type="phone" 
+                    label="Account Phone" 
+                    name="accountPhone" 
+                    value={accountPhone} 
+                    onchange={handleFieldChange}>
+                </lightning-input>
+            </div>
+            <div class="slds-size_1-of-2 slds-p-horizontal_medium lgc-bg slds-m-bottom_x-small">
+                <lightning-input 
+                    type="url" 
+                    label="Website" 
+                    name="accountWebsite" 
+                    value={accountWebsite} 
+                    onchange={handleFieldChange}>
+                </lightning-input>
+            </div>    
+        </div>
+    </lightning-modal-body>
+    <lightning-modal-footer>
+        <div class="slds-align_absolute-center">
+            <lightning-button label="Cancel" onclick={handleCancel} class="slds-m-right_xx-small"></lightning-button>
+            <lightning-button label="Save &amp; New" onclick={handleSaveNew} class="slds-m-right_xx-small"></lightning-button>
+            <lightning-button variant="brand" label="Save" onclick={handleSave}></lightning-button>
+        </div>
+    </lightning-modal-footer>
+</template>

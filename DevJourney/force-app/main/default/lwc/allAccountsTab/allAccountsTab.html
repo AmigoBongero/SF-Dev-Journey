@@ -1,19 +1,35 @@
 <template>
     <div class="slds-grid">
-        <div class="slds-col slds-size_1-of-2 slds-m-vertical_medium slds-m-right_margin">
+        <div class="slds-col slds-size_1-of-3 slds-m-vertical_medium slds-m-right_margin">
             <template lwc:if={treeData}>
                 <h2 class="slds-m-bottom_medium slds-text-align_center slds-text-heading_small slds-text-title_bold">
                     Available Accounts
                 </h2>
-                <lightning-tree items={treeData} onselect={handleSelect}></lightning-tree>
+                
+                <div class="slds-scrollable">
+                    <lightning-spinner
+                        lwc:if={isLoading}
+                        alternative-text="Loading..."
+                        class="slds-is-relative slds-align_absolute-center slds-m-top_xx-large"
+                        size="small">
+                    </lightning-spinner>
+                    <lightning-tree items={treeData} onselect={handleSelect}></lightning-tree>
+                    
+                </div>
+               
             </template>
         </div>
-        <div class="slds-col slds-size_1-of-2 slds-m-vertical_medium">
+        <div class="slds-col slds-size_2-of-3 slds-m-vertical_medium slds-m-left_xx-large">
             <template lwc:if={isVisible}>
                 <h2 class="slds-m-bottom_medium slds-text-align_center slds-text-heading_small slds-text-title_bold">
                     Summary
                 </h2>
-                <c-summary-info records={records}></c-summary-info>
+                <c-summary-info 
+                    records-get-set={records}
+                    is-selected={isSelected} 
+                    onaccountcreated={refreshAccounts} 
+                    oncontactcreated={refreshContacts}>
+                </c-summary-info>
             </template>
         </div>
     </div>

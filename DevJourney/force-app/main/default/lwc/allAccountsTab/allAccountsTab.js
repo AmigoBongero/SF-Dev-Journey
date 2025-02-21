@@ -1,5 +1,6 @@
-import { LightningElement, track, wire } from 'lwc';
+import { LightningElement, track, wire, api } from 'lwc';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
+import { refreshApex } from '@salesforce/apex';
 
 import getAccountsWithRelatedContacts from "@salesforce/apex/AccountsComponentController.getAccountsWithRelatedContacts";
 
@@ -25,16 +26,22 @@ export default class AllAccountsTab extends LightningElement {
     @track treeData = [];
     error = null;
     isVisible = false;
+    isLoading = true;
 
     //Record-view-form fields	
     records = null;
+    wiredAccountsData;
     
     /*
      * @description     Wire function. 
      */
     @wire(getAccountsWithRelatedContacts)
-    wiredAccounts({ error, data }) {
+    populateTreeData(wiredData) {
+        const { error, data } = wiredData;
+        this.wiredAccountsData = wiredData;
+
         if (data && Array.isArray(data)) {
+            console.log('wire');
             this.treeData = data.map(account => ({
                 label: account.Name,
                 name: account,
@@ -44,6 +51,7 @@ export default class AllAccountsTab extends LightningElement {
                 }))
             }));
             this.error = undefined;
+            this.isLoading = false;
         } else if (error) {
             this.treeData = [];
             const showError = new ShowToastEvent({
@@ -52,14 +60,16 @@ export default class AllAccountsTab extends LightningElement {
                 variant: 'error'
             });
             this.dispatchEvent(showError);
+            this.isLoading = false;
         }
+        
     }
-
+    
     /*
      * @description     Handler.
      */
     handleSelect(event) {
-        this.isVisible = true;
+        this.isVisible = true;   
 
         if (event.detail.name.AccountId != null) {
             this.records = [
@@ -82,9 +92,45 @@ export default class AllAccountsTab extends LightningElement {
                     Id: event.detail.name.Id,
                     fields: FIELDS_ACCOUNT,
                     objectApiName: ACCOUNT_OBJECT_API_NAME,
-                    title: TITLE_FOR_ACCOUNT
+                    title: TITLE_FOR_ACCOUNT                
                 }];
+        }       
+    }
+
+    /*
+     * @description API methods.
+     */
+    @api async refreshAccounts() {
+        this.isLoading = true;
+        try {
+            await refreshApex(this.wiredAccountsData);
+        } catch {
+            this.dispatchEvent(
+                new ShowToastEvent({
+                    title: 'Error updating record',
+                    message: error.body.message,
+                    variant: 'error'
+                })
+            )
         }
+        this.isLoading = false;
+    }
+    
+    @api async refreshContacts() {
+        this.isLoading = true;
+        try {
+            await refreshApex(this.wiredAccountsData);
+        } catch {
+            this.dispatchEvent(
+                new ShowToastEvent({
+                    title: 'Error updating record',
+                    message: error.body.message,
+                    variant: 'error'
+                })
+            )
+        }
+        this.isLoading = false;
+        
     }
 
 }
