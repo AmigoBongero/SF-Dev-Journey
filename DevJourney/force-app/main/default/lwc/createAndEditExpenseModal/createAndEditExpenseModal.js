@@ -50,11 +50,7 @@ export default class CreateNewExpenseModal extends LightningModal {
 
     handleSuccess() {
         this.isLoading = false;
-        if (!this.isSaveAndNew) {
-            this.close('update');
-        } else {
-            this.close('saveAndNew');
-        }
+        this.close((this.isSaveAndNew) ? 'saveAndNew' : 'update');
     }
 
     handleSave() {
@@ -99,6 +95,7 @@ export default class CreateNewExpenseModal extends LightningModal {
                     .then(() => {
                         this.handleSuccess();
                     }).catch(error => {
+                        this.isLoading = false;
                         this.dispatchEvent(new ShowToastEvent({
                             title: "Error occurred while updating record",
                             message: "Error: " + error,

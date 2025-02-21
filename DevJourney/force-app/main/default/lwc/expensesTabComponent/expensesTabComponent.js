@@ -19,7 +19,7 @@ export default class ExpensesTabComponent extends LightningElement {
 
     // Table data Variables.
     expensesData = [];
-    selectedExpenseId = [];
+    selectedExpenseIds = [];
 
     // Other Variables,
     isLoading = false;
@@ -42,7 +42,7 @@ export default class ExpensesTabComponent extends LightningElement {
      * @description     Handlers.
      */
     handleRowSelection(event) {
-        this.selectedExpenseId = event.detail.selectedRows.map(row => row.Id);
+        this.selectedExpenseIds = event.detail.selectedRows.map(row => row.Id);
     }
 
     async handleNewClick() {
@@ -67,11 +67,11 @@ export default class ExpensesTabComponent extends LightningElement {
 
     async handleEditClick() {
         try {
-            if (this.selectedExpenseId.length > 0) {
+            if (this.selectedExpenseIds.length > 0) {
                 const modalResponse = await CreateAndEditExpenseModal.open({
                     size: 'small',
                     label: 'Edit expense',
-                    recordId: this.selectedExpenseId[0],
+                    recordId: this.selectedExpenseIds[0],
                     isLoading: true
                 });
                 if (modalResponse === 'update') {
@@ -92,14 +92,16 @@ export default class ExpensesTabComponent extends LightningElement {
 
     async handleDeleteClick() {
         try {
-            if (this.selectedExpenseId.length > 0) {
+            if (this.selectedExpenseIds.length > 0) {
                 const modalResponse = await LightningConfirm.open({
                     message: "Are you sure you want to delete this expense?",
-                    label: "Delete an expense"
+                    label: "Delete an expense",
+                    theme: "warning"
                 });
                 if (modalResponse) {
+                    this.isLoading = true;
                     try {
-                        await deleteRecord(this.selectedExpenseId[0]);
+                        await deleteRecord(this.selectedExpenseIds[0]);
                         this.loadExpenses();
                         this.dispatchEvent(new ShowToastEvent({
                             title: 'Record has been successfully deleted',
@@ -108,6 +110,8 @@ export default class ExpensesTabComponent extends LightningElement {
                         }));
                     } catch (error) {
                         this.toastErrorMessage(error);
+                    } finally {
+                        this.isLoading = false;
                     }
                 }
             } else {
@@ -126,16 +130,16 @@ export default class ExpensesTabComponent extends LightningElement {
         getExpenses()
             .then(result => {
                 this.expensesData = result;
-                this.selectedExpenseId = [];
-                this.isLoading = false;
+                this.selectedExpenseIds = [];
             }).catch(error => {
                 this.dispatchEvent(new ShowToastEvent({
                     title: 'Error occurred while loading expenses',
                     message: `Error: ${error.message}`,
                     variant: 'error'
                 }));
+            }).finally(() => {
                 this.isLoading = false;
-          });
+            });
     }
 
     toastIsNotSelectedMessage() {
