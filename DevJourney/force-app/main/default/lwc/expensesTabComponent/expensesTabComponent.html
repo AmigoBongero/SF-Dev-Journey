@@ -1,0 +1,29 @@
+<template>
+    <lightning-button-group class="slds-m-bottom_small">
+        <lightning-button
+            label="New"
+            icon-name="action:new"
+            onclick={handleNewClick}>
+        </lightning-button>
+        <lightning-button
+            label="Edit"
+            icon-name="action:edit"
+            onclick={handleEditClick}>
+        </lightning-button>
+        <lightning-button
+            label="Delete"
+            icon-name="utility:delete"
+            onclick={handleDeleteClick}>
+        </lightning-button>
+    </lightning-button-group>
+    <lightning-datatable
+        key-field="Id"
+        columns={expensesColumnsGetter}
+        data={expensesData}
+        selected-rows={selectedExpenseIds}
+        onrowselection={handleRowSelection}
+        is-loading={isLoading}
+        max-row-selection="1"
+        show-row-number-column>
+    </lightning-datatable>
+</template>
