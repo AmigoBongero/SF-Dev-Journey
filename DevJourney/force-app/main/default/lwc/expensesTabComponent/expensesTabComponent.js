@@ -7,12 +7,18 @@ import LightningConfirm from "lightning/confirm";
 
 import getExpenses from '@salesforce/apex/AccountsComponentController.getExpenses';
 
+import EXPENSE_NAME from '@salesforce/schema/Expense__c.Name';
+import EXPENSE_STATUS from '@salesforce/schema/Expense__c.Status__c';
+import EXPENSE_DESCRIPTION from '@salesforce/schema/Expense__c.Description__c';
+import EXPENSE_AMOUNT from '@salesforce/schema/Expense__c.Amount__c';
+import EXPENSE_CHECK_DATE from '@salesforce/schema/Expense__c.Check_Date__c';
+
 const EXPENSES_COLUMNS = [
-    { label: 'Name', fieldName: 'Name' },
-    { label: 'Status', fieldName: 'Status__c' },
-    { label: 'Description', fieldName: 'Description__c' },
-    { label: 'Amount', fieldName: 'Amount__c' },
-    { label: 'Check Date', fieldName: 'Check_Date__c' },
+    { label: 'Name', fieldName: EXPENSE_NAME.fieldApiName },
+    { label: 'Status', fieldName: EXPENSE_STATUS.fieldApiName },
+    { label: 'Description', fieldName: EXPENSE_DESCRIPTION.fieldApiName },
+    { label: 'Amount', fieldName: EXPENSE_AMOUNT.fieldApiName },
+    { label: 'Check Date', fieldName: EXPENSE_CHECK_DATE.fieldApiName },
 ];
 
 export default class ExpensesTabComponent extends LightningElement {
