@@ -7,19 +7,27 @@ import LightningConfirm from "lightning/confirm";
 
 import getExpenses from '@salesforce/apex/AccountsComponentController.getExpenses';
 
+import EXPENSE_NAME from '@salesforce/schema/Expense__c.Name';
+import EXPENSE_STATUS from '@salesforce/schema/Expense__c.Status__c';
+import EXPENSE_DESCRIPTION from '@salesforce/schema/Expense__c.Description__c';
+import EXPENSE_AMOUNT from '@salesforce/schema/Expense__c.Amount__c';
+import EXPENSE_CHECK_DATE from '@salesforce/schema/Expense__c.Check_Date__c';
+
 const EXPENSES_COLUMNS = [
-    { label: 'Name', fieldName: 'Name' },
-    { label: 'Status', fieldName: 'Status__c' },
-    { label: 'Description', fieldName: 'Description__c' },
-    { label: 'Amount', fieldName: 'Amount__c' },
-    { label: 'Check Date', fieldName: 'Check_Date__c' },
+    { label: 'Name', fieldName: EXPENSE_NAME.fieldApiName },
+    { label: 'Status', fieldName: EXPENSE_STATUS.fieldApiName },
+    { label: 'Description', fieldName: EXPENSE_DESCRIPTION.fieldApiName },
+    { label: 'Amount', fieldName: EXPENSE_AMOUNT.fieldApiName },
+    { label: 'Check Date', fieldName: EXPENSE_CHECK_DATE.fieldApiName },
 ];
 
 export default class ExpensesTabComponent extends LightningElement {
 
     // Table data Variables.
     expensesData = [];
-    selectedExpenseId = [];
+    selectedExpenseIds = [];
+    rowLimit = 20;
+    rowOffSet = 0;
 
     // Other Variables,
     isLoading = false;
@@ -41,8 +49,18 @@ export default class ExpensesTabComponent extends LightningElement {
     /*
      * @description     Handlers.
      */
+    handleLoadMoreExpenses(event) {
+        const { target } = event;
+        target.isLoading = true;
+        this.rowOffSet = this.rowOffSet + this.rowLimit;
+        this.loadExpenses()
+          .then(() => {
+              target.isLoading = false;
+          })
+    }
+
     handleRowSelection(event) {
-        this.selectedExpenseId = event.detail.selectedRows.map(row => row.Id);
+        this.selectedExpenseIds = event.detail.selectedRows.map(row => row.Id);
     }
 
     async handleNewClick() {
@@ -54,9 +72,11 @@ export default class ExpensesTabComponent extends LightningElement {
             });
             if (modalResponse === 'update') {
                 this.toastNewExpenseMessage();
+                this.resetData();
                 this.loadExpenses();
             } else if (modalResponse === 'saveAndNew') {
                 this.toastNewExpenseMessage();
+                this.resetData();
                 this.loadExpenses();
                 await this.handleNewClick();
             }
@@ -67,18 +87,20 @@ export default class ExpensesTabComponent extends LightningElement {
 
     async handleEditClick() {
         try {
-            if (this.selectedExpenseId.length > 0) {
+            if (this.selectedExpenseIds.length > 0) {
                 const modalResponse = await CreateAndEditExpenseModal.open({
                     size: 'small',
                     label: 'Edit expense',
-                    recordId: this.selectedExpenseId[0],
+                    recordId: this.selectedExpenseIds[0],
                     isLoading: true
                 });
                 if (modalResponse === 'update') {
                     this.toastEditExpenseMessage();
+                    this.resetData();
                     this.loadExpenses();
                 } else if (modalResponse === 'saveAndNew') {
                     this.toastEditExpenseMessage();
+                    this.resetData();
                     this.loadExpenses();
                     await this.handleNewClick();
                 }
@@ -92,14 +114,17 @@ export default class ExpensesTabComponent extends LightningElement {
 
     async handleDeleteClick() {
         try {
-            if (this.selectedExpenseId.length > 0) {
+            if (this.selectedExpenseIds.length > 0) {
                 const modalResponse = await LightningConfirm.open({
                     message: "Are you sure you want to delete this expense?",
-                    label: "Delete an expense"
+                    label: "Delete an expense",
+                    theme: "warning"
                 });
                 if (modalResponse) {
+                    this.isLoading = true;
                     try {
-                        await deleteRecord(this.selectedExpenseId[0]);
+                        await deleteRecord(this.selectedExpenseIds[0]);
+                        this.resetData();
                         this.loadExpenses();
                         this.dispatchEvent(new ShowToastEvent({
                             title: 'Record has been successfully deleted',
@@ -108,6 +133,8 @@ export default class ExpensesTabComponent extends LightningElement {
                         }));
                     } catch (error) {
                         this.toastErrorMessage(error);
+                    } finally {
+                        this.isLoading = false;
                     }
                 }
             } else {
@@ -123,19 +150,29 @@ export default class ExpensesTabComponent extends LightningElement {
      */
     loadExpenses() {
         this.isLoading = true;
-        getExpenses()
+        return getExpenses({limitSize: this.rowLimit, offset: this.rowOffSet})
             .then(result => {
-                this.expensesData = result;
-                this.selectedExpenseId = [];
-                this.isLoading = false;
+                this.expensesData = [...this.expensesData, ...result];
+                if (result.length === 0) {
+                    this.refs.expensesTable.enableInfiniteLoading = false;
+                } else {
+                    this.refs.expensesTable.enableInfiniteLoading = true;
+                }
+                this.selectedExpenseIds = [];
             }).catch(error => {
                 this.dispatchEvent(new ShowToastEvent({
                     title: 'Error occurred while loading expenses',
                     message: `Error: ${error.message}`,
                     variant: 'error'
                 }));
+            }).finally(() => {
                 this.isLoading = false;
-          });
+            });
+    }
+
+    resetData() {
+        this.expensesData = [];
+        this.rowOffSet = 0;
     }
 
     toastIsNotSelectedMessage() {

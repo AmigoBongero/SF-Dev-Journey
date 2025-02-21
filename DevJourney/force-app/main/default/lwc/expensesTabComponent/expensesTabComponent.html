@@ -16,14 +16,20 @@
             onclick={handleDeleteClick}>
         </lightning-button>
     </lightning-button-group>
-    <lightning-datatable
-        key-field="Id"
-        columns={expensesColumnsGetter}
-        data={expensesData}
-        selected-rows={selectedExpenseId}
-        onrowselection={handleRowSelection}
-        is-loading={isLoading}
-        max-row-selection="1"
-        show-row-number-column>
-    </lightning-datatable>
+    <div class="slds-scrollable">
+        <lightning-datatable
+            key-field="Id"
+            columns={expensesColumnsGetter}
+            data={expensesData}
+            selected-rows={selectedExpenseIds}
+            onrowselection={handleRowSelection}
+            onloadmore={handleLoadMoreExpenses}
+            is-loading={isLoading}
+            resize-column-disabled
+            max-row-selection="1"
+            enable-infinite-loading
+            show-row-number-column
+            lwc:ref="expensesTable">
+        </lightning-datatable>
+    </div>
 </template>
