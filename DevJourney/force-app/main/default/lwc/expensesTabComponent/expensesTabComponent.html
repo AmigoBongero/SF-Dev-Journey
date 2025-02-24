@@ -16,7 +16,7 @@
             onclick={handleDeleteClick}>
         </lightning-button>
     </lightning-button-group>
-    <div class="slds-scrollable">
+    <div class="slds-scrollable table">
         <lightning-datatable
             key-field="Id"
             columns={expensesColumnsGetter}
@@ -25,7 +25,6 @@
             onrowselection={handleRowSelection}
             onloadmore={handleLoadMoreExpenses}
             is-loading={isLoading}
-            resize-column-disabled
             max-row-selection="1"
             enable-infinite-loading
             show-row-number-column

@@ -31,7 +31,7 @@ private class AccountsComponentControllerTest {
     static void getMyAccountsTest() {
         // Execute
         Test.startTest();
-        List<Account> myAccounts = AccountsComponentController.getMyAccounts(5,0);
+        List<Account> myAccounts = AccountsComponentController.getMyAccounts();
         Test.stopTest();
 
         // Assert results
@@ -42,7 +42,7 @@ private class AccountsComponentControllerTest {
     static void getRecentlyViewedAccountsTest() {
         // Execute
         Test.startTest();
-        List<Account> recentlyViewedAccounts = AccountsComponentController.getRecentlyViewedAccounts(5,0);
+        List<Account> recentlyViewedAccounts = AccountsComponentController.getRecentlyViewedAccounts();
         Test.stopTest();
 
         // Assert results
@@ -63,7 +63,7 @@ private class AccountsComponentControllerTest {
 
         // Execute
         Test.startTest();
-        List<Expense__c> expenses = AccountsComponentController.getExpenses(5,0);
+        List<Expense__c> expenses = AccountsComponentController.getExpenses();
         Test.stopTest();
 
         // Assert results

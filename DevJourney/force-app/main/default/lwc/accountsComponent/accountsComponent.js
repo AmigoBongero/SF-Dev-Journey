@@ -14,9 +14,14 @@ export default class AccountsComponent extends LightningElement {
 
     // Datatable variables.
     myAccountsData = [];
+    myAccountsDataItems = [];
+    myAccountsRecordCount = 20;
     recentlyViewedAccountsData = [];
-    rowLimit = 20;
-    rowOffSet = 0;
+    recentlyViewedAccountsDataItems = [];
+    recentlyViewedAccountRecordCount = 20;
+
+    // Other variables
+    isLoading = false;
 
     /*
      * @description     Getters.
@@ -37,49 +42,45 @@ export default class AccountsComponent extends LightningElement {
      * @description     Handlers.
      */
     handleLoadMoreMyAccounts(event) {
-        const { target } = event;
-        target.isLoading = true;
-        this.rowOffSet = this.rowOffSet + this.rowLimit;
-        this.loadMyAccounts()
-            .then(() => {
-            target.isLoading = false;
-        })
+        if (this.myAccountsData.length < this.myAccountsDataItems.length) {
+            this.myAccountsRecordCount += 20;
+            this.myAccountsData = this.myAccountsDataItems.slice(0, this.myAccountsRecordCount);
+        }
     }
 
     handleLoadMoreRecentlyViewedAccounts(event) {
-        const { target } = event;
-        target.isLoading = true;
-        this.rowOffSet = this.rowOffSet + this.rowLimit;
-        this.loadRecentlyViewedAccounts()
-            .then(() => {
-                target.isLoading = false;
-            })
+        if (this.recentlyViewedAccountsData.length < this.recentlyViewedAccountsDataItems.length) {
+            this.recentlyViewedAccountRecordCount += 20;
+            this.recentlyViewedAccountsData = this.recentlyViewedAccountsDataItems.slice(0, this.recentlyViewedAccountRecordCount);
+        }
     }
 
     /*
      * @description     Reusable code.
      */
     loadMyAccounts() {
-        return getMyAccounts({limitSize: this.rowLimit, offset: this.rowOffSet})
+        this.isLoading = true;
+        getMyAccounts()
             .then(result => {
-                this.myAccountsData = [...this.myAccountsData, ...result];
-                if (result.length === 0) {
-                    this.refs.myAccountsTable.enableInfiniteLoading = false;
-                }
+                this.myAccountsDataItems = result;
+                this.myAccountsData = this.myAccountsDataItems.slice(0, this.myAccountsRecordCount);
             }).catch(error => {
                 this.toastErrorMessage(error);
+            }).finally(() => {
+                this.isLoading = false;
             });
     }
 
     loadRecentlyViewedAccounts() {
-        return getRecentlyViewedAccounts({limitSize: this.rowLimit, offset: this.rowOffSet})
+        this.isLoading = true;
+        getRecentlyViewedAccounts()
             .then(result => {
-                this.recentlyViewedAccountsData = [...this.recentlyViewedAccountsData, ...result];
-                if (result.length === 0) {
-                    this.refs.recentlyViewedAccountsTable.enableInfiniteLoading = false;
-                }
+                this.recentlyViewedAccountsDataItems = result;
+                this.recentlyViewedAccountsData = this.recentlyViewedAccountsDataItems.slice(0, this.recentlyViewedAccountRecordCount);
             }).catch(error => {
                 this.toastErrorMessage(error);
+            }).finally(() => {
+                this.isLoading = false;
             });
     }
 

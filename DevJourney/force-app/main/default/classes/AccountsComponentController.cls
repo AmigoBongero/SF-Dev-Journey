@@ -17,38 +17,35 @@ public with sharing class AccountsComponentController {
     }
 
     @AuraEnabled
-    public static List<Account> getMyAccounts(Integer limitSize, Integer offset) {
+    public static List<Account> getMyAccounts() {
         return [
             SELECT   Id, Name, Industry, Phone
             FROM     Account
             WHERE    OwnerId = :USER_ID
             ORDER BY Name
-            LIMIT    :limitSize
-            OFFSET   :offset
+            LIMIT    :LIMIT_CONST
         ];
     }
 
     @AuraEnabled
-    public static List<Account> getRecentlyViewedAccounts(Integer limitSize, Integer offset) {
+    public static List<Account> getRecentlyViewedAccounts() {
         return [
             SELECT   Id, Name, Industry, Phone
             FROM     Account
             WHERE    LastViewedDate != NULL
             ORDER BY LastViewedDate DESC
-            LIMIT    :limitSize
-            OFFSET   :offset
+            LIMIT    :LIMIT_CONST
         ];
     }
 
     @AuraEnabled
-    public static List<Expense__c> getExpenses(Integer limitSize, Integer offset) {
+    public static List<Expense__c> getExpenses() {
         return [
             SELECT   Name, Status__c, Amount__c,
                      Check_Date__c, Description__c
             FROM     Expense__c
             ORDER BY Name
-            LIMIT    :limitSize
-            OFFSET   :offset
+            LIMIT    :LIMIT_CONST
         ];
     }
 

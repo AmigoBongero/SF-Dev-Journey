@@ -7,14 +7,14 @@
                         <c-all-accounts-tab></c-all-accounts-tab>
                     </lightning-tab>
                     <lightning-tab label="My Accounts">
-                        <div class="slds-scrollable">
+                        <div class="slds-scrollable table">
                             <lightning-datatable
                                 key-field="id"
                                 columns={accountColumnsGetter}
                                 data={myAccountsData}
                                 onloadmore={handleLoadMoreMyAccounts}
+                                is-loading={isLoading}
                                 show-row-number-column
-                                resize-column-disabled
                                 hide-checkbox-column
                                 enable-infinite-loading
                                 lwc:ref="myAccountsTable">
@@ -22,14 +22,14 @@
                         </div>
                     </lightning-tab>
                     <lightning-tab label="Recently viewed accounts">
-                        <div class="slds-scrollable">
+                        <div class="slds-scrollable table">
                             <lightning-datatable
                                 key-field="id"
                                 columns={accountColumnsGetter}
                                 data={recentlyViewedAccountsData}
                                 onloadmore={handleLoadMoreRecentlyViewedAccounts}
+                                is-loading={isLoading}
                                 show-row-number-column
-                                resize-column-disabled
                                 hide-checkbox-column
                                 enable-infinite-loading
                                 lwc:ref="recentlyViewedAccountsTable">
