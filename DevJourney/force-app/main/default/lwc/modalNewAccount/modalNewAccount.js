@@ -1,7 +1,7 @@
-import LightningModal from 'lightning/modal';
-
-import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { createRecord } from 'lightning/uiRecordApi';
+import { ShowToastEvent } from 'lightning/platformShowToastEvent';
+
+import LightningModal from 'lightning/modal';
 
 import ACCOUNT_OBJECT from '@salesforce/schema/Account';
 import ACCOUNT_NAME_FIELD from '@salesforce/schema/Account.Name';
@@ -11,10 +11,13 @@ import ACCOUNT_WEBSITE_FIELD from '@salesforce/schema/Account.Website';
 
 export default class ModalNewAccount extends LightningModal {
 
+    // Fields Variables
     accountName = null;
     accountType = 'none';
     accountPhone = null;
     accountWebsite = null;
+
+    // Other Variables
     isSaveAndNew = false;
 
     /*
@@ -37,7 +40,7 @@ export default class ModalNewAccount extends LightningModal {
      * @description     Handlers. 
      */
     handleCancel() {
-        this.closeModal();
+        this.close();
     }
 
     handleFieldChange(event) {
@@ -66,7 +69,7 @@ export default class ModalNewAccount extends LightningModal {
     }
 
     /*
-     * @description     Other methods. 
+     * @description     Reusable code. 
      */
     async submitRecordForm() {
         const fields = {};
@@ -87,7 +90,6 @@ export default class ModalNewAccount extends LightningModal {
                 })
             );
             this.close((this.isSaveAndNew) ? 'saveAndNew' : 'update');
-       
         } catch (error) {
             this.dispatchEvent(
                 new ShowToastEvent({
@@ -104,10 +106,6 @@ export default class ModalNewAccount extends LightningModal {
         this.accountPhone = '';
         this.accountWebsite = '';
         this.accountType = 'none';
-    }
-
-    closeModal() {
-        this.close();
     }
 
 }

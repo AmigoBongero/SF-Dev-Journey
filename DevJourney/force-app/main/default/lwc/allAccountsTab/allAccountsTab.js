@@ -31,6 +31,7 @@ export default class AllAccountsTab extends LightningElement {
     //Record-view-form fields	
     records = null;
     wiredAccountsData;
+    recordId = null;
     
     /*
      * @description     Wire function. 
@@ -86,6 +87,7 @@ export default class AllAccountsTab extends LightningElement {
                     title: TITLE_FOR_CONTACT
                 }
             ];
+            this.recordId = event.detail.name.AccountId;
         } else {
             this.records = [
                 {
@@ -94,13 +96,15 @@ export default class AllAccountsTab extends LightningElement {
                     objectApiName: ACCOUNT_OBJECT_API_NAME,
                     title: TITLE_FOR_ACCOUNT                
                 }];
+            this.recordId = event.detail.name.Id;
         }       
     }
 
     /*
-     * @description API methods.
+     * @description     API Methods.
      */
-    @api async refreshAccounts() {
+    @api 
+    async refreshAccounts() {
         this.isLoading = true;
         try {
             await refreshApex(this.wiredAccountsData);
@@ -116,7 +120,8 @@ export default class AllAccountsTab extends LightningElement {
         this.isLoading = false;
     }
     
-    @api async refreshContacts() {
+    @api 
+    async refreshContacts() {
         this.isLoading = true;
         try {
             await refreshApex(this.wiredAccountsData);

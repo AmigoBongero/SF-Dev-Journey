@@ -5,15 +5,15 @@
         <h3 class="slds-section__title slds-theme--shade slds-p-horizontal_small slds-m-top_x-small">Contact Information</h3>
         <div class="slds-grid slds-wrap slds-p-around_medium">
             <div class="slds-size_1-of-2 slds-p-horizontal_medium lgc-bg slds-m-bottom_x-small">
-                <lightning-input 
-                    type="text" 
-                    label="Full Name"
-                    name="contactName" 
-                    value={contactName}
-                    onchange={handleFieldChange}  
-                    required>
-                </lightning-input>
-            </div>        
+                <lightning-record-view-form
+                    record-id={recordId}
+                    object-api-name="Account">
+                    <lightning-output-field
+                        field-name="Name"
+                        label="Contact Owner">
+                    </lightning-output-field>
+                </lightning-record-view-form>
+            </div>     
             <div class="slds-size_1-of-2 slds-p-horizontal_medium lgc-bg slds-m-bottom_x-small">
                 <lightning-input 
                     type="number" 
@@ -22,7 +22,16 @@
                     value={contactPhone}
                     onchange={handleFieldChange}>
                 </lightning-input>
-            </div>
+            </div> 
+            <div class="slds-size_1-of-2 slds-p-horizontal_medium lgc-bg slds-m-bottom_x-small">
+                <lightning-input 
+                    type="text" 
+                    label="First Name"
+                    name="contactFirstName" 
+                    value={contactFirstName}
+                    onchange={handleFieldChange}>
+                </lightning-input>
+            </div>   
             <div class="slds-size_1-of-2 slds-p-horizontal_medium lgc-bg slds-m-bottom_x-small">
                 <lightning-input 
                     type="email" 
@@ -31,7 +40,17 @@
                     value={contactEmail}
                     onchange={handleFieldChange}>
                 </lightning-input>
-            </div>    
+            </div>  
+            <div class="slds-size_1-of-2 slds-p-horizontal_medium lgc-bg slds-m-bottom_x-small">
+                <lightning-input 
+                    type="text" 
+                    label="Last Name"
+                    name="contactLastName" 
+                    value={contactLastName}
+                    onchange={handleFieldChange}  
+                    required>
+                </lightning-input>
+            </div>         
         </div>
     </lightning-modal-body>
     <lightning-modal-footer>
@@ -41,5 +60,4 @@
             <lightning-button variant="brand" label="Save" onclick={handleSave}></lightning-button>
         </div>
     </lightning-modal-footer>
-
 </template>

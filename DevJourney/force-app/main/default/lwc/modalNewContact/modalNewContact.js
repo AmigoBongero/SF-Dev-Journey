@@ -1,51 +1,72 @@
-import LightningModal from "lightning/modal";
+import LightningModal from 'lightning/modal';
 
-import { ShowToastEvent } from 'lightning/platformShowToastEvent';
+import { api } from 'lwc';
 import { createRecord } from 'lightning/uiRecordApi';
+import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 
 import CONTACT_OBJECT from '@salesforce/schema/Contact';
-import CONTACT_NAME_FIELD from '@salesforce/schema/Contact.Name';
+import CONTACT_NAME_FIELD from '@salesforce/schema/Contact.FirstName';
+import CONTACT_LAST_NAME_FIELD from '@salesforce/schema/Contact.LastName';
 import CONTACT_PHONE_FIELD from '@salesforce/schema/Contact.Phone';
 import CONTACT_EMAIL_FIELD from '@salesforce/schema/Contact.Email';
+import CONTACT_ACCOUNT_ID from '@salesforce/schema/Contact.AccountId';
 
 export default class ModalNewContact extends LightningModal {
 
-    contactName = null;
+    // API Variables.
+    @api recordId = null;
+
+    // Fields Variables.
+    contactFirstName = null;
     contactPhone = null;
     contactEmail = null;
+    contactLastName = null;
+
+    // Other Variables.
+    isSaveAndNew = false;
+    
 
     /*
      * @description     Handlers. 
      */
     handleCancel() {
-        this.closeModal();
+        this.close();
     }
 
     handleFieldChange(event) {
         const field = event.target.name;
-        if (field === 'contactName') {
-            this.contactName = event.target.value;
+        if (field === 'contactFirstName') {
+            this.contactFirstName = event.target.value;
         } else if (field === 'contactPhone') {
             this.contactPhone = event.target.value;
         } else if (field === 'contactEmail') {
             this.contactEmail = event.target.value;
+        } else if (field === 'contactLastName') {
+            this.contactLastName = event.target.value;
         }
     }
 
     handleSave() {
+        this.isSaveAndNew = false;
         this.submitRecordForm();
     }
 
     handleSaveNew() {
+        this.isSaveAndNew = true;
         this.submitRecordForm();
         this.clearFormFields();
     }
 
+    /*
+     * @description     Reusable code.
+     */
     async submitRecordForm() {
         const fields = {};
-        fields[CONTACT_NAME_FIELD.fieldApiName] = this.contactName;
+        fields[CONTACT_NAME_FIELD.fieldApiName] = this.contactFirstName;
+        fields[CONTACT_LAST_NAME_FIELD.fieldApiName] = this.contactLastName;
         fields[CONTACT_PHONE_FIELD.fieldApiName] = this.contactPhone;
         fields[CONTACT_EMAIL_FIELD.fieldApiName] = this.contactEmail;
+        fields[CONTACT_ACCOUNT_ID.fieldApiName] = this.recordId;
 
         const recordInput = { apiName: CONTACT_OBJECT.objectApiName, fields };
 
@@ -58,7 +79,8 @@ export default class ModalNewContact extends LightningModal {
                     variant: 'success'
                 })
             );
-            this.close('update');
+            this.close((this.isSaveAndNew) ? 'saveAndNew' : 'update');
+            
         } catch (error) {
             this.dispatchEvent(
                 new ShowToastEvent({
@@ -71,12 +93,10 @@ export default class ModalNewContact extends LightningModal {
     }
 
     clearFormFields() {
-        this.contactName = '';
+        this.contactLastName = '';
+        this.contactFirstName = '';
         this.contactPhone = '';
         this.contactEmail = '';
     }
 
-    closeModal() {
-        this.close();
-    }
 }
