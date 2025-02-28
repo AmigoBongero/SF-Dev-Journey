@@ -1,37 +1,40 @@
 <template>
     <div class="slds-grid">
-        <div class="slds-col slds-size_1-of-3 slds-m-vertical_medium slds-m-right_margin">
+        <div class="slds-col slds-m-vertical_medium">
             <template lwc:if={treeData}>
                 <h2 class="slds-m-bottom_medium slds-text-align_center slds-text-heading_small slds-text-title_bold">
                     Available Accounts
                 </h2>
-                
-                <div class="slds-scrollable">
+                <div class="container slds-scrollable">
                     <lightning-spinner
                         lwc:if={isLoading}
                         alternative-text="Loading..."
                         class="slds-is-relative slds-align_absolute-center slds-m-top_xx-large"
                         size="small">
                     </lightning-spinner>
-                    <lightning-tree items={treeData} onselect={handleSelect}></lightning-tree>
-                    
+                    <lightning-tree items={treeData} onselect={handleSelect}></lightning-tree>                  
                 </div>
-               
             </template>
         </div>
         <div class="slds-col slds-size_2-of-3 slds-m-vertical_medium slds-m-left_xx-large">
+            <h2 class="slds-m-bottom_medium slds-text-align_center slds-text-heading_small slds-text-title_bold">
+                Summary
+            </h2>
+            <lightning-button 
+                variant="brand-outline"
+                label="New Account" 
+                name="NewAccount"
+                onclick={handleButtonClick} 
+                class="slds-m-right_x-small">
+            </lightning-button>
             <template lwc:if={isVisible}>
-                <h2 class="slds-m-bottom_medium slds-text-align_center slds-text-heading_small slds-text-title_bold">
-                    Summary
-                </h2>
-                <c-summary-info 
-                    records-get-set={records}
-                    record-id={recordId}
-                    is-selected={isSelected} 
-                    onaccountcreated={refreshAccounts} 
-                    oncontactcreated={refreshContacts}>
-                </c-summary-info>
-            </template>
+                <lightning-button 
+                    label="New Contact" 
+                    name="NewContact"
+                    onclick={handleButtonClick}>
+                </lightning-button>
+                <c-summary-info records-get-set={records}></c-summary-info>
+            </template>   
         </div>
     </div>
 </template>

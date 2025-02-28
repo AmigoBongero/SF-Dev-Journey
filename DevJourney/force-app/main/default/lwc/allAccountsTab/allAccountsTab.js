@@ -1,6 +1,8 @@
 import { LightningElement, track, wire, api } from 'lwc';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { refreshApex } from '@salesforce/apex';
+import NewAccountModal from "c/newAccountModal"; 
+import NewContactModal from "c/newContactModal";
 
 import getAccountsWithRelatedContacts from "@salesforce/apex/AccountsComponentController.getAccountsWithRelatedContacts";
 
@@ -24,14 +26,14 @@ export default class AllAccountsTab extends LightningElement {
 
     //Tree data variables
     @track treeData = [];
-    error = null;
     isVisible = false;
     isLoading = true;
 
     //Record-view-form fields	
     records = null;
-    wiredAccountsData;
+    wiredAccountsData = [];
     recordId = null;
+    isLoadingModal = false;
     
     /*
      * @description     Wire function. 
@@ -42,7 +44,6 @@ export default class AllAccountsTab extends LightningElement {
         this.wiredAccountsData = wiredData;
 
         if (data && Array.isArray(data)) {
-            console.log('wire');
             this.treeData = data.map(account => ({
                 label: account.Name,
                 name: account,
@@ -51,7 +52,6 @@ export default class AllAccountsTab extends LightningElement {
                     name: contact
                 }))
             }));
-            this.error = undefined;
             this.isLoading = false;
         } else if (error) {
             this.treeData = [];
@@ -63,7 +63,6 @@ export default class AllAccountsTab extends LightningElement {
             this.dispatchEvent(showError);
             this.isLoading = false;
         }
-        
     }
     
     /*
@@ -94,48 +93,64 @@ export default class AllAccountsTab extends LightningElement {
                     Id: event.detail.name.Id,
                     fields: FIELDS_ACCOUNT,
                     objectApiName: ACCOUNT_OBJECT_API_NAME,
-                    title: TITLE_FOR_ACCOUNT                
+                    title: TITLE_FOR_ACCOUNT
                 }];
             this.recordId = event.detail.name.Id;
         }       
     }
 
-    /*
-     * @description     API Methods.
-     */
-    @api 
-    async refreshAccounts() {
-        this.isLoading = true;
-        try {
-            await refreshApex(this.wiredAccountsData);
-        } catch {
-            this.dispatchEvent(
-                new ShowToastEvent({
-                    title: 'Error updating record',
-                    message: error.body.message,
-                    variant: 'error'
-                })
-            )
-        }
-        this.isLoading = false;
+    handleButtonClick(event) {
+        const buttonName = event.target.name;
+        this.showNewRecordModal(buttonName);
     }
-    
-    @api 
-    async refreshContacts() {
-        this.isLoading = true;
+
+    /*
+     * @description     Reusable Code.
+     */
+    async showNewRecordModal(buttonName) {
         try {
-            await refreshApex(this.wiredAccountsData);
-        } catch {
+            this.isLoadingModal = true;
+            const modalClass = buttonName === 'NewAccount' ? NewAccountModal : NewContactModal; 
+            const result = await modalClass.open({
+                size:'small',
+                isLoadingModal: true,
+                recordId: this.recordId
+            }); 
+            if(result === 'save') {
+                this.refreshTreeData();
+            }
+            else if (result === 'saveAndNew') {
+                this.refreshTreeData();
+                this.showNewRecordModal(buttonName);
+            }
+        } catch (error) {
+            this.toastErrorMessage();
+        }
+    }
+
+    refreshTreeData() {
+        this.isLoading = true;
+        refreshApex(this.wiredAccountsData)
+        .catch ((error) => {
             this.dispatchEvent(
                 new ShowToastEvent({
                     title: 'Error updating record',
                     message: error.body.message,
                     variant: 'error'
                 })
-            )
-        }
-        this.isLoading = false;
-        
+            );
+        })
+        .finally (() => {
+            this.isLoading = false;
+        })
+    }
+
+    toastErrorMessage(error) {
+        this.dispatchEvent(new ShowToastEvent({
+            title: 'Error occurred',
+            message: 'Error: ' + error.message,
+            variant: 'error'
+        }));
     }
 
 }

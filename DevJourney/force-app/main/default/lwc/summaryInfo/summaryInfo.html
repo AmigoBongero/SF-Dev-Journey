@@ -1,7 +1,7 @@
 <template>
     <template for:each={records} for:item="record">
         <lightning-card key={record.Id}>
-            <h3 class="slds-text-title_bold">
+            <h3 class="slds-text-title_bold ">
                 {record.title}
             </h3>
             <lightning-record-view-form 
@@ -23,21 +23,7 @@
                             class="slds-m-bottom_none slds-p-left_none">
                         </lightning-output-field>
                 </template>
-            </lightning-record-view-form>         
+            </lightning-record-view-form>
         </lightning-card>
     </template>
-    <div>
-        <lightning-button 
-            variant="brand-outline"
-            label="New Account" 
-            title="New Account" 
-            onclick={showModalNewAccount} 
-            class="slds-m-right_x-small">
-        </lightning-button>
-        <lightning-button 
-            label="New Contact" 
-            title="New Contact" 
-            onclick={showModalNewContact}>
-        </lightning-button>
-    </div>
 </template>
