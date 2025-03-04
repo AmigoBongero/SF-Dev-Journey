@@ -14,11 +14,11 @@ import EXPENSE_AMOUNT from '@salesforce/schema/Expense__c.Amount__c';
 import EXPENSE_CHECK_DATE from '@salesforce/schema/Expense__c.Check_Date__c';
 
 const EXPENSES_COLUMNS = [
-    { label: 'Name', fieldName: EXPENSE_NAME.fieldApiName },
-    { label: 'Status', fieldName: EXPENSE_STATUS.fieldApiName },
-    { label: 'Description', fieldName: EXPENSE_DESCRIPTION.fieldApiName },
-    { label: 'Amount', fieldName: EXPENSE_AMOUNT.fieldApiName },
-    { label: 'Check Date', fieldName: EXPENSE_CHECK_DATE.fieldApiName },
+    { label: 'Name', fieldName: EXPENSE_NAME.fieldApiName, sortable: true },
+    { label: 'Status', fieldName: EXPENSE_STATUS.fieldApiName, sortable: true },
+    { label: 'Description', fieldName: EXPENSE_DESCRIPTION.fieldApiName, sortable: true },
+    { label: 'Amount', fieldName: EXPENSE_AMOUNT.fieldApiName, sortable: true },
+    { label: 'Check Date', fieldName: EXPENSE_CHECK_DATE.fieldApiName, sortable: true },
 ];
 
 export default class ExpensesTabComponent extends LightningElement {
@@ -28,6 +28,8 @@ export default class ExpensesTabComponent extends LightningElement {
     selectedExpenseIds = [];
     expensesFullData = [];
     expensesRecordCount = 20;
+    sortDirection = 'asc';
+    sortedBy;
 
     // Other Variables,
     isLoading = false;
@@ -49,6 +51,12 @@ export default class ExpensesTabComponent extends LightningElement {
     /*
      * @description     Handlers.
      */
+    handleSort(event) {
+        this.sortedBy = event.detail.fieldName;
+        this.sortDirection = event.detail.sortDirection;
+        this.sortData(this.sortedBy, this.sortDirection);
+    }
+
     handleLoadMoreExpenses() {
         if (this.expensesData.length < this.expensesFullData.length) {
             this.expensesRecordCount += 20;
@@ -140,6 +148,24 @@ export default class ExpensesTabComponent extends LightningElement {
     /*
      * @description     Reusable Code.
      */
+    sortData(fieldName, direction) {
+        let parseData = JSON.parse(JSON.stringify(this.expensesData));
+        // Return the value stored in the field
+        let keyValue = (a) => {
+            return a[fieldName];
+        };
+        // Checking reverse direction
+        let isReverse = direction === 'asc' ? 1: -1;
+        // Sorting data
+        parseData.sort((x, y) => {
+            x = keyValue(x) ? keyValue(x) : ''; // handling null values
+            y = keyValue(y) ? keyValue(y) : '';
+            // sorting values based on direction
+            return isReverse * ((x > y) - (y > x));
+        });
+        this.expensesData = parseData;
+    }
+
     loadExpenses() {
         this.isLoading = true;
         getExpenses()
