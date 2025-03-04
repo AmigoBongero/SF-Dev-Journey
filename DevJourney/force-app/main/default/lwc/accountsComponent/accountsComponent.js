@@ -9,9 +9,9 @@ import ACCOUNT_INDUSTRY from '@salesforce/schema/Account.Industry';
 import ACCOUNT_PHONE from '@salesforce/schema/Account.Phone';
 
 const ACCOUNT_COLUMNS = [
-  { label: 'Name', fieldName: ACCOUNT_NAME.fieldApiName, sortable: true },
-  { label: 'Industry', fieldName: ACCOUNT_INDUSTRY.fieldApiName, sortable: true },
-  { label: 'Phone', fieldName: ACCOUNT_PHONE.fieldApiName, sortable: true }
+    { label: 'Name', fieldName: ACCOUNT_NAME.fieldApiName, sortable: true },
+    { label: 'Industry', fieldName: ACCOUNT_INDUSTRY.fieldApiName, sortable: true },
+    { label: 'Phone', fieldName: ACCOUNT_PHONE.fieldApiName, sortable: true }
 ];
 
 export default class AccountsComponent extends LightningElement {
@@ -66,11 +66,11 @@ export default class AccountsComponent extends LightningElement {
 
     handleLoadMoreAccounts() {
         if (this.myAccountsData.length < this.myAccountsFullData.length) {
-          this.myAccountsRecordCount += 20;
-          this.myAccountsData = this.myAccountsFullData.slice(0, this.myAccountsRecordCount);
+            this.myAccountsRecordCount += 20;
+            this.myAccountsData = this.myAccountsFullData.slice(0, this.myAccountsRecordCount);
         } else if (this.recentlyViewedAccountsData.length < this.recentlyViewedAccountsFullData.length) {
-          this.recentlyViewedAccountRecordCount += 20;
-          this.recentlyViewedAccountsData = this.recentlyViewedAccountsFullData.slice(0, this.recentlyViewedAccountRecordCount);
+            this.recentlyViewedAccountRecordCount += 20;
+            this.recentlyViewedAccountsData = this.recentlyViewedAccountsFullData.slice(0, this.recentlyViewedAccountRecordCount);
         }
     }
 
