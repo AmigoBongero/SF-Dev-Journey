@@ -1,3 +1,4 @@
-.table {
+.table-container {
     height: 25rem;
+    border: 1px solid #000;
 }

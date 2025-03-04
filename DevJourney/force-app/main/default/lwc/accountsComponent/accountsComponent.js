@@ -14,14 +14,15 @@ export default class AccountsComponent extends LightningElement {
 
     // Datatable variables.
     myAccountsData = [];
-    myAccountsDataItems = [];
+    myAccountsFullData = [];
     myAccountsRecordCount = 20;
     recentlyViewedAccountsData = [];
-    recentlyViewedAccountsDataItems = [];
+    recentlyViewedAccountsFullData = [];
     recentlyViewedAccountRecordCount = 20;
 
-    // Other variables
-    isLoading = false;
+    // Boolean variables.
+    myAccountsLoading = false;
+    recentlyViewedAccountsLoading = false;
 
     /*
      * @description     Getters.
@@ -41,17 +42,17 @@ export default class AccountsComponent extends LightningElement {
     /*
      * @description     Handlers.
      */
-    handleLoadMoreMyAccounts(event) {
-        if (this.myAccountsData.length < this.myAccountsDataItems.length) {
+    handleLoadMoreMyAccounts() {
+        if (this.myAccountsData.length < this.myAccountsFullData.length) {
             this.myAccountsRecordCount += 20;
-            this.myAccountsData = this.myAccountsDataItems.slice(0, this.myAccountsRecordCount);
+            this.myAccountsData = this.myAccountsFullData.slice(0, this.myAccountsRecordCount);
         }
     }
 
-    handleLoadMoreRecentlyViewedAccounts(event) {
-        if (this.recentlyViewedAccountsData.length < this.recentlyViewedAccountsDataItems.length) {
+    handleLoadMoreRecentlyViewedAccounts() {
+        if (this.recentlyViewedAccountsData.length < this.recentlyViewedAccountsFullData.length) {
             this.recentlyViewedAccountRecordCount += 20;
-            this.recentlyViewedAccountsData = this.recentlyViewedAccountsDataItems.slice(0, this.recentlyViewedAccountRecordCount);
+            this.recentlyViewedAccountsData = this.recentlyViewedAccountsFullData.slice(0, this.recentlyViewedAccountRecordCount);
         }
     }
 
@@ -59,28 +60,28 @@ export default class AccountsComponent extends LightningElement {
      * @description     Reusable code.
      */
     loadMyAccounts() {
-        this.isLoading = true;
+        this.myAccountsLoading = true;
         getMyAccounts()
             .then(result => {
-                this.myAccountsDataItems = result;
-                this.myAccountsData = this.myAccountsDataItems.slice(0, this.myAccountsRecordCount);
+                this.myAccountsFullData = result;
+                this.myAccountsData = this.myAccountsFullData.slice(0, this.myAccountsRecordCount);
             }).catch(error => {
                 this.toastErrorMessage(error);
             }).finally(() => {
-                this.isLoading = false;
+                this.myAccountsLoading = false;
             });
     }
 
     loadRecentlyViewedAccounts() {
-        this.isLoading = true;
+        this.recentlyViewedAccountsLoading = true;
         getRecentlyViewedAccounts()
             .then(result => {
-                this.recentlyViewedAccountsDataItems = result;
-                this.recentlyViewedAccountsData = this.recentlyViewedAccountsDataItems.slice(0, this.recentlyViewedAccountRecordCount);
+                this.recentlyViewedAccountsFullData = result;
+                this.recentlyViewedAccountsData = this.recentlyViewedAccountsFullData.slice(0, this.recentlyViewedAccountRecordCount);
             }).catch(error => {
                 this.toastErrorMessage(error);
             }).finally(() => {
-                this.isLoading = false;
+                this.recentlyViewedAccountsLoading = false;
             });
     }
 

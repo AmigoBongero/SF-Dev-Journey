@@ -5,5 +5,4 @@
     <targets>
         <target>lightning__AppPage</target>
     </targets>
-    <masterLabel>Accounts Component</masterLabel>
 </LightningComponentBundle>
