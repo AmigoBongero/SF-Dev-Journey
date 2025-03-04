@@ -3,6 +3,7 @@ import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 
 import LightningModal from 'lightning/modal';
 
+import ACCOUNT_OBJECT_API_NAME from '@salesforce/schema/Account';
 import ACCOUNT_NAME_FIELD from '@salesforce/schema/Account.Name';
 import ACCOUNT_TYPE_FIELD from '@salesforce/schema/Account.Type';
 import ACCOUNT_PHONE_FIELD from '@salesforce/schema/Account.Phone';
@@ -18,7 +19,7 @@ const ACCOUNT_FIELDS = [
 export default class NewAccountModal extends LightningModal {
 
     // API Variables
-    @api isLoadingModal = false;
+    @api isModalLoading = false;
 
     // Other Variables
     isSaveAndNew = false;
@@ -30,15 +31,19 @@ export default class NewAccountModal extends LightningModal {
         return ACCOUNT_FIELDS;
     }
 
+    get accountObjectApiNameGetter() {
+        return ACCOUNT_OBJECT_API_NAME.objectApiName;
+    }
+
     /*
      * @description     Handlers. 
      */
     handleLoad() {
-        this.isLoadingModal = false;
+        this.isModalLoading = false;
     }
 
     handleSuccess() {
-        this.isLoadingModal = false;
+        this.isModalLoading = false;
         this.dispatchEvent(
             new ShowToastEvent({
                 title: 'Success',
@@ -46,22 +51,52 @@ export default class NewAccountModal extends LightningModal {
                 variant: 'success'
             })
         );
-        console.log(this.isSaveAndNew);
         this.close((this.isSaveAndNew) ? 'saveAndNew' : 'save');
     }
 
     handleSave() {
         this.isSaveAndNew = false;
-        this.template.querySelector('lightning-record-edit-form').submit();
+
+        if(!this.isInputValid()) {
+            this.toastInfoMessages();
+            return;
+        }
+
+        this.refs.recordEditForm.submit();
     }
 
     handleSaveAndNew() {
         this.isSaveAndNew = true;
-        this.template.querySelector('lightning-record-edit-form').submit();
+
+        if(!this.isInputValid()) {
+            this.toastInfoMessages();
+            return;
+        }
+
+        this.refs.recordEditForm.submit();
     }
 
     handleCancel() {
         this.close();
+    }
+
+    isInputValid() {
+        let isValid = true;
+        let inputFields = this.template.querySelectorAll('lightning-input-field');
+        inputFields.forEach(inputField => {
+            if (!inputField.reportValidity()) {
+                isValid = false;
+            }
+        });
+        return isValid;
+    }
+
+    toastInfoMessages() {
+        this.dispatchEvent(new ShowToastEvent({
+            title: "There is field validation error!",
+            message: "Check the fields values",
+            variant: "info"
+        }));
     }
 
 }

@@ -5,9 +5,9 @@
                 <h2 class="slds-m-bottom_medium slds-text-align_center slds-text-heading_small slds-text-title_bold">
                     Available Accounts
                 </h2>
-                <div class="container slds-scrollable">
+                <div class="scrollable-area slds-scrollable">
                     <lightning-spinner
-                        lwc:if={isLoading}
+                        lwc:if={isTreeDataLoading}
                         alternative-text="Loading..."
                         class="slds-is-relative slds-align_absolute-center slds-m-top_xx-large"
                         size="small">
@@ -20,21 +20,25 @@
             <h2 class="slds-m-bottom_medium slds-text-align_center slds-text-heading_small slds-text-title_bold">
                 Summary
             </h2>
-            <lightning-button 
-                variant="brand-outline"
-                label="New Account" 
-                name="NewAccount"
-                onclick={handleButtonClick} 
-                class="slds-m-right_x-small">
-            </lightning-button>
-            <template lwc:if={isVisible}>
-                <lightning-button 
-                    label="New Contact" 
-                    name="NewContact"
-                    onclick={handleButtonClick}>
-                </lightning-button>
+            <template lwc:if={isComponentAndButtonVisible}>
                 <c-summary-info records-get-set={records}></c-summary-info>
             </template>   
+            <div class="bottom-buttons">
+                <lightning-button 
+                    variant="brand-outline"
+                    label="New Account" 
+                    name={accountObjectApiNameGetter}
+                    onclick={handleButtonClick} 
+                    class="slds-m-right_x-small ">
+                </lightning-button>
+                <template lwc:if={isComponentAndButtonVisible}>
+                    <lightning-button 
+                        label="New Contact" 
+                        name={contactObjectApiNameGetter}
+                        onclick={handleButtonClick}>
+                    </lightning-button>
+                </template>
+            </div>
         </div>
     </div>
 </template>

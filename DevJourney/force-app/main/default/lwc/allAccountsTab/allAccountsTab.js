@@ -6,17 +6,17 @@ import NewContactModal from "c/newContactModal";
 
 import getAccountsWithRelatedContacts from "@salesforce/apex/AccountsComponentController.getAccountsWithRelatedContacts";
 
+import ACCOUNT_OBJECT_API_NAME from '@salesforce/schema/Account';
 import ACCOUNT_NAME_FIELD from '@salesforce/schema/Account.Name';
 import ACCOUNT_TYPE_FIELD from '@salesforce/schema/Account.Type';
 import ACCOUNT_PHONE_FIELD from '@salesforce/schema/Account.Phone';
 import ACCOUNT_WEBSITE_FIELD from '@salesforce/schema/Account.Website';
+import CONTACT_OBJECT_API_NAME from '@salesforce/schema/Contact';
 import CONTACT_NAME_FIELD from '@salesforce/schema/Contact.Name';
 import CONTACT_PHONE_FIELD from '@salesforce/schema/Contact.Phone';
 import CONTACT_EMAIL_FIELD from '@salesforce/schema/Contact.Email';
 
 //Record-view-form constants
-const ACCOUNT_OBJECT_API_NAME = 'Account';
-const CONTACT_OBJECT_API_NAME = 'Contact';
 const TITLE_FOR_ACCOUNT = 'Account Info';
 const TITLE_FOR_CONTACT = 'Contact Info';
 const FIELDS_ACCOUNT = [ACCOUNT_NAME_FIELD, ACCOUNT_TYPE_FIELD, ACCOUNT_PHONE_FIELD, ACCOUNT_WEBSITE_FIELD];
@@ -26,15 +26,26 @@ export default class AllAccountsTab extends LightningElement {
 
     //Tree data variables
     @track treeData = [];
-    isVisible = false;
-    isLoading = true;
+    isComponentAndButtonVisible = false;
+    isTreeDataLoading = true;
 
     //Record-view-form fields	
     records = null;
     wiredAccountsData = [];
-    recordId = null;
-    isLoadingModal = false;
-    
+    chosenAccountId = null;
+    isModalLoading = false;
+
+    /*
+     * @description     Getters.
+     */
+    get accountObjectApiNameGetter() {
+        return ACCOUNT_OBJECT_API_NAME.objectApiName;
+    }
+
+    get contactObjectApiNameGetter() {
+        return CONTACT_OBJECT_API_NAME.objectApiName;
+    }
+
     /*
      * @description     Wire function. 
      */
@@ -52,7 +63,7 @@ export default class AllAccountsTab extends LightningElement {
                     name: contact
                 }))
             }));
-            this.isLoading = false;
+            this.isTreeDataLoading = false;
         } else if (error) {
             this.treeData = [];
             const showError = new ShowToastEvent({
@@ -61,7 +72,7 @@ export default class AllAccountsTab extends LightningElement {
                 variant: 'error'
             });
             this.dispatchEvent(showError);
-            this.isLoading = false;
+            this.isTreeDataLoading = false;
         }
     }
     
@@ -69,59 +80,57 @@ export default class AllAccountsTab extends LightningElement {
      * @description     Handler.
      */
     handleSelect(event) {
-        this.isVisible = true;   
+        this.isComponentAndButtonVisible = true;
 
         if (event.detail.name.AccountId != null) {
             this.records = [
                 {
                     Id: event.detail.name.AccountId,
                     fields: FIELDS_ACCOUNT,
-                    objectApiName: ACCOUNT_OBJECT_API_NAME,
+                    objectApiName: ACCOUNT_OBJECT_API_NAME.objectApiName,
                     title: TITLE_FOR_ACCOUNT
                 },
                 {
                     Id: event.detail.name.Id,
                     fields: FIELDS_CONTACT,
-                    objectApiName: CONTACT_OBJECT_API_NAME,
+                    objectApiName: CONTACT_OBJECT_API_NAME.objectApiName,
                     title: TITLE_FOR_CONTACT
                 }
             ];
-            this.recordId = event.detail.name.AccountId;
+            this.chosenAccountId = event.detail.name.AccountId;
         } else {
             this.records = [
                 {
                     Id: event.detail.name.Id,
                     fields: FIELDS_ACCOUNT,
-                    objectApiName: ACCOUNT_OBJECT_API_NAME,
+                    objectApiName: ACCOUNT_OBJECT_API_NAME.objectApiName,
                     title: TITLE_FOR_ACCOUNT
                 }];
-            this.recordId = event.detail.name.Id;
+            this.chosenAccountId = event.detail.name.Id;
         }       
     }
 
     handleButtonClick(event) {
-        const buttonName = event.target.name;
-        this.showNewRecordModal(buttonName);
+        this.showNewRecordModal(event.target.name);
     }
 
     /*
      * @description     Reusable Code.
      */
-    async showNewRecordModal(buttonName) {
+    async showNewRecordModal(objectApiName) {
         try {
-            this.isLoadingModal = true;
-            const modalClass = buttonName === 'NewAccount' ? NewAccountModal : NewContactModal; 
+            this.isModalLoading = true;
+            const modalClass = objectApiName === ACCOUNT_OBJECT_API_NAME.objectApiName ? NewAccountModal : NewContactModal; 
             const result = await modalClass.open({
                 size:'small',
-                isLoadingModal: true,
-                recordId: this.recordId
+                isModalLoading: true,
+                chosenAccountId: this.chosenAccountId
             }); 
             if(result === 'save') {
                 this.refreshTreeData();
-            }
-            else if (result === 'saveAndNew') {
+            } else if (result === 'saveAndNew') {
                 this.refreshTreeData();
-                this.showNewRecordModal(buttonName);
+                this.showNewRecordModal(objectApiName);
             }
         } catch (error) {
             this.toastErrorMessage();
@@ -129,19 +138,18 @@ export default class AllAccountsTab extends LightningElement {
     }
 
     refreshTreeData() {
-        this.isLoading = true;
+        this.isTreeDataLoading = true;
         refreshApex(this.wiredAccountsData)
-        .catch ((error) => {
+        .catch (() => {
             this.dispatchEvent(
                 new ShowToastEvent({
-                    title: 'Error updating record',
-                    message: error.body.message,
+                    title: 'Error',
+                    message: 'Error updating records',
                     variant: 'error'
                 })
             );
-        })
-        .finally (() => {
-            this.isLoading = false;
+        }).finally (() => {
+            this.isTreeDataLoading = false;
         })
     }
 

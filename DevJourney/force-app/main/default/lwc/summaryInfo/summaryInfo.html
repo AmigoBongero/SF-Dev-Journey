@@ -1,7 +1,8 @@
 <template>
+    <div class="scrollable-area slds-scrollable">
     <template for:each={records} for:item="record">
         <lightning-card key={record.Id}>
-            <h3 class="slds-text-title_bold ">
+            <h3 class="slds-text-title_bold">
                 {record.title}
             </h3>
             <lightning-record-view-form 
@@ -26,4 +27,5 @@
             </lightning-record-view-form>
         </lightning-card>
     </template>
+    </div>
 </template>

@@ -4,13 +4,14 @@
         <p class="slds-text-align_right"><abbr class="slds-required">*</abbr> = Required Information</p>
         <h3 class="slds-section__title slds-theme--shade slds-p-horizontal_small slds-m-top_x-small">Contact Information</h3>
         <lightning-spinner
-            lwc:if={isLoadingModal}
+            lwc:if={isModalLoading}
             alternative-text="Loading..."
             class="slds-is-relative slds-align_absolute-center slds-m-top_medium"
             size="small">
         </lightning-spinner>
         <lightning-record-edit-form
-            object-api-name="Contact"
+            object-api-name={contactObjectApiNameGetter}
+            lwc:ref="recordEditForm"
             onsuccess={handleSuccess}
             onload={handleLoad}>
             <div class="slds-grid slds-wrap slds-gutters slds-m-around_medium">
@@ -20,7 +21,7 @@
                     </div>
                 </template>
             </div>
-            </lightning-record-edit-form>
+        </lightning-record-edit-form>
     </lightning-modal-body>
     <lightning-modal-footer>
         <div class="slds-align_absolute-center">
