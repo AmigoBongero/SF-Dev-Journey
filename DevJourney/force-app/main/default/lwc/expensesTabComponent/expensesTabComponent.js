@@ -29,7 +29,7 @@ export default class ExpensesTabComponent extends LightningElement {
     expensesFullData = [];
     expensesRecordCount = 20;
 
-    // Other Variables,
+    // Boolean Variables.
     isLoading = false;
 
     /*

@@ -12,8 +12,8 @@
                                 key-field="id"
                                 columns={accountColumnsGetter}
                                 data={myAccountsData}
-                                onloadmore={handleLoadMoreMyAccounts}
-                                is-loading={myAccountsLoading}
+                                onloadmore={handleLoadMoreAccounts}
+                                is-loading={isMyAccountsLoading}
                                 show-row-number-column
                                 hide-checkbox-column
                                 enable-infinite-loading
@@ -27,8 +27,8 @@
                                 key-field="id"
                                 columns={accountColumnsGetter}
                                 data={recentlyViewedAccountsData}
-                                onloadmore={handleLoadMoreRecentlyViewedAccounts}
-                                is-loading={recentlyViewedAccountsLoading}
+                                onloadmore={handleLoadMoreAccounts}
+                                is-loading={isRecentlyViewedAccountsLoading}
                                 show-row-number-column
                                 hide-checkbox-column
                                 enable-infinite-loading
