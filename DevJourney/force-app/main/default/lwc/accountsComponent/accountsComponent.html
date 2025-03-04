@@ -12,8 +12,8 @@
                                 key-field="id"
                                 columns={accountColumnsGetter}
                                 data={myAccountsData}
-                                onloadmore={handleLoadMoreMyAccounts}
-                                is-loading={myAccountsLoading}
+                                onloadmore={handleLoadMoreAccounts}
+                                is-loading={isMyAccountsLoading}
                                 sorted-direction={myAccountsSortDirection}
                                 sorted-by={myAccountsSortedBy}
                                 onsort={handleMyAccountsSort}
@@ -30,8 +30,8 @@
                                 key-field="id"
                                 columns={accountColumnsGetter}
                                 data={recentlyViewedAccountsData}
-                                onloadmore={handleLoadMoreRecentlyViewedAccounts}
-                                is-loading={recentlyViewedAccountsLoading}
+                                onloadmore={handleLoadMoreAccounts}
+                                is-loading={isRecentlyViewedAccountsLoading}
                                 sorted-direction={recentlyViewedAccountsSortDirection}
                                 sorted-by={recentlyViewedAccountsSortedBy}
                                 onsort={handleRecentlyViewedAccountsSort}
