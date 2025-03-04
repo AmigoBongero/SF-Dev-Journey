@@ -145,6 +145,7 @@ export default class ExpensesTabComponent extends LightningElement {
         getExpenses()
             .then(result => {
                 this.expensesFullData = result;
+                this.expensesRecordCount = 20;
                 this.expensesData = this.expensesFullData.slice(0, this.expensesRecordCount);
                 this.selectedExpenseIds = [];
             }).catch(error => {
