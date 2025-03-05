@@ -97,7 +97,6 @@ export default class AllAccountsTab extends LightningElement {
                     title: TITLE_FOR_CONTACT
                 }
             ];
-            this.chosenAccountId = event.detail.name.AccountId;
         } else {
             this.records = [
                 {
@@ -106,8 +105,8 @@ export default class AllAccountsTab extends LightningElement {
                     objectApiName: ACCOUNT_OBJECT_API_NAME.objectApiName,
                     title: TITLE_FOR_ACCOUNT
                 }];
-            this.chosenAccountId = event.detail.name.Id;
-        }       
+        }      
+        this.chosenAccountId = event.detail.name.AccountId ?? event.detail.name.Id; 
     }
 
     handleButtonClick(event) {
@@ -122,11 +121,11 @@ export default class AllAccountsTab extends LightningElement {
             this.isModalLoading = true;
             const modalClass = objectApiName === ACCOUNT_OBJECT_API_NAME.objectApiName ? NewAccountModal : NewContactModal; 
             const result = await modalClass.open({
-                size:'small',
+                size: 'small',
                 isModalLoading: true,
                 chosenAccountId: this.chosenAccountId
             }); 
-            if(result === 'save') {
+            if (result === 'save') {
                 this.refreshTreeData();
             } else if (result === 'saveAndNew') {
                 this.refreshTreeData();
@@ -140,17 +139,16 @@ export default class AllAccountsTab extends LightningElement {
     refreshTreeData() {
         this.isTreeDataLoading = true;
         refreshApex(this.wiredAccountsData)
-        .catch (() => {
-            this.dispatchEvent(
-                new ShowToastEvent({
-                    title: 'Error',
-                    message: 'Error updating records',
-                    variant: 'error'
-                })
-            );
-        }).finally (() => {
-            this.isTreeDataLoading = false;
-        })
+            .catch (error => {
+                this.dispatchEvent(
+                    new ShowToastEvent({
+                        title: 'Error',
+                        message: `Error: ${error.message}`,
+                        variant: 'error'
+                }));
+            }).finally (() => {
+                this.isTreeDataLoading = false;
+            })
     }
 
     toastErrorMessage(error) {

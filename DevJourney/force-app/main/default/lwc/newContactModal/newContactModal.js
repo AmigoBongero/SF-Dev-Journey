@@ -55,30 +55,13 @@ export default class NewContactModal extends LightningModal {
         this.close((this.isSaveAndNew) ? 'saveAndNew' : 'save');
     }
 
-    handleSave() {
-        this.isSaveAndNew = false;
-
-        if(!this.isInputValid()) {
+    handleSave(event) {
+        this.isSaveAndNew = event.target.name !== 'Save';
+        if (!this.isInputValid()) {
             this.toastInfoMessages();
             return;
         }
-
         this.refs.recordEditForm.submit();
-    }
-
-    handleSaveAndNew() {
-        this.isSaveAndNew = true;
-
-        if(!this.isInputValid()) {
-            this.toastInfoMessages();
-            return;
-        }
-        
-        this.refs.recordEditForm.submit();
-    }
-
-    handleCancel() {
-        this.close();
     }
 
     handleCancel() {

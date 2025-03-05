@@ -3,7 +3,8 @@
     <lightning-modal-body> 
         <p class="slds-text-align_right"><abbr class="slds-required">*</abbr> = Required Information</p>
         <h3 class="slds-section__title slds-theme--shade slds-p-horizontal_small slds-m-top_x-small">
-            Account Information</h3>
+            Account Information
+        </h3>
         <lightning-spinner
             lwc:if={isModalLoading}
             alternative-text="Loading..."
@@ -33,12 +34,14 @@
             </lightning-button>
             <lightning-button 
                 label="Save &amp; New" 
-                onclick={handleSaveAndNew} 
+                onclick={handleSave} 
+                name="SaveAndNew"
                 class="slds-m-right_xx-small">
             </lightning-button>
             <lightning-button 
                 variant="brand" 
                 label="Save" 
+                name="Save"
                 onclick={handleSave}>
             </lightning-button>
         </div>

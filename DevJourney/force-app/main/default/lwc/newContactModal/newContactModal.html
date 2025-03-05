@@ -2,7 +2,9 @@
     <lightning-modal-header label="New Contact"></lightning-modal-header>
     <lightning-modal-body> 
         <p class="slds-text-align_right"><abbr class="slds-required">*</abbr> = Required Information</p>
-        <h3 class="slds-section__title slds-theme--shade slds-p-horizontal_small slds-m-top_x-small">Contact Information</h3>
+        <h3 class="slds-section__title slds-theme--shade slds-p-horizontal_small slds-m-top_x-small">
+            Contact Information
+        </h3>
         <lightning-spinner
             lwc:if={isModalLoading}
             alternative-text="Loading..."
@@ -31,13 +33,15 @@
                 class="slds-m-right_xx-small">
             </lightning-button>
             <lightning-button 
-                label="Save &amp; New" 
-                onclick={handleSaveAndNew} 
+                label="Save &amp; New"
+                name="SaveAndNew" 
+                onclick={handleSave} 
                 class="slds-m-right_xx-small">
             </lightning-button>
             <lightning-button 
                 variant="brand" 
-                label="Save" 
+                label="Save"
+                name="Save"
                 onclick={handleSave}>
             </lightning-button>
         </div>
