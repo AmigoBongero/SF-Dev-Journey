@@ -9,9 +9,9 @@ import ACCOUNT_INDUSTRY from '@salesforce/schema/Account.Industry';
 import ACCOUNT_PHONE from '@salesforce/schema/Account.Phone';
 
 const ACCOUNT_COLUMNS = [
-    { label: 'Name', fieldName: ACCOUNT_NAME.fieldApiName, sortable: true },
-    { label: 'Industry', fieldName: ACCOUNT_INDUSTRY.fieldApiName, sortable: true },
-    { label: 'Phone', fieldName: ACCOUNT_PHONE.fieldApiName, sortable: true }
+  { label: 'Name', fieldName: ACCOUNT_NAME.fieldApiName, sortable: true },
+  { label: 'Industry', fieldName: ACCOUNT_INDUSTRY.fieldApiName, sortable: true },
+  { label: 'Phone', fieldName: ACCOUNT_PHONE.fieldApiName, sortable: true }
 ];
 
 export default class AccountsComponent extends LightningElement {
@@ -45,8 +45,8 @@ export default class AccountsComponent extends LightningElement {
      * @description     Callbacks.
      */
     connectedCallback() {
-        this.loadAccounts('myAccounts');
-        this.loadAccounts('recentlyViewedAccounts');
+        this.loadMyAccounts();
+        this.loadRecentlyViewedAccounts();
     }
 
     /*
@@ -64,11 +64,15 @@ export default class AccountsComponent extends LightningElement {
         this.recentlyViewedAccountsData = this.sortData(this.recentlyViewedAccountsData, this.recentlyViewedAccountsSortedBy, this.recentlyViewedAccountsSortDirection);
     }
 
-    handleLoadMoreAccounts() {
+    handleLoadMoreMyAccounts() {
         if (this.myAccountsData.length < this.myAccountsFullData.length) {
             this.myAccountsRecordCount += 20;
             this.myAccountsData = this.myAccountsFullData.slice(0, this.myAccountsRecordCount);
-        } else if (this.recentlyViewedAccountsData.length < this.recentlyViewedAccountsFullData.length) {
+        }
+    }
+
+    handleLoadMoreRecentlyViewedAccounts() {
+        if (this.recentlyViewedAccountsData.length < this.recentlyViewedAccountsFullData.length) {
             this.recentlyViewedAccountRecordCount += 20;
             this.recentlyViewedAccountsData = this.recentlyViewedAccountsFullData.slice(0, this.recentlyViewedAccountRecordCount);
         }
@@ -95,35 +99,36 @@ export default class AccountsComponent extends LightningElement {
         return dataToSort;
     }
 
-    loadAccounts(type) {
-        if (type === 'myAccounts') {
-            this.isMyAccountsLoading = true;
-            getMyAccounts()
-                .then(result => {
-                    this.myAccountsFullData = result;
-                    this.myAccountsRecordCount = 20;
-                    this.myAccountsData = this.myAccountsFullData.slice(0, this.myAccountsRecordCount);
-                }).catch(error => {
-                    this.toastErrorMessage(error);
-                }).finally(() => {
-                    this.isMyAccountsLoading = false;
-                });
-        } else if (type === 'recentlyViewedAccounts') {
-            this.isRecentlyViewedAccountsLoading = true;
-            getRecentlyViewedAccounts()
-                .then(result => {
-                    this.recentlyViewedAccountsFullData = result;
-                    this.recentlyViewedAccountRecordCount = 20;
-                    this.recentlyViewedAccountsData = this.recentlyViewedAccountsFullData.slice(0, this.recentlyViewedAccountRecordCount);
-                }).catch(error => {
-                    this.toastErrorMessage(error);
-                }).finally(() => {
-                    this.isRecentlyViewedAccountsLoading = false;
-                });
-        }
+    loadMyAccounts() {
+        this.isMyAccountsLoading = true;
+        getMyAccounts()
+            .then(result => {
+                this.myAccountsFullData = result;
+                this.myAccountsRecordCount = 20;
+                this.myAccountsData = this.myAccountsFullData.slice(0, this.myAccountsRecordCount);
+            }).catch(error => {
+                this.toastErrorMessage(error);
+            }).finally(() => {
+                this.isMyAccountsLoading = false;
+            });
     }
 
-    toastErrorMessage(error) {
+    loadRecentlyViewedAccounts() {
+        this.isRecentlyViewedAccountsLoading = true;
+        getRecentlyViewedAccounts()
+            .then(result => {
+                this.recentlyViewedAccountsFullData = result;
+                this.recentlyViewedAccountRecordCount = 20;
+                this.recentlyViewedAccountsData = this.recentlyViewedAccountsFullData.slice(0, this.recentlyViewedAccountRecordCount);
+            }).catch(error => {
+                this.toastErrorMessage(error);
+            }).finally(() => {
+                this.isRecentlyViewedAccountsLoading = false;
+            });
+    }
+
+
+  toastErrorMessage(error) {
         this.dispatchEvent(new ShowToastEvent({
             title: 'Error occurred while loading accounts',
             message: `Error: ${error.message}`,
