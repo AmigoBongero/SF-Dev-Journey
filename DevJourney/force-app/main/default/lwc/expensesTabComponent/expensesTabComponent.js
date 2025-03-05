@@ -23,11 +23,13 @@ const EXPENSES_COLUMNS = [
 
 export default class ExpensesTabComponent extends LightningElement {
 
-    // Table data Variables.
+    // Table Variables.
     expensesData = [];
     selectedExpenseIds = [];
+    expensesFullData = [];
+    expensesRecordCount = 20;
 
-    // Other Variables,
+    // Boolean Variables.
     isLoading = false;
 
     /*
@@ -47,6 +49,13 @@ export default class ExpensesTabComponent extends LightningElement {
     /*
      * @description     Handlers.
      */
+    handleLoadMoreExpenses() {
+        if (this.expensesData.length < this.expensesFullData.length) {
+            this.expensesRecordCount += 20;
+            this.expensesData = this.expensesFullData.slice(0, this.expensesRecordCount);
+        }
+    }
+
     handleRowSelection(event) {
         this.selectedExpenseIds = event.detail.selectedRows.map(row => row.Id);
     }
@@ -135,7 +144,9 @@ export default class ExpensesTabComponent extends LightningElement {
         this.isLoading = true;
         getExpenses()
             .then(result => {
-                this.expensesData = result;
+                this.expensesFullData = result;
+                this.expensesRecordCount = 20;
+                this.expensesData = this.expensesFullData.slice(0, this.expensesRecordCount);
                 this.selectedExpenseIds = [];
             }).catch(error => {
                 this.dispatchEvent(new ShowToastEvent({
