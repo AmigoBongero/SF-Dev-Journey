@@ -9,9 +9,9 @@ import ACCOUNT_INDUSTRY from '@salesforce/schema/Account.Industry';
 import ACCOUNT_PHONE from '@salesforce/schema/Account.Phone';
 
 const ACCOUNT_COLUMNS = [
-  { label: 'Name', fieldName: ACCOUNT_NAME.fieldApiName, sortable: true },
-  { label: 'Industry', fieldName: ACCOUNT_INDUSTRY.fieldApiName, sortable: true },
-  { label: 'Phone', fieldName: ACCOUNT_PHONE.fieldApiName, sortable: true }
+    { label: 'Name', fieldName: ACCOUNT_NAME.fieldApiName, sortable: true },
+    { label: 'Industry', fieldName: ACCOUNT_INDUSTRY.fieldApiName, sortable: true },
+    { label: 'Phone', fieldName: ACCOUNT_PHONE.fieldApiName, sortable: true }
 ];
 
 export default class AccountsComponent extends LightningElement {
@@ -128,7 +128,7 @@ export default class AccountsComponent extends LightningElement {
     }
 
 
-  toastErrorMessage(error) {
+    toastErrorMessage(error) {
         this.dispatchEvent(new ShowToastEvent({
             title: 'Error occurred while loading accounts',
             message: `Error: ${error.message}`,
