@@ -1,4 +1,4 @@
-import { LightningElement, track, wire, api } from 'lwc';
+import { LightningElement, track, wire } from 'lwc';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { refreshApex } from '@salesforce/apex';
 import NewAccountModal from "c/newAccountModal"; 
@@ -33,7 +33,6 @@ export default class AllAccountsTab extends LightningElement {
     records = null;
     wiredAccountsData = [];
     chosenAccountId = null;
-    isModalLoading = false;
 
     /*
      * @description     Getters.
@@ -118,11 +117,9 @@ export default class AllAccountsTab extends LightningElement {
      */
     async showNewRecordModal(objectApiName) {
         try {
-            this.isModalLoading = true;
             const modalClass = objectApiName === ACCOUNT_OBJECT_API_NAME.objectApiName ? NewAccountModal : NewContactModal; 
             const result = await modalClass.open({
                 size: 'small',
-                isModalLoading: true,
                 chosenAccountId: this.chosenAccountId
             }); 
             if (result === 'save') {

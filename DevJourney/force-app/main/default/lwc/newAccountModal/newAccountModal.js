@@ -1,4 +1,3 @@
-import { api } from 'lwc';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 
 import LightningModal from 'lightning/modal';
@@ -18,10 +17,8 @@ const ACCOUNT_FIELDS = [
 
 export default class NewAccountModal extends LightningModal {
 
-    // API Variables
-    @api isModalLoading = false;
-
-    // Other Variables
+    // Validating Variables.
+    isModalLoading = true;
     isSaveAndNew = false;
 
     /*

@@ -12,11 +12,11 @@ import CONTACT_ACCOUNT_ID from '@salesforce/schema/Contact.AccountId';
 
 export default class NewContactModal extends LightningModal {
 
-    // API Variables
-    @api isModalLoading;
+    // API Variables.
     @api chosenAccountId;
 
-    // Other Variables
+    // Validating Variables.
+    isModalLoading = true;
     isSaveAndNew = false;
 
     /*
