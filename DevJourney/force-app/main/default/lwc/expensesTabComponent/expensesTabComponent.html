@@ -1,21 +1,28 @@
 <template>
-    <lightning-button-group class="slds-m-bottom_small">
-        <lightning-button
-            label="New"
-            icon-name="action:new"
-            onclick={handleNewClick}>
-        </lightning-button>
-        <lightning-button
-            label="Edit"
-            icon-name="action:edit"
-            onclick={handleEditClick}>
-        </lightning-button>
-        <lightning-button
-            label="Delete"
-            icon-name="utility:delete"
-            onclick={handleDeleteClick}>
-        </lightning-button>
-    </lightning-button-group>
+    <lightning-layout horizontal-align="space" vertical-align="center" class="slds-m-bottom_small">
+        <lightning-layout-item size="5">
+            <lightning-button-group>
+                <lightning-button
+                    label="New"
+                    icon-name="action:new"
+                    onclick={handleNewClick}>
+                </lightning-button>
+                <lightning-button
+                    label="Edit"
+                    icon-name="action:edit"
+                    onclick={handleEditClick}>
+                </lightning-button>
+                <lightning-button
+                    label="Delete"
+                    icon-name="utility:delete"
+                    onclick={handleDeleteClick}>
+                </lightning-button>
+            </lightning-button-group>
+        </lightning-layout-item>
+        <lightning-layout-item size="5">
+            <lightning-input label="Search Expense" type="search" onchange={handleSearch} variant="label-hidden"></lightning-input>
+        </lightning-layout-item>
+    </lightning-layout>
     <div class="slds-scrollable table-container">
         <lightning-datatable
             key-field="Id"
