@@ -37,8 +37,8 @@ export default class NewContactModal extends LightningModal {
     }
 
     /*
-    * @description     Handlers. 
-    */
+     * @description     Handlers. 
+     */
     handleLoad() {
         this.isModalLoading = false;
     }
