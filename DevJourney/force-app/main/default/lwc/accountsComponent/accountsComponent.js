@@ -35,18 +35,22 @@ export default class AccountsComponent extends LightningElement {
      * @description     Callbacks.
      */
     connectedCallback() {
-        this.loadAccounts('myAccounts');
-        this.loadAccounts('recentlyViewedAccounts');
+        this.loadMyAccounts();
+        this.loadRecentlyViewedAccounts();
     }
 
     /*
      * @description     Handlers.
      */
-    handleLoadMoreAccounts() {
+    handleLoadMoreMyAccounts() {
         if (this.myAccountsData.length < this.myAccountsFullData.length) {
             this.myAccountsRecordCount += 20;
             this.myAccountsData = this.myAccountsFullData.slice(0, this.myAccountsRecordCount);
-        } else if (this.recentlyViewedAccountsData.length < this.recentlyViewedAccountsFullData.length) {
+        }
+    }
+
+    handleLoadMoreRecentlyViewedAccounts() {
+        if (this.recentlyViewedAccountsData.length < this.recentlyViewedAccountsFullData.length) {
             this.recentlyViewedAccountRecordCount += 20;
             this.recentlyViewedAccountsData = this.recentlyViewedAccountsFullData.slice(0, this.recentlyViewedAccountRecordCount);
         }
@@ -55,32 +59,32 @@ export default class AccountsComponent extends LightningElement {
     /*
      * @description     Reusable code.
      */
-    loadAccounts(type) {
-        if (type === 'myAccounts') {
-            this.isMyAccountsLoading = true;
-            getMyAccounts()
-                .then(result => {
-                    this.myAccountsFullData = result;
-                    this.myAccountsRecordCount = 20;
-                    this.myAccountsData = this.myAccountsFullData.slice(0, this.myAccountsRecordCount);
-                }).catch(error => {
-                    this.toastErrorMessage(error);
-                }).finally(() => {
-                    this.isMyAccountsLoading = false;
-                });
-        } else if (type === 'recentlyViewedAccounts') {
-            this.isRecentlyViewedAccountsLoading = true;
-            getRecentlyViewedAccounts()
-                .then(result => {
-                    this.recentlyViewedAccountsFullData = result;
-                    this.recentlyViewedAccountRecordCount = 20;
-                    this.recentlyViewedAccountsData = this.recentlyViewedAccountsFullData.slice(0, this.recentlyViewedAccountRecordCount);
-                }).catch(error => {
-                    this.toastErrorMessage(error);
-                }).finally(() => {
-                    this.isRecentlyViewedAccountsLoading = false;
-                });
-        }
+    loadMyAccounts() {
+        this.isMyAccountsLoading = true;
+        getMyAccounts()
+            .then(result => {
+                this.myAccountsFullData = result;
+                this.myAccountsRecordCount = 20;
+                this.myAccountsData = this.myAccountsFullData.slice(0, this.myAccountsRecordCount);
+            }).catch(error => {
+                this.toastErrorMessage(error);
+            }).finally(() => {
+                this.isMyAccountsLoading = false;
+            });
+    }
+
+    loadRecentlyViewedAccounts() {
+        this.isRecentlyViewedAccountsLoading = true;
+        getRecentlyViewedAccounts()
+            .then(result => {
+                this.recentlyViewedAccountsFullData = result;
+                this.recentlyViewedAccountRecordCount = 20;
+                this.recentlyViewedAccountsData = this.recentlyViewedAccountsFullData.slice(0, this.recentlyViewedAccountRecordCount);
+            }).catch(error => {
+                this.toastErrorMessage(error);
+            }).finally(() => {
+                this.isRecentlyViewedAccountsLoading = false;
+            });
     }
 
     toastErrorMessage(error) {
