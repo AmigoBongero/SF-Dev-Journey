@@ -143,9 +143,9 @@ export default class AllAccountsTab extends LightningElement {
                         message: `Error: ${error.message}`,
                         variant: 'error'
                 }));
-            }).finally (() => {
+            }).finally(() => {
                 this.isTreeDataLoading = false;
-            })
+            });
     }
 
     toastErrorMessage(error) {

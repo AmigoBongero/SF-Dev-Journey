@@ -18,7 +18,7 @@ const ACCOUNT_FIELDS = [
 export default class NewAccountModal extends LightningModal {
 
     // Validating Variables.
-    isModalLoading = true;
+    isModalLoading = false;
     isSaveAndNew = false;
 
     /*
@@ -30,6 +30,13 @@ export default class NewAccountModal extends LightningModal {
 
     get accountObjectApiNameGetter() {
         return ACCOUNT_OBJECT_API_NAME.objectApiName;
+    }
+
+    /*
+     * @description     Callbacks.
+     */
+    connectedCallback() {
+        this.isModalLoading = true;
     }
 
     /*
@@ -64,6 +71,9 @@ export default class NewAccountModal extends LightningModal {
         this.close();
     }
 
+    /*
+     * @description     Reusable Code.
+     */
     isInputValid() {
         let isValid = true;
         let inputFields = this.template.querySelectorAll('lightning-input-field');

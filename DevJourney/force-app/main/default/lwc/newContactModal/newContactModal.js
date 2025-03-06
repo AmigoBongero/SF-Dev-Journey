@@ -16,7 +16,7 @@ export default class NewContactModal extends LightningModal {
     @api chosenAccountId;
 
     // Validating Variables.
-    isModalLoading = true;
+    isModalLoading = false;
     isSaveAndNew = false;
 
     /*
@@ -34,6 +34,13 @@ export default class NewContactModal extends LightningModal {
 
     get contactObjectApiNameGetter() {
         return CONTACT_OBJECT_API_NAME.objectApiName;
+    }
+
+    /*
+     * @description     Callbacks.
+     */
+    connectedCallback() {
+        this.isModalLoading = true;
     }
 
     /*
@@ -68,6 +75,9 @@ export default class NewContactModal extends LightningModal {
         this.close();
     }
 
+    /*
+     * @description     Reusable Code.
+     */
     isInputValid() {
         let isValid = true;
         let inputFields = this.template.querySelectorAll('lightning-input-field');
