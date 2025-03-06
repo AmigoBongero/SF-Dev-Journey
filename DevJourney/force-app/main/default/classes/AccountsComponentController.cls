@@ -1,4 +1,4 @@
-public with sharing class AccountsComponentController {  
+public with sharing class AccountsComponentController {
 
     private static final Id USER_ID = UserInfo.getUserId();
     private static final Integer LIMIT_CONST = 1000;
@@ -15,7 +15,7 @@ public with sharing class AccountsComponentController {
             LIMIT       :LIMIT_CONST
         ];
     }
-    
+
     @AuraEnabled
     public static List<Account> getMyAccounts() {
         return [

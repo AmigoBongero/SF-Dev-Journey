@@ -266,8 +266,4 @@
         <object>Expense__c</object>
         <viewAllRecords>true</viewAllRecords>
     </objectPermissions>
-    <tabSettings>
-        <tab>LWC</tab>
-        <visibility>Visible</visibility>
-    </tabSettings>
 </PermissionSet>
