@@ -21,14 +21,14 @@ export default class AccountsComponent extends LightningElement {
     myAccountsFullData = [];
     myAccountsRecordCount = 20;
     myAccountsSortDirection = 'asc';
-    myAccountsSortedBy;
+    myAccountsSortedBy = '';
 
     // Recently Viewed Accounts Table Variables.
     recentlyViewedAccountsData = [];
     recentlyViewedAccountsFullData = [];
     recentlyViewedAccountRecordCount = 20;
     recentlyViewedAccountsSortDirection = 'asc';
-    recentlyViewedAccountsSortedBy;
+    recentlyViewedAccountsSortedBy = '';
 
     // Boolean variables.
     isMyAccountsLoading = false;
@@ -55,13 +55,15 @@ export default class AccountsComponent extends LightningElement {
     handleMyAccountsSort(event) {
         this.myAccountsSortedBy = event.detail.fieldName;
         this.myAccountsSortDirection = event.detail.sortDirection;
-        this.myAccountsData = this.sortData(this.myAccountsData, this.myAccountsSortedBy, this.myAccountsSortDirection);
+        this.myAccountsFullData = this.sortData(this.myAccountsFullData, this.myAccountsSortedBy, this.myAccountsSortDirection);
+        this.myAccountsData = this.myAccountsFullData.slice(0, this.myAccountsRecordCount);
     }
 
     handleRecentlyViewedAccountsSort(event) {
         this.recentlyViewedAccountsSortedBy = event.detail.fieldName;
         this.recentlyViewedAccountsSortDirection = event.detail.sortDirection;
-        this.recentlyViewedAccountsData = this.sortData(this.recentlyViewedAccountsData, this.recentlyViewedAccountsSortedBy, this.recentlyViewedAccountsSortDirection);
+        this.recentlyViewedAccountsFullData = this.sortData(this.recentlyViewedAccountsFullData, this.recentlyViewedAccountsSortedBy, this.recentlyViewedAccountsSortDirection);
+        this.recentlyViewedAccountsData = this.recentlyViewedAccountsFullData.slice(0, this.recentlyViewedAccountRecordCount);
     }
 
     handleLoadMoreMyAccounts() {
@@ -81,22 +83,28 @@ export default class AccountsComponent extends LightningElement {
     /*
      * @description     Reusable code.
      */
-    sortData(data, field, direction) {
-        let fieldName = field;
-        let dataToSort = [...data];
-
-        let keyValue = (a) => {
-            return a[fieldName];
+    sortData(data, fieldName, direction) {
+        let sortedData = [...data];
+        let getFieldValue = (record) => {
+            return record[fieldName] ? record[fieldName].toString().toLowerCase() : '';
         };
+        let isReverse = direction === 'asc' ? 1 : -1;
 
-        let isReverse = direction === 'asc' ? 1: -1;
+        sortedData.sort((x, y) => {
+            let xValue = getFieldValue(x);
+            let yValue = getFieldValue(y);
 
-        dataToSort.sort((x, y) => {
-            x = keyValue(x) ? keyValue(x) : '';
-            y = keyValue(y) ? keyValue(y) : '';
-            return isReverse * ((x > y) - (y > x));
+            if ((xValue === '' && yValue !== '') || (xValue === null && yValue !== null)) {
+                return 1;
+            } else if ((xValue !== '' && yValue === '') || (xValue !== null && yValue === null)) {
+                return -1;
+            } else if ((xValue === '' && yValue === '') || (xValue === null && yValue === null)) {
+                return 0;
+            } else {
+                return isReverse * ((xValue > yValue) - (yValue > xValue));
+            }
         });
-        return dataToSort;
+        return sortedData;
     }
 
     loadMyAccounts() {
@@ -126,7 +134,6 @@ export default class AccountsComponent extends LightningElement {
                 this.isRecentlyViewedAccountsLoading = false;
             });
     }
-
 
     toastErrorMessage(error) {
         this.dispatchEvent(new ShowToastEvent({

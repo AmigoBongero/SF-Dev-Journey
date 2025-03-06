@@ -29,7 +29,7 @@ export default class ExpensesTabComponent extends LightningElement {
     expensesFullData = [];
     expensesRecordCount = 20;
     sortDirection = 'asc';
-    sortedBy;
+    sortedBy = '';
 
     // Boolean Variables.
     isLoading = false;
@@ -149,21 +149,32 @@ export default class ExpensesTabComponent extends LightningElement {
      * @description     Reusable Code.
      */
     sortData(fieldName, direction) {
-        let parseData = JSON.parse(JSON.stringify(this.expensesData));
-        // Return the value stored in the field
-        let keyValue = (a) => {
-            return a[fieldName];
+        let sortedData = [...this.expensesFullData];
+        let getFieldValue = (record) => {
+            return record[fieldName] ? record[fieldName].toString().toLowerCase() : '';
         };
-        // Checking reverse direction
-        let isReverse = direction === 'asc' ? 1: -1;
-        // Sorting data
-        parseData.sort((x, y) => {
-            x = keyValue(x) ? keyValue(x) : ''; // handling null values
-            y = keyValue(y) ? keyValue(y) : '';
-            // sorting values based on direction
-            return isReverse * ((x > y) - (y > x));
+        let isReverse = direction === 'asc' ? 1 : -1;
+
+        sortedData.sort((x, y) => {
+            let xValue = getFieldValue(x);
+            let yValue = getFieldValue(y);
+
+            if (fieldName === 'Amount__c') {
+                xValue = xValue === '' ? null : parseFloat(xValue);
+                yValue = yValue === '' ? null : parseFloat(yValue);
+            }
+            if (xValue === '' && yValue !== '' || xValue === null && yValue !== null) {
+                return 1;
+            } else if (xValue !== '' && yValue === '' || xValue !== null && yValue === null) {
+                return -1;
+            } else if (xValue === '' && yValue === '' || xValue === null && yValue === null) {
+                return 0;
+            } else {
+                return isReverse * ((xValue > yValue) - (yValue > xValue));
+            }
         });
-        this.expensesData = parseData;
+        this.expensesFullData = sortedData;
+        this.expensesData = this.expensesFullData.slice(0, this.expensesRecordCount);
     }
 
     loadExpenses() {
