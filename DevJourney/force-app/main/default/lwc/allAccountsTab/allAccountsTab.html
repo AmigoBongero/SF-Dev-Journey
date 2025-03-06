@@ -1,20 +1,44 @@
 <template>
-    <div class="slds-grid">
-        <div class="slds-col slds-size_1-of-2 slds-m-vertical_medium slds-m-right_margin">
+    <lightning-layout>
+        <lightning-layout-item size="4" class="slds-m-vertical_medium">
             <template lwc:if={treeData}>
                 <h2 class="slds-m-bottom_medium slds-text-align_center slds-text-heading_small slds-text-title_bold">
                     Available Accounts
                 </h2>
-                <lightning-tree items={treeData} onselect={handleSelect}></lightning-tree>
+                <div class="scrollable-container slds-scrollable">
+                    <lightning-spinner
+                        lwc:if={isTreeDataLoading}
+                        alternative-text="Loading..."
+                        class="slds-is-relative slds-align_absolute-center slds-m-top_xx-large"
+                        size="small">
+                    </lightning-spinner>
+                    <lightning-tree items={treeData} onselect={handleSelect}></lightning-tree>                  
+                </div>
             </template>
-        </div>
-        <div class="slds-col slds-size_1-of-2 slds-m-vertical_medium">
-            <template lwc:if={isVisible}>
-                <h2 class="slds-m-bottom_medium slds-text-align_center slds-text-heading_small slds-text-title_bold">
-                    Summary
-                </h2>
-                <c-summary-info records={records}></c-summary-info>
-            </template>
-        </div>
-    </div>
+        </lightning-layout-item>
+         <lightning-layout-item size="8" class="slds-p-left_x-large">
+            <h2 class="slds-m-bottom_medium slds-text-align_center slds-text-heading_small slds-text-title_bold">
+                Summary
+            </h2>
+            <template lwc:if={isComponentAndButtonVisible}>
+                <c-summary-info records-get-set={records}></c-summary-info>
+            </template>   
+            <div class="bottom-buttons">
+                <lightning-button 
+                    variant="brand-outline"
+                    label="New Account" 
+                    name={accountObjectApiNameGetter}
+                    onclick={handleButtonClick} 
+                    class="slds-m-right_x-small">
+                </lightning-button>
+                <template lwc:if={isComponentAndButtonVisible}>
+                    <lightning-button 
+                        label="New Contact" 
+                        name={contactObjectApiNameGetter}
+                        onclick={handleButtonClick}>
+                    </lightning-button>
+                </template>
+            </div>
+        </lightning-layout-item>
+    </lightning-layout>
 </template>

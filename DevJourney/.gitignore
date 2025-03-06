@@ -53,6 +53,7 @@ DevJourney.iml
 .vscode/
 /DevJourney/DevJourney.iml
 /IlluminatedCloud/
+package-lock.json
 
 # Added by Illuminated Cloud
 /out/

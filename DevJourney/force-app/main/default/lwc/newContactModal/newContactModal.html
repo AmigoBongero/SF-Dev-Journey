@@ -1,0 +1,49 @@
+<template>
+    <lightning-modal-header label="New Contact"></lightning-modal-header>
+    <lightning-modal-body> 
+        <p class="slds-text-align_right"><abbr class="slds-required">*</abbr> = Required Information</p>
+        <h3 class="slds-section__title slds-theme--shade slds-p-horizontal_small slds-m-top_x-small">
+            Contact Information
+        </h3>
+        <lightning-spinner
+            lwc:if={isModalLoading}
+            alternative-text="Loading..."
+            class="slds-is-relative slds-align_absolute-center slds-m-top_medium"
+            size="small">
+        </lightning-spinner>
+        <lightning-record-edit-form
+            object-api-name={contactObjectApiNameGetter}
+            lwc:ref="recordEditForm"
+            onsuccess={handleSuccess}
+            onload={handleLoad}>
+            <template for:each={fieldNamesGetter} for:item="field">
+                <lightning-input-field
+                    key={field.id}
+                    field-name={field.fieldName}
+                    value={field.value}>
+                </lightning-input-field>
+            </template>
+        </lightning-record-edit-form>
+    </lightning-modal-body>
+    <lightning-modal-footer>
+        <div class="slds-align_absolute-center">
+            <lightning-button 
+                label="Cancel" 
+                onclick={handleCancel} 
+                class="slds-m-right_xx-small">
+            </lightning-button>
+            <lightning-button 
+                label="Save &amp; New"
+                name="SaveAndNew" 
+                onclick={handleSave} 
+                class="slds-m-right_xx-small">
+            </lightning-button>
+            <lightning-button 
+                variant="brand" 
+                label="Save"
+                name="Save"
+                onclick={handleSave}>
+            </lightning-button>
+        </div>
+    </lightning-modal-footer>
+</template>

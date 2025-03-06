@@ -1,0 +1,8 @@
+.scrollable-container {
+    height: 22rem;
+}
+
+.bottom-buttons {
+    position: absolute;
+    bottom: 0rem;
+}
