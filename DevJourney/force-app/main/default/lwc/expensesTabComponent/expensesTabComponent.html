@@ -16,6 +16,11 @@
             onclick={handleDeleteClick}>
         </lightning-button>
     </lightning-button-group>
+    <lightning-button
+        label="Split Expense"
+        onclick={handleSplitClick}
+        class="slds-m-left_small">
+    </lightning-button>
     <lightning-datatable
         key-field="Id"
         columns={expensesColumnsGetter}
