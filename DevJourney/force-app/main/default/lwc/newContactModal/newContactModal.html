@@ -2,7 +2,9 @@
     <lightning-modal-header label="New Contact"></lightning-modal-header>
     <lightning-modal-body> 
         <p class="slds-text-align_right"><abbr class="slds-required">*</abbr> = Required Information</p>
-        <h3 class="slds-section__title slds-theme--shade slds-p-horizontal_small slds-m-top_x-small">Contact Information</h3>
+        <h3 class="slds-section__title slds-theme--shade slds-p-horizontal_small slds-m-top_x-small">
+            Contact Information
+        </h3>
         <lightning-spinner
             lwc:if={isModalLoading}
             alternative-text="Loading..."
@@ -14,13 +16,13 @@
             lwc:ref="recordEditForm"
             onsuccess={handleSuccess}
             onload={handleLoad}>
-            <div class="slds-grid slds-wrap slds-gutters slds-m-around_medium">
-                <template for:each={fieldNamesGetter} for:item="field">
-                    <div key={field.id} class="slds-col slds-size_1-of-2">
-                        <lightning-input-field field-name={field.fieldName} value={field.value}></lightning-input-field>
-                    </div>
-                </template>
-            </div>
+            <template for:each={fieldNamesGetter} for:item="field">
+                <lightning-input-field
+                    key={field.id}
+                    field-name={field.fieldName}
+                    value={field.value}>
+                </lightning-input-field>
+            </template>
         </lightning-record-edit-form>
     </lightning-modal-body>
     <lightning-modal-footer>
@@ -31,13 +33,15 @@
                 class="slds-m-right_xx-small">
             </lightning-button>
             <lightning-button 
-                label="Save &amp; New" 
-                onclick={handleSaveAndNew} 
+                label="Save &amp; New"
+                name="SaveAndNew" 
+                onclick={handleSave} 
                 class="slds-m-right_xx-small">
             </lightning-button>
             <lightning-button 
                 variant="brand" 
-                label="Save" 
+                label="Save"
+                name="Save"
                 onclick={handleSave}>
             </lightning-button>
         </div>

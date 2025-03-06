@@ -1,31 +1,31 @@
 <template>
-    <div class="scrollable-area slds-scrollable">
-    <template for:each={records} for:item="record">
-        <lightning-card key={record.Id}>
-            <h3 class="slds-text-title_bold">
-                {record.title}
-            </h3>
-            <lightning-record-view-form 
-                record-id={record.Id} 
-                object-api-name={record.objectApiName}
-                onload={handleOnLoad}>
-                <template lwc:if={isLoading}> 
-                    <lightning-spinner
-                        size="small"
-                        alternative-text="Loading..."
-                        class="slds-m-top_xx-large">
-                    </lightning-spinner>
-                </template>
-                <template for:each={record.fields} for:item="field" >
+    <div class="scrollable-container slds-scrollable">
+        <template for:each={records} for:item="record">
+            <lightning-card key={record.Id}>
+                <h3 class="slds-text-title_bold">
+                    {record.title}
+                </h3>
+                <lightning-record-view-form 
+                    record-id={record.Id} 
+                    object-api-name={record.objectApiName}
+                    onload={handleOnLoad}>
+                    <template lwc:if={isLoading}> 
+                        <lightning-spinner
+                            size="small"
+                            alternative-text="Loading..."
+                            class="slds-m-top_xx-large">
+                        </lightning-spinner>
+                    </template>
+                    <template for:each={record.fields} for:item="field">
                         <lightning-output-field 
                             variant="label-inline" 
                             key={field}
                             field-name={field}
                             class="slds-m-bottom_none slds-p-left_none">
                         </lightning-output-field>
-                </template>
-            </lightning-record-view-form>
-        </lightning-card>
-    </template>
+                    </template>
+                </lightning-record-view-form>
+            </lightning-card>
+        </template>
     </div>
 </template>

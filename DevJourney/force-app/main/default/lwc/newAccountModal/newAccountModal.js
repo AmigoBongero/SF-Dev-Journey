@@ -1,4 +1,3 @@
-import { api } from 'lwc';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 
 import LightningModal from 'lightning/modal';
@@ -18,10 +17,8 @@ const ACCOUNT_FIELDS = [
 
 export default class NewAccountModal extends LightningModal {
 
-    // API Variables
-    @api isModalLoading = false;
-
-    // Other Variables
+    // Validating Variables.
+    isModalLoading = false;
     isSaveAndNew = false;
 
     /*
@@ -33,6 +30,13 @@ export default class NewAccountModal extends LightningModal {
 
     get accountObjectApiNameGetter() {
         return ACCOUNT_OBJECT_API_NAME.objectApiName;
+    }
+
+    /*
+     * @description     Callbacks.
+     */
+    connectedCallback() {
+        this.isModalLoading = true;
     }
 
     /*
@@ -54,25 +58,12 @@ export default class NewAccountModal extends LightningModal {
         this.close((this.isSaveAndNew) ? 'saveAndNew' : 'save');
     }
 
-    handleSave() {
-        this.isSaveAndNew = false;
-
-        if(!this.isInputValid()) {
+    handleSave(event) {
+        this.isSaveAndNew = event.target.name !== 'Save';
+        if (!this.isInputValid()) {
             this.toastInfoMessages();
             return;
         }
-
-        this.refs.recordEditForm.submit();
-    }
-
-    handleSaveAndNew() {
-        this.isSaveAndNew = true;
-
-        if(!this.isInputValid()) {
-            this.toastInfoMessages();
-            return;
-        }
-
         this.refs.recordEditForm.submit();
     }
 
@@ -80,6 +71,9 @@ export default class NewAccountModal extends LightningModal {
         this.close();
     }
 
+    /*
+     * @description     Reusable Code.
+     */
     isInputValid() {
         let isValid = true;
         let inputFields = this.template.querySelectorAll('lightning-input-field');

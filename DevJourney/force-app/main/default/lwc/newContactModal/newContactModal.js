@@ -12,11 +12,11 @@ import CONTACT_ACCOUNT_ID from '@salesforce/schema/Contact.AccountId';
 
 export default class NewContactModal extends LightningModal {
 
-    // API Variables
-    @api isModalLoading;
+    // API Variables.
     @api chosenAccountId;
 
-    // Other Variables
+    // Validating Variables.
+    isModalLoading = false;
     isSaveAndNew = false;
 
     /*
@@ -37,8 +37,15 @@ export default class NewContactModal extends LightningModal {
     }
 
     /*
-    * @description     Handlers. 
-    */
+     * @description     Callbacks.
+     */
+    connectedCallback() {
+        this.isModalLoading = true;
+    }
+
+    /*
+     * @description     Handlers. 
+     */
     handleLoad() {
         this.isModalLoading = false;
     }
@@ -55,25 +62,12 @@ export default class NewContactModal extends LightningModal {
         this.close((this.isSaveAndNew) ? 'saveAndNew' : 'save');
     }
 
-    handleSave() {
-        this.isSaveAndNew = false;
-
-        if(!this.isInputValid()) {
+    handleSave(event) {
+        this.isSaveAndNew = event.target.name !== 'Save';
+        if (!this.isInputValid()) {
             this.toastInfoMessages();
             return;
         }
-
-        this.refs.recordEditForm.submit();
-    }
-
-    handleSaveAndNew() {
-        this.isSaveAndNew = true;
-
-        if(!this.isInputValid()) {
-            this.toastInfoMessages();
-            return;
-        }
-        
         this.refs.recordEditForm.submit();
     }
 
@@ -81,10 +75,9 @@ export default class NewContactModal extends LightningModal {
         this.close();
     }
 
-    handleCancel() {
-        this.close();
-    }
-
+    /*
+     * @description     Reusable Code.
+     */
     isInputValid() {
         let isValid = true;
         let inputFields = this.template.querySelectorAll('lightning-input-field');

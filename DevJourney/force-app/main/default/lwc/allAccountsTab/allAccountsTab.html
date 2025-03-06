@@ -1,11 +1,11 @@
 <template>
-    <div class="slds-grid">
-        <div class="slds-col slds-m-vertical_medium">
+    <lightning-layout>
+        <lightning-layout-item size="4" class="slds-m-vertical_medium">
             <template lwc:if={treeData}>
                 <h2 class="slds-m-bottom_medium slds-text-align_center slds-text-heading_small slds-text-title_bold">
                     Available Accounts
                 </h2>
-                <div class="scrollable-area slds-scrollable">
+                <div class="scrollable-container slds-scrollable">
                     <lightning-spinner
                         lwc:if={isTreeDataLoading}
                         alternative-text="Loading..."
@@ -15,8 +15,8 @@
                     <lightning-tree items={treeData} onselect={handleSelect}></lightning-tree>                  
                 </div>
             </template>
-        </div>
-        <div class="slds-col slds-size_2-of-3 slds-m-vertical_medium slds-m-left_xx-large">
+        </lightning-layout-item>
+         <lightning-layout-item size="8" class="slds-p-left_x-large">
             <h2 class="slds-m-bottom_medium slds-text-align_center slds-text-heading_small slds-text-title_bold">
                 Summary
             </h2>
@@ -29,7 +29,7 @@
                     label="New Account" 
                     name={accountObjectApiNameGetter}
                     onclick={handleButtonClick} 
-                    class="slds-m-right_x-small ">
+                    class="slds-m-right_x-small">
                 </lightning-button>
                 <template lwc:if={isComponentAndButtonVisible}>
                     <lightning-button 
@@ -39,6 +39,6 @@
                     </lightning-button>
                 </template>
             </div>
-        </div>
-    </div>
+        </lightning-layout-item>
+    </lightning-layout>
 </template>
