@@ -1,6 +1,7 @@
 import { LightningElement } from 'lwc';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { deleteRecord } from 'lightning/uiRecordApi';
+import { sortData } from 'c/utilityComponent';
 
 import CreateAndEditExpenseModal from 'c/createAndEditExpenseModal';
 import LightningConfirm from "lightning/confirm";
@@ -54,7 +55,8 @@ export default class ExpensesTabComponent extends LightningElement {
     handleSort(event) {
         this.sortedBy = event.detail.fieldName;
         this.sortDirection = event.detail.sortDirection;
-        this.sortData(this.sortedBy, this.sortDirection);
+        this.expensesFullData = sortData(this.expensesFullData, this.sortedBy, this.sortDirection);
+        this.expensesData = this.expensesFullData.slice(0, this.expensesRecordCount);
     }
 
     handleLoadMoreExpenses() {
@@ -148,35 +150,6 @@ export default class ExpensesTabComponent extends LightningElement {
     /*
      * @description     Reusable Code.
      */
-    sortData(fieldName, direction) {
-        let sortedData = [...this.expensesFullData];
-        let getFieldValue = (record) => {
-            return record[fieldName] ? record[fieldName].toString().toLowerCase() : '';
-        };
-        let isReverse = direction === 'asc' ? 1 : -1;
-
-        sortedData.sort((x, y) => {
-            let xValue = getFieldValue(x);
-            let yValue = getFieldValue(y);
-
-            if (fieldName === 'Amount__c') {
-                xValue = xValue === '' ? null : parseFloat(xValue);
-                yValue = yValue === '' ? null : parseFloat(yValue);
-            }
-            if (xValue === '' && yValue !== '' || xValue === null && yValue !== null) {
-                return 1;
-            } else if (xValue !== '' && yValue === '' || xValue !== null && yValue === null) {
-                return -1;
-            } else if (xValue === '' && yValue === '' || xValue === null && yValue === null) {
-                return 0;
-            } else {
-                return isReverse * ((xValue > yValue) - (yValue > xValue));
-            }
-        });
-        this.expensesFullData = sortedData;
-        this.expensesData = this.expensesFullData.slice(0, this.expensesRecordCount);
-    }
-
     loadExpenses() {
         this.isLoading = true;
         getExpenses()
