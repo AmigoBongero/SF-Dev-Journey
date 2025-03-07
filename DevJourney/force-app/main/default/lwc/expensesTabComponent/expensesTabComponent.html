@@ -25,6 +25,9 @@
             onrowselection={handleRowSelection}
             onloadmore={handleLoadMoreExpenses}
             is-loading={isLoading}
+            sorted-direction={sortDirection}
+            sorted-by={sortedBy}
+            onsort={handleSort}
             max-row-selection="1"
             enable-infinite-loading
             show-row-number-column
