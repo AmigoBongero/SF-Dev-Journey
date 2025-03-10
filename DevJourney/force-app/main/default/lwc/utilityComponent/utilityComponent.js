@@ -10,8 +10,8 @@ export function sortArrayOfObjectsByField(data, fieldName, direction) {
           let secondFieldValue = getFieldValue(secondRecord);
 
           if (isFinite(firstFieldValue) && isFinite(secondFieldValue)) {
-              firstFieldValue = firstFieldValue === '' ? null : parseInt(firstFieldValue);
-              secondFieldValue = secondFieldValue === '' ? null : parseInt(secondFieldValue);
+              firstFieldValue = firstFieldValue === '' ? null : parseFloat(firstFieldValue);
+              secondFieldValue = secondFieldValue === '' ? null : parseFloat(secondFieldValue);
           }
           if (firstFieldValue === secondFieldValue) {
               return 0;
