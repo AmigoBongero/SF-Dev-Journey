@@ -1,7 +1,7 @@
 import { LightningElement } from 'lwc';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { deleteRecord } from 'lightning/uiRecordApi';
-import { sortData } from 'c/utilityComponent';
+import { sortArrayOfObjectsByField } from 'c/utilityComponent';
 
 import CreateAndEditExpenseModal from 'c/createAndEditExpenseModal';
 import LightningConfirm from "lightning/confirm";
@@ -61,7 +61,7 @@ export default class ExpensesTabComponent extends LightningElement {
     handleSort(event) {
         this.sortedBy = event.detail.fieldName;
         this.sortDirection = event.detail.sortDirection;
-        this.expensesFullData = sortData(this.expensesFullData, this.sortedBy, this.sortDirection);
+        this.expensesFullData = sortArrayOfObjectsByField(this.expensesFullData, this.sortedBy, this.sortDirection);
         this.expensesData = this.expensesFullData.slice(0, this.expensesRecordCount);
     }
 
