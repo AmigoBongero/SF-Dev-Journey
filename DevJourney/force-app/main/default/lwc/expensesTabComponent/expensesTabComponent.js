@@ -4,9 +4,11 @@ import { deleteRecord } from 'lightning/uiRecordApi';
 import { sortArrayOfObjectsByField } from 'c/utilityComponent';
 
 import CreateAndEditExpenseModal from 'c/createAndEditExpenseModal';
-import LightningConfirm from "lightning/confirm";
+import AdvancedSearchModal from 'c/advancedSearchModal';
+import LightningConfirm from 'lightning/confirm';
 
 import getExpenses from '@salesforce/apex/AccountsComponentController.getExpenses';
+import searchExpenses from '@salesforce/apex/AccountsComponentController.searchExpenses';
 
 import EXPENSE_NAME from '@salesforce/schema/Expense__c.Name';
 import EXPENSE_STATUS from '@salesforce/schema/Expense__c.Status__c';
@@ -26,8 +28,9 @@ export default class ExpensesTabComponent extends LightningElement {
 
     // Table Variables.
     expensesData = [];
-    selectedExpenseIds = [];
     expensesFullData = [];
+    expensesFilteredData = [];
+    selectedExpenseIds = [];
     expensesRecordCount = 20;
     sortDirection = 'asc';
     sortedBy = '';
@@ -53,22 +56,68 @@ export default class ExpensesTabComponent extends LightningElement {
     /*
      * @description     Handlers.
      */
+    async handleAdvancedSearchClick() {
+        try {
+            const modalResponse = await AdvancedSearchModal.open({
+                size: 'small',
+                label: 'Advanced Search'
+            });
+        } catch (error) {
+            this.toastErrorMessage();
+        }
+    }
+
     handleSearch(event) {
         this.searchValue = event.target.value.toLowerCase();
-        this.expensesData = this.expensesFullData.filter((expense) => expense.Name.toLowerCase().includes(this.searchValue));
+        this.expensesRecordCount = 20;
+        if (this.searchValue) {
+            this.isLoading = true;
+            searchExpenses({ searchValue: this.searchValue })
+                .then(result => {
+                    this.expensesFilteredData = result;
+                    if (this.sortedBy) {
+                        this.expensesFilteredData = sortArrayOfObjectsByField(this.expensesFilteredData, this.sortedBy, this.sortDirection);
+                    }
+                    this.expensesData = this.expensesFilteredData.slice(0, this.expensesRecordCount);
+                })
+                .catch(error => {
+                    this.toastErrorMessage(error);
+                })
+                .finally(() => {
+                    this.isLoading = false;
+                });
+        } else {
+            this.expensesData = this.expensesFullData.slice(0, this.expensesRecordCount);
+            if (this.sortedBy) {
+                this.expensesData = sortArrayOfObjectsByField(this.expensesData, this.sortedBy, this.sortDirection);
+            }
+        }
     }
 
     handleSort(event) {
         this.sortedBy = event.detail.fieldName;
         this.sortDirection = event.detail.sortDirection;
-        this.expensesFullData = sortArrayOfObjectsByField(this.expensesFullData, this.sortedBy, this.sortDirection);
-        this.expensesData = this.expensesFullData.slice(0, this.expensesRecordCount);
+        if (this.searchValue) {
+            this.expensesFilteredData = sortArrayOfObjectsByField(this.expensesFilteredData, this.sortedBy, this.sortDirection);
+            this.expensesData = this.expensesFilteredData.slice(0, this.expensesRecordCount);
+        } else {
+            this.expensesFullData = sortArrayOfObjectsByField(this.expensesFullData, this.sortedBy, this.sortDirection);
+            this.expensesData = this.expensesFullData.slice(0, this.expensesRecordCount);
+        }
     }
 
     handleLoadMoreExpenses() {
-        if (this.expensesData.length < this.expensesFullData.length) {
+        if (this.searchValue) {
+            if (this.expensesData.length < this.expensesFilteredData.length) {
+                this.expensesRecordCount += 20;
+                this.expensesData = this.expensesFilteredData.slice(0, this.expensesRecordCount);
+            }
+        } else if (this.expensesData.length < this.expensesFullData.length) {
             this.expensesRecordCount += 20;
             this.expensesData = this.expensesFullData.slice(0, this.expensesRecordCount);
+        }
+        if (this.sortedBy) {
+            this.expensesData = sortArrayOfObjectsByField(this.expensesData, this.sortedBy, this.sortDirection);
         }
     }
 
@@ -162,8 +211,21 @@ export default class ExpensesTabComponent extends LightningElement {
             .then(result => {
                 this.expensesFullData = result;
                 this.expensesRecordCount = 20;
-                this.expensesData = this.expensesFullData.slice(0, this.expensesRecordCount);
                 this.selectedExpenseIds = [];
+                if (this.searchValue) {
+                    this.expensesFilteredData = this.expensesFullData.filter(expense =>
+                      expense.Name.toLowerCase().includes(this.searchValue)
+                    );
+                    if (this.sortedBy) {
+                        this.expensesFilteredData = sortArrayOfObjectsByField(this.expensesFilteredData, this.sortedBy, this.sortDirection);
+                    }
+                    this.expensesData = this.expensesFilteredData.slice(0, this.expensesRecordCount);
+                } else {
+                    this.expensesData = this.expensesFullData.slice(0, this.expensesRecordCount);
+                    if (this.sortedBy) {
+                        this.expensesData = sortArrayOfObjectsByField(this.expensesData, this.sortedBy, this.sortDirection);
+                    }
+                }
             }).catch(error => {
                 this.dispatchEvent(new ShowToastEvent({
                     title: 'Error occurred while loading expenses',

@@ -25,4 +25,4 @@ export function sortArrayOfObjectsByField(data, fieldName, direction) {
           return sortOrder * ((firstFieldValue > secondFieldValue) - (secondFieldValue > firstFieldValue));
       });
       return sortedData;
-  }
+}

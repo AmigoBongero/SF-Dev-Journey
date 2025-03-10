@@ -49,4 +49,17 @@ public with sharing class AccountsComponentController {
         ];
     }
 
+    @AuraEnabled
+    public static List<Expense__c> searchExpenses(String searchValue) {
+        String searchPattern = '%' + searchValue + '%';
+        return [
+                SELECT   Name, Status__c, Amount__c,
+                        Check_Date__c, Description__c
+                FROM     Expense__c
+                WHERE    Name LIKE :searchPattern
+                ORDER BY Name
+                LIMIT    :LIMIT_CONST
+        ];
+    }
+
 }
