@@ -1,6 +1,7 @@
 import { LightningElement } from 'lwc';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { deleteRecord } from 'lightning/uiRecordApi';
+import { sortArrayOfObjectsByField } from 'c/utilityComponent';
 
 import CreateAndEditExpenseModal from 'c/createAndEditExpenseModal';
 import LightningConfirm from "lightning/confirm";
@@ -14,11 +15,11 @@ import EXPENSE_AMOUNT from '@salesforce/schema/Expense__c.Amount__c';
 import EXPENSE_CHECK_DATE from '@salesforce/schema/Expense__c.Check_Date__c';
 
 const EXPENSES_COLUMNS = [
-    { label: 'Name', fieldName: EXPENSE_NAME.fieldApiName },
-    { label: 'Status', fieldName: EXPENSE_STATUS.fieldApiName },
-    { label: 'Description', fieldName: EXPENSE_DESCRIPTION.fieldApiName },
-    { label: 'Amount', fieldName: EXPENSE_AMOUNT.fieldApiName },
-    { label: 'Check Date', fieldName: EXPENSE_CHECK_DATE.fieldApiName },
+    { label: 'Name', fieldName: EXPENSE_NAME.fieldApiName, sortable: true },
+    { label: 'Status', fieldName: EXPENSE_STATUS.fieldApiName, sortable: true },
+    { label: 'Description', fieldName: EXPENSE_DESCRIPTION.fieldApiName, sortable: true },
+    { label: 'Amount', fieldName: EXPENSE_AMOUNT.fieldApiName, sortable: true },
+    { label: 'Check Date', fieldName: EXPENSE_CHECK_DATE.fieldApiName, sortable: true },
 ];
 
 export default class ExpensesTabComponent extends LightningElement {
@@ -28,6 +29,8 @@ export default class ExpensesTabComponent extends LightningElement {
     selectedExpenseIds = [];
     expensesFullData = [];
     expensesRecordCount = 20;
+    sortDirection = 'asc';
+    sortedBy = '';
 
     // Boolean Variables.
     isLoading = false;
@@ -49,6 +52,13 @@ export default class ExpensesTabComponent extends LightningElement {
     /*
      * @description     Handlers.
      */
+    handleSort(event) {
+        this.sortedBy = event.detail.fieldName;
+        this.sortDirection = event.detail.sortDirection;
+        this.expensesFullData = sortArrayOfObjectsByField(this.expensesFullData, this.sortedBy, this.sortDirection);
+        this.expensesData = this.expensesFullData.slice(0, this.expensesRecordCount);
+    }
+
     handleLoadMoreExpenses() {
         if (this.expensesData.length < this.expensesFullData.length) {
             this.expensesRecordCount += 20;

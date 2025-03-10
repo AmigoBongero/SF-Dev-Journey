@@ -1,24 +1,35 @@
 import { LightningElement } from 'lwc';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
+import { sortArrayOfObjectsByField } from 'c/utilityComponent';
 
 import getMyAccounts from '@salesforce/apex/AccountsComponentController.getMyAccounts';
 import getRecentlyViewedAccounts from '@salesforce/apex/AccountsComponentController.getRecentlyViewedAccounts';
 
+import ACCOUNT_NAME from '@salesforce/schema/Account.Name';
+import ACCOUNT_INDUSTRY from '@salesforce/schema/Account.Industry';
+import ACCOUNT_PHONE from '@salesforce/schema/Account.Phone';
+
 const ACCOUNT_COLUMNS = [
-    { label: 'Name', fieldName: 'Name' },
-    { label: 'Industry', fieldName: 'Industry' },
-    { label: 'Phone', fieldName: 'Phone' }
+    { label: 'Name', fieldName: ACCOUNT_NAME.fieldApiName, sortable: true },
+    { label: 'Industry', fieldName: ACCOUNT_INDUSTRY.fieldApiName, sortable: true },
+    { label: 'Phone', fieldName: ACCOUNT_PHONE.fieldApiName, sortable: true }
 ];
 
 export default class AccountsComponent extends LightningElement {
 
-    // Datatable variables.
+    // My Accounts Table Variables.
     myAccountsData = [];
     myAccountsFullData = [];
     myAccountsRecordCount = 20;
+    myAccountsSortDirection = 'asc';
+    myAccountsSortedBy = '';
+
+    // Recently Viewed Accounts Table Variables.
     recentlyViewedAccountsData = [];
     recentlyViewedAccountsFullData = [];
     recentlyViewedAccountRecordCount = 20;
+    recentlyViewedAccountsSortDirection = 'asc';
+    recentlyViewedAccountsSortedBy = '';
 
     // Boolean variables.
     isMyAccountsLoading = false;
@@ -42,6 +53,20 @@ export default class AccountsComponent extends LightningElement {
     /*
      * @description     Handlers.
      */
+    handleMyAccountsSort(event) {
+        this.myAccountsSortedBy = event.detail.fieldName;
+        this.myAccountsSortDirection = event.detail.sortDirection;
+        this.myAccountsFullData = sortArrayOfObjectsByField(this.myAccountsFullData, this.myAccountsSortedBy, this.myAccountsSortDirection);
+        this.myAccountsData = this.myAccountsFullData.slice(0, this.myAccountsRecordCount);
+    }
+
+    handleRecentlyViewedAccountsSort(event) {
+        this.recentlyViewedAccountsSortedBy = event.detail.fieldName;
+        this.recentlyViewedAccountsSortDirection = event.detail.sortDirection;
+        this.recentlyViewedAccountsFullData = sortArrayOfObjectsByField(this.recentlyViewedAccountsFullData, this.recentlyViewedAccountsSortedBy, this.recentlyViewedAccountsSortDirection);
+        this.recentlyViewedAccountsData = this.recentlyViewedAccountsFullData.slice(0, this.recentlyViewedAccountRecordCount);
+    }
+
     handleLoadMoreMyAccounts() {
         if (this.myAccountsData.length < this.myAccountsFullData.length) {
             this.myAccountsRecordCount += 20;
