@@ -1,22 +1,15 @@
-export function sortData(data, fieldName, direction) {
+export function sortArrayOfObjectsByField(data, fieldName, direction) {
       let sortedData = [...data];
       let getFieldValue = (record) => {
           return record[fieldName] ? record[fieldName].toString().toLowerCase() : '';
-      };
-      let getFieldDataType = (value) => {
-          if (isFinite(value)) {
-              return 'integer';
-          }
       };
       let sortOrder = direction === 'asc' ? 1 : -1;
 
       sortedData.sort((firstRecord, secondRecord) => {
           let firstFieldValue = getFieldValue(firstRecord);
           let secondFieldValue = getFieldValue(secondRecord);
-          let firstFieldDataType = getFieldDataType(firstFieldValue);
-          let secondFieldDataType = getFieldDataType(secondFieldValue);
 
-          if (firstFieldDataType === 'integer' && secondFieldDataType === 'integer') {
+          if (isFinite(firstFieldValue) && isFinite(secondFieldValue)) {
               firstFieldValue = firstFieldValue === '' ? null : parseInt(firstFieldValue);
               secondFieldValue = secondFieldValue === '' ? null : parseInt(secondFieldValue);
           }
