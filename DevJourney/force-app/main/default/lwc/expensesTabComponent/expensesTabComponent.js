@@ -31,6 +31,7 @@ export default class ExpensesTabComponent extends LightningElement {
     expensesRecordCount = 20;
     sortDirection = 'asc';
     sortedBy = '';
+    searchValue = '';
 
     // Boolean Variables.
     isLoading = false;
@@ -52,6 +53,11 @@ export default class ExpensesTabComponent extends LightningElement {
     /*
      * @description     Handlers.
      */
+    handleSearch(event) {
+        this.searchValue = event.target.value.toLowerCase();
+        this.expensesData = this.expensesFullData.filter((expense) => expense.Name.toLowerCase().includes(this.searchValue));
+    }
+
     handleSort(event) {
         this.sortedBy = event.detail.fieldName;
         this.sortDirection = event.detail.sortDirection;
