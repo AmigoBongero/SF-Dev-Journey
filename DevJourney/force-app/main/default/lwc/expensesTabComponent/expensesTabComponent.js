@@ -1,7 +1,7 @@
 import { LightningElement } from 'lwc';
-import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { deleteRecord } from 'lightning/uiRecordApi';
 import { sortArrayOfObjectsByField } from 'c/utilityComponent';
+import { showToast } from 'c/utilityComponent';
 
 import CreateAndEditExpenseModal from 'c/createAndEditExpenseModal';
 import AdvancedSearchModal from 'c/advancedSearchModal';
@@ -34,7 +34,14 @@ export default class ExpensesTabComponent extends LightningElement {
     expensesRecordCount = 20;
     sortDirection = 'asc';
     sortedBy = '';
-    searchValue = '';
+
+    // Search Variables.
+    nameSearchValue = '';
+    statusSearchValue = '';
+    createdDateSearchValue = '';
+    amountSearchValue = '';
+    dueDateSearchValue = '';
+    descriptionSearchValue = '';
 
     // Boolean Variables.
     isLoading = false;
@@ -56,48 +63,59 @@ export default class ExpensesTabComponent extends LightningElement {
     /*
      * @description     Handlers.
      */
+    handleClearSearch() {
+        this.refs.searchExpense.value = '';
+        this.nameSearchValue = '';
+        this.statusSearchValue = '';
+        this.createdDateSearchValue = '';
+        this.amountSearchValue = '';
+        this.dueDateSearchValue = '';
+        this.descriptionSearchValue = '';
+        this.expensesFilteredData = [];
+        this.loadExpenses();
+    }
+
     async handleAdvancedSearchClick() {
         try {
             const modalResponse = await AdvancedSearchModal.open({
                 size: 'small',
-                label: 'Advanced Search'
+                label: 'Advanced Search',
+                statusSearchValue: this.statusSearchValue,
+                createdDateSearchValue: this.createdDateSearchValue,
+                amountSearchValue: this.amountSearchValue,
+                dueDateSearchValue: this.dueDateSearchValue,
+                descriptionSearchValue: this.descriptionSearchValue
             });
+            if (modalResponse) {
+                const advancedSearchCriteria = JSON.parse(modalResponse);
+                this.statusSearchValue = advancedSearchCriteria.status;
+                this.createdDateSearchValue = advancedSearchCriteria.createdDate;
+                this.amountSearchValue = advancedSearchCriteria.amount;
+                this.dueDateSearchValue = advancedSearchCriteria.dueDate;
+                this.descriptionSearchValue = advancedSearchCriteria.description;
+                this.doSearch();
+            }
         } catch (error) {
-            this.toastErrorMessage();
+            showToast(
+                this,
+                'Error occurred while opening advanced search',
+                'Error' + error.message,
+                'error'
+            );
         }
     }
 
     handleSearch(event) {
-        this.searchValue = event.target.value.toLowerCase();
+        this.nameSearchValue = event.target.value.toLowerCase();
         this.expensesRecordCount = 20;
-        if (this.searchValue) {
-            this.isLoading = true;
-            searchExpenses({ searchValue: this.searchValue })
-                .then(result => {
-                    this.expensesFilteredData = result;
-                    if (this.sortedBy) {
-                        this.expensesFilteredData = sortArrayOfObjectsByField(this.expensesFilteredData, this.sortedBy, this.sortDirection);
-                    }
-                    this.expensesData = this.expensesFilteredData.slice(0, this.expensesRecordCount);
-                })
-                .catch(error => {
-                    this.toastErrorMessage(error);
-                })
-                .finally(() => {
-                    this.isLoading = false;
-                });
-        } else {
-            this.expensesData = this.expensesFullData.slice(0, this.expensesRecordCount);
-            if (this.sortedBy) {
-                this.expensesData = sortArrayOfObjectsByField(this.expensesData, this.sortedBy, this.sortDirection);
-            }
-        }
+        this.doSearch();
     }
 
     handleSort(event) {
         this.sortedBy = event.detail.fieldName;
         this.sortDirection = event.detail.sortDirection;
-        if (this.searchValue) {
+        if (this.nameSearchValue || this.statusSearchValue || this.createdDateSearchValue
+            || this.amountSearchValue || this.dueDateSearchValue || this.descriptionSearchValue || this.expensesFilteredData.length > 0) {
             this.expensesFilteredData = sortArrayOfObjectsByField(this.expensesFilteredData, this.sortedBy, this.sortDirection);
             this.expensesData = this.expensesFilteredData.slice(0, this.expensesRecordCount);
         } else {
@@ -107,7 +125,8 @@ export default class ExpensesTabComponent extends LightningElement {
     }
 
     handleLoadMoreExpenses() {
-        if (this.searchValue) {
+        if (this.nameSearchValue || this.statusSearchValue || this.createdDateSearchValue
+            || this.amountSearchValue || this.dueDateSearchValue || this.descriptionSearchValue || this.expensesFilteredData.length > 0) {
             if (this.expensesData.length < this.expensesFilteredData.length) {
                 this.expensesRecordCount += 20;
                 this.expensesData = this.expensesFilteredData.slice(0, this.expensesRecordCount);
@@ -133,15 +152,30 @@ export default class ExpensesTabComponent extends LightningElement {
                 isLoading: true
             });
             if (modalResponse === 'update') {
-                this.toastNewExpenseMessage();
+                showToast(
+                    this,
+                    'New expense has been successfully created!',
+                    '',
+                    'success'
+                );
                 this.loadExpenses();
             } else if (modalResponse === 'saveAndNew') {
-                this.toastNewExpenseMessage();
+                showToast(
+                    this,
+                    'New expense has been successfully created!',
+                    '',
+                    'success'
+                );
                 this.loadExpenses();
                 await this.handleNewClick();
             }
         } catch (error) {
-            this.toastErrorMessage();
+            showToast(
+                this,
+                'Error occurred while opening new expense window',
+                'Error: ' + error.message,
+
+            );
         }
     }
 
@@ -155,18 +189,38 @@ export default class ExpensesTabComponent extends LightningElement {
                     isLoading: true
                 });
                 if (modalResponse === 'update') {
-                    this.toastEditExpenseMessage();
+                    showToast(
+                        this,
+                        'Record has been successfully edited!',
+                        '',
+                        'success'
+                    );
                     this.loadExpenses();
                 } else if (modalResponse === 'saveAndNew') {
-                    this.toastEditExpenseMessage();
+                    showToast(
+                        this,
+                        'Record has been successfully edited!',
+                        '',
+                        'success'
+                    );
                     this.loadExpenses();
                     await this.handleNewClick();
                 }
             } else {
-                this.toastIsNotSelectedMessage();
+                showToast(
+                    this,
+                    'Record is not selected!',
+                    'Please select a record',
+                    'info'
+                );
             }
         } catch (error) {
-            this.toastErrorMessage(error);
+            showToast(
+                this,
+                'Error occurred while opening edit record window',
+                'Error: ' + error,
+                'error'
+            );
         }
     }
 
@@ -183,22 +237,38 @@ export default class ExpensesTabComponent extends LightningElement {
                     try {
                         await deleteRecord(this.selectedExpenseIds[0]);
                         this.loadExpenses();
-                        this.dispatchEvent(new ShowToastEvent({
-                            title: 'Record has been successfully deleted',
-                            message: '',
-                            variant: 'success'
-                        }));
+                        showToast(
+                            this,
+                            'Record has been successfully deleted',
+                            '',
+                            'success'
+                        );
                     } catch (error) {
-                        this.toastErrorMessage(error);
+                        showToast(
+                            this,
+                            'Error occurred while deleting record',
+                            'Error: ' + error.message,
+                            'error'
+                        );
                     } finally {
                         this.isLoading = false;
                     }
                 }
             } else {
-                this.toastIsNotSelectedMessage();
+                showToast(
+                    this,
+                    'Record is not selected!',
+                    'Please select a record',
+                    'info'
+                );
             }
         } catch (error) {
-            this.toastErrorMessage(error);
+            showToast(
+                this,
+                'Error occurred while opening delete confirm window',
+                'Error: ' + error.message,
+                'error'
+            );
         }
     }
 
@@ -212,61 +282,56 @@ export default class ExpensesTabComponent extends LightningElement {
                 this.expensesFullData = result;
                 this.expensesRecordCount = 20;
                 this.selectedExpenseIds = [];
-                if (this.searchValue) {
-                    this.expensesFilteredData = this.expensesFullData.filter(expense =>
-                      expense.Name.toLowerCase().includes(this.searchValue)
-                    );
-                    if (this.sortedBy) {
-                        this.expensesFilteredData = sortArrayOfObjectsByField(this.expensesFilteredData, this.sortedBy, this.sortDirection);
-                    }
-                    this.expensesData = this.expensesFilteredData.slice(0, this.expensesRecordCount);
-                } else {
-                    this.expensesData = this.expensesFullData.slice(0, this.expensesRecordCount);
-                    if (this.sortedBy) {
-                        this.expensesData = sortArrayOfObjectsByField(this.expensesData, this.sortedBy, this.sortDirection);
-                    }
-                }
+                this.doSearch();
             }).catch(error => {
-                this.dispatchEvent(new ShowToastEvent({
-                    title: 'Error occurred while loading expenses',
-                    message: `Error: ${error.message}`,
-                    variant: 'error'
-                }));
+                showToast(
+                    this,
+                    'Error occurred while loading expenses',
+                    'Error: ' + error.message,
+                    'error'
+                );
             }).finally(() => {
                 this.isLoading = false;
             });
     }
 
-    toastIsNotSelectedMessage() {
-        this.dispatchEvent(new ShowToastEvent({
-            title: 'The record is not selected!',
-            message: 'Please select a record.',
-            variant: 'info'
-        }));
-    }
-
-    toastErrorMessage(error) {
-        this.dispatchEvent(new ShowToastEvent({
-            title: 'Error occurred',
-            message: 'Error: ' + error.message,
-            variant: 'error'
-        }));
-    }
-
-    toastNewExpenseMessage() {
-        this.dispatchEvent(new ShowToastEvent({
-            title: 'New expanse has been successfully created',
-            message: '',
-            variant: 'success'
-        }));
-    }
-
-    toastEditExpenseMessage() {
-        this.dispatchEvent(new ShowToastEvent({
-            title: 'Expanse has been successfully updated',
-            message: '',
-            variant: 'success'
-        }));
+    doSearch() {
+        if (this.nameSearchValue || this.statusSearchValue || this.createdDateSearchValue
+            || this.amountSearchValue || this.dueDateSearchValue || this.descriptionSearchValue) {
+            this.isLoading = true;
+            searchExpenses({
+                name: this.nameSearchValue,
+                status: this.statusSearchValue,
+                createdDate: this.createdDateSearchValue,
+                amount: this.amountSearchValue,
+                dueDate: this.dueDateSearchValue,
+                description: this.descriptionSearchValue
+            })
+                .then(result => {
+                    this.expensesFilteredData = result;
+                    if (this.sortedBy) {
+                        this.expensesFilteredData = sortArrayOfObjectsByField(this.expensesFilteredData, this.sortedBy, this.sortDirection);
+                    }
+                    this.expensesData = this.expensesFilteredData.slice(0, this.expensesRecordCount);
+                })
+                .catch(error => {
+                    showToast(
+                        this,
+                        'Error occurred while searching expenses',
+                        'Error: ' + error.message,
+                        'error'
+                    );
+                })
+                .finally(() => {
+                    this.isLoading = false;
+                });
+        } else {
+            this.expensesData = this.expensesFullData.slice(0, this.expensesRecordCount);
+            this.expensesFilteredData = [];
+            if (this.sortedBy) {
+                this.expensesData = sortArrayOfObjectsByField(this.expensesData, this.sortedBy, this.sortDirection);
+            }
+        }
     }
 
 }

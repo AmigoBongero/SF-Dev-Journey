@@ -70,4 +70,36 @@ private class AccountsComponentControllerTest {
         Assert.areEqual(5, expenses.size(), 'Should have 5 expenses');
     }
 
+    @IsTest
+    static void testSearchExpenses() {
+        // Prepare test data
+        String todayDate = Datetime.now().format('yyyy-MM-dd');
+        List<Id> accountIds = TestDataFactory.createAccountsIds(1);
+        List<Id> casePartyIds = TestDataFactory.createCasePartiesIds(accountIds);
+        TestDataFactory.createExpensesWithCasePartyAndAccount(casePartyIds.get(0), 5, true);
+
+        // Execute
+        Test.startTest();
+        List<Expense__c> firstExpensesSearchResult = AccountsComponentController.searchExpenses(
+                'Test Expense 1',
+                'Pending',todayDate,
+                '100',
+                todayDate,
+                'COPY SERVICE'
+        );
+        List<Expense__c> secondExpensesSearchResult = AccountsComponentController.searchExpenses(
+                '',
+                '',
+                '',
+                '',
+                '',
+                ''
+        );
+        Test.stopTest();
+
+        // Assert results
+        Assert.areEqual(1, firstExpensesSearchResult.size(), 'Should find 1 expense');
+        Assert.areEqual(5, secondExpensesSearchResult, 'Should find 5 expenses');
+    }
+
 }

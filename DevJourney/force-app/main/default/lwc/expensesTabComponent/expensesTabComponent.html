@@ -1,6 +1,6 @@
 <template>
-    <lightning-layout horizontal-align="space" vertical-align="center" class="slds-m-bottom_small">
-        <lightning-layout-item size="5">
+    <lightning-layout vertical-align="center" horizontal-align="spread" class="slds-m-bottom_small">
+        <lightning-layout-item size="3">
             <lightning-button-group>
                 <lightning-button
                     label="New"
@@ -19,21 +19,33 @@
                 </lightning-button>
             </lightning-button-group>
         </lightning-layout-item>
-        <lightning-layout-item size="4">
-            <lightning-input
-                label="Search Expense"
-                placeholder="Search expense by name"
-                type="search"
-                onchange={handleSearch}
-                variant="label-hidden">
-            </lightning-input>
-        </lightning-layout-item>
-        <lightning-layout-item size="2">
-            <lightning-button
-                label="Advanced Search"
-                icon-name="utility:search"
-                onclick={handleAdvancedSearchClick}>
-            </lightning-button>
+        <lightning-layout-item size="7">
+            <lightning-layout horizontal-align="spread" vertical-align="center">
+                <lightning-layout-item size="5">
+                    <lightning-input
+                        label="Search Expense"
+                        placeholder="Search expense by name"
+                        type="search"
+                        onchange={handleSearch}
+                        variant="label-hidden"
+                        lwc:ref="searchExpense">
+                    </lightning-input>
+                </lightning-layout-item>
+                <lightning-layout-item size="3">
+                    <lightning-button
+                        label="Advanced Search"
+                        onclick={handleAdvancedSearchClick}
+                        stretch="true">
+                    </lightning-button>
+                </lightning-layout-item>
+                <lightning-layout-item size="3">
+                    <lightning-button
+                        label="Clear search"
+                        onclick={handleClearSearch}
+                        stretch="true">
+                    </lightning-button>
+                </lightning-layout-item>
+            </lightning-layout>
         </lightning-layout-item>
     </lightning-layout>
     <div class="slds-scrollable table-container">

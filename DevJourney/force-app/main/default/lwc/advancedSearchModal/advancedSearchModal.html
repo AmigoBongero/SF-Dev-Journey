@@ -6,59 +6,48 @@
             alternative-text="Loading..."
             class="slds-is-relative slds-align_absolute-center slds-m-top_medium">
         </lightning-spinner>
-        <lightning-layout vertical-align="start" class="slds-m-bottom_small" multiple-rows="true">
-            <lightning-layout-item size="12">
-                <lightning-input
-                    label="Status"
-                    placeholder="Search expense by status"
-                    type="search"
-                    onchange={handleStatusSearch}>
-                </lightning-input>
-            </lightning-layout-item>
-            <lightning-layout-item size="12">
-                <lightning-input
-                    label="Created Date"
-                    placeholder="Search expense by created date"
-                    type="search"
-                    onchange={handleCreatedDateSearch}>
-                </lightning-input>
-            </lightning-layout-item>
-            <lightning-layout-item size="12">
-                <lightning-input
-                    label="Amount"
-                    placeholder="Search expense by amount"
-                    type="search"
-                    onchange={handleAmountSearch}>
-                </lightning-input>
-            </lightning-layout-item>
-            <lightning-layout-item size="12">
-                <lightning-input
-                    label="Due Date"
-                    placeholder="Search expense by due date"
-                    type="search"
-                    onchange={handleDueDateSearch}>
-              </lightning-input>
-            </lightning-layout-item>
-            <lightning-layout-item size="12">
-                <lightning-input
-                    label="Description"
-                    placeholder="Search expense by description"
-                    type="search"
-                    onchange={handleDescriptionSearch}>
-                </lightning-input>
-            </lightning-layout-item>
-        </lightning-layout>
+        <lightning-record-edit-form
+            object-api-name="Expense__c"
+            lwc:ref="recordEditForm"
+            onload={handleLoad}>
+            <lightning-input-field
+                field-name={expenseStatusGetter}
+                onchange={handleStatusFieldChange}
+                value={statusSearchValue}>
+            </lightning-input-field>
+            <lightning-input
+                label="Created Date"
+                type="date"
+                onchange={handleCreatedDateFieldChange}
+                value={createdDateSearchValue}>
+            </lightning-input>
+            <lightning-input-field
+                field-name={expenseAmountGetter}
+                onchange={handleAmountFieldChange}
+                value={amountSearchValue}>
+            </lightning-input-field>
+            <lightning-input-field
+                field-name={expenseDueDateGetter}
+                onchange={handleDueDateFieldChange}
+                value={dueDateSearchValue}>
+            </lightning-input-field>
+            <lightning-input-field
+                field-name={expenseDescriptionGetter}
+                onchange={handleDescriptionFieldChange}
+                value={descriptionSearchValue}>
+            </lightning-input-field>
+        </lightning-record-edit-form>
     </lightning-modal-body>
     <lightning-modal-footer>
         <div class="slds-grid slds-wrap slds-grid_align-spread slds-align_absolute-center slds-p-around_xx-small">
             <lightning-button
                 label="Cancel"
-                onclick={handleCancel}
+                onclick={handleCancelClick}
                 class="slds-m-right_small">
             </lightning-button>
             <lightning-button
                 label="Search"
-                onclick={handleSearch}
+                onclick={handleSearchClick}
                 variant="brand"
                 class="slds-m-right_small">
             </lightning-button>
