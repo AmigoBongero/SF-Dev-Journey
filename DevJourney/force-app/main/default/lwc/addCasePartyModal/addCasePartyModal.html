@@ -1,0 +1,54 @@
+<template>
+    <lightning-modal-header label="Search Case Management"></lightning-modal-header>
+    <lightning-modal-body>
+        <lightning-layout>
+            <lightning-layout-item size="9">
+                <lightning-input
+                    variant="label-hidden"
+                    name="Search"
+                    type="search"
+                    value={searchKey}
+                    placeholder="type here..."
+                    is-loading={isSearchLoading}
+                    onchange={handleSearchKeyChange}
+                    onkeypress={handleEnter}>
+                </lightning-input>
+            </lightning-layout-item>
+            <lightning-layout-item size="3" class="slds-text-align_right">
+                <lightning-button
+                    variant="brand"
+                    label="Search"
+                    onclick={handleSearch}>
+                </lightning-button>
+            </lightning-layout-item>
+        </lightning-layout>
+        <div class="slds-scrollable slds-m-top_small table-container">
+            <div lwc:if={messageResult} class="slds-m-bottom_x-small">
+                <p>No items were found</p>
+            </div>
+            <lightning-datatable
+                key-field="id"
+                data={casePartiesData}
+                columns={casePartiesColumnsGetter}
+                selected-rows={selectedExpenseId}
+                onrowselection={handleRowSelection}
+                is-loading={isSearchLoading}
+                max-row-selection="1"
+                show-row-number-column>
+            </lightning-datatable>
+        </div>
+    </lightning-modal-body>
+    <lightning-modal-footer>
+        <lightning-button
+            variant="brand"
+            label="Add"
+            onclick={handleAddCaseParty}
+            class="slds-m-right_xx-small"
+            disabled={isAddButtonDisabled}>
+        </lightning-button>
+        <lightning-button
+            label="Close"
+            onclick={handleClose}>
+        </lightning-button>
+    </lightning-modal-footer>
+</template>

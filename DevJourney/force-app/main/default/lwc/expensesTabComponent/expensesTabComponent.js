@@ -4,6 +4,7 @@ import { deleteRecord } from 'lightning/uiRecordApi';
 import { sortArrayOfObjectsByField } from 'c/utilityComponent';
 
 import CreateAndEditExpenseModal from 'c/createAndEditExpenseModal';
+import SplitExpenseModal from 'c/splitExpenseModal';
 import LightningConfirm from "lightning/confirm";
 
 import getExpenses from '@salesforce/apex/AccountsComponentController.getExpenses';
@@ -139,6 +140,22 @@ export default class ExpensesTabComponent extends LightningElement {
                         this.isLoading = false;
                     }
                 }
+            } else {
+                this.toastIsNotSelectedMessage();
+            }
+        } catch (error) {
+            this.toastErrorMessage(error);
+        }
+    }
+
+    async handleSplitClick() {
+        try {
+            if (this.selectedExpenseIds.length > 0) {
+                await SplitExpenseModal.open({
+                    size: 'medium',
+                    recordId: this.selectedExpenseIds[0]
+                });
+                this.loadExpenses();
             } else {
                 this.toastIsNotSelectedMessage();
             }
