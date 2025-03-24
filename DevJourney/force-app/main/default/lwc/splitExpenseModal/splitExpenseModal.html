@@ -1,7 +1,48 @@
 <template>
     <lightning-modal-header label="Split expense"></lightning-modal-header>
     <lightning-modal-body>
-    
+        <lightning-layout>
+            <lightning-button 
+                variant="brand"
+                label="Add Case Party" 
+                onclick={handleAddCaseParty} 
+                class="slds-m-right_xx-small">
+            </lightning-button>
+            <lightning-button
+                label="Remove" 
+                onclick={handleRemove}
+                class="slds-m-right_small"
+                disabled={isRemoveButtonDisabled}>
+            </lightning-button>
+            <lightning-layout-item class="slds-m-top_xx-small">
+                <lightning-spinner
+                    lwc:if={isModalLoading}
+                    alternative-text="Loading..."
+                    class="slds-is-relative slds-align_absolute-center slds-m-top_medium"
+                    size="xx-small">
+                </lightning-spinner>
+                <p class={expenseAmountClass}><b>Expense amount left:</b> {expenseAmountLeft}$</p>
+            </lightning-layout-item>
+            <lightning-layout-item lwc:if={isNullAmount} class="slds-m-top_xx-small" alignment-bump="left">
+                <p class="red-text">The fields 'Amount to split' must not be empty.</p>
+            </lightning-layout-item>
+        </lightning-layout>
+        <div class="slds-scrollable slds-m-top_small table-container">
+            <div lwc:if={messageResult} class="slds-m-bottom_x-small">
+                <p>No items were found</p>
+            </div>
+            <lightning-datatable
+                key-field="id"
+                data={casePartiesData}
+                columns={splitColumnsGetter}
+                is-loading={isModalLoading}
+                oncellchange={handleCellChange}
+                onrowselection={handleRowSelection}
+                suppress-bottom-bar
+                max-row-selection="1"
+                show-row-number-column>
+            </lightning-datatable>
+        </div>
     </lightning-modal-body>
     <lightning-modal-footer>
         <lightning-button 
@@ -12,7 +53,8 @@
         <lightning-button
             variant="brand"
             label="Split" 
-            onclick={handleSplit}>
+            onclick={handleSplit}
+            disabled={isSplitButtonDisabled}>
         </lightning-button>
     </lightning-modal-footer>
 </template>

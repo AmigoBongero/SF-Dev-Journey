@@ -140,21 +140,17 @@ export default class ExpensesTabComponent extends LightningElement {
 
     async handleSplitClick() {
         try {
-            const modalResponse = await SplitExpenseModal.open({
-                size: 'small',
-                label: 'Split expense',
-                isLoading: true
-            });
-            if (modalResponse === 'save') {
-                this.toastNewExpenseMessage();
+            if (this.selectedExpenseIds.length > 0) {
+                await SplitExpenseModal.open({
+                    size: 'medium',
+                    recordId: this.selectedExpenseIds[0]
+                });
                 this.loadExpenses();
-            } else if (modalResponse === 'saveAndNew') {
-                this.toastNewExpenseMessage();
-                this.loadExpenses();
-                await this.handleNewClick();
+            } else {
+                this.toastIsNotSelectedMessage();
             }
         } catch (error) {
-            this.toastErrorMessage();
+            this.toastErrorMessage(error);
         }
     }
 
