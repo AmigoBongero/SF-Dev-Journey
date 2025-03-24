@@ -49,4 +49,13 @@ public with sharing class AccountsComponentController {
         ];
     }
 
+    @AuraEnabled
+    public static List<Case_Party__c> getCaseParties() {
+        return [
+                SELECT Name
+                FROM   Case_Party__c
+                LIMIT  :LIMIT_CONST
+        ];
+    }
+
 }
