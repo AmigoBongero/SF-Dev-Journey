@@ -45,6 +45,7 @@ export default class ExpensesTabComponent extends LightningElement {
 
     // Boolean Variables.
     isLoading = false;
+    isNoResult = false;
 
     /*
      * @description     Getters.
@@ -306,26 +307,27 @@ export default class ExpensesTabComponent extends LightningElement {
                 amount: this.amountSearchValue,
                 dueDate: this.dueDateSearchValue,
                 description: this.descriptionSearchValue
-            })
-                .then(result => {
-                    this.expensesFilteredData = result;
-                    if (this.sortedBy) {
-                        this.expensesFilteredData = sortArrayOfObjectsByField(this.expensesFilteredData, this.sortedBy, this.sortDirection);
-                    }
-                    this.expensesData = this.expensesFilteredData.slice(0, this.expensesRecordCount);
-                })
-                .catch(error => {
+            }).then(result => {
+                this.expensesFilteredData = result;
+                if (this.sortedBy) {
+                    this.expensesFilteredData = sortArrayOfObjectsByField(this.expensesFilteredData, this.sortedBy, this.sortDirection);
+                }
+                this.expensesData = this.expensesFilteredData.slice(0, this.expensesRecordCount);
+                if (this.expensesFilteredData.length === 0) {
+                    this.isNoResult = true;
+                }
+                }).catch(error => {
                     showToast(
                         this,
                         'Error occurred while searching expenses',
                         'Error: ' + error.message,
                         'error'
                     );
-                })
-                .finally(() => {
+                }).finally(() => {
                     this.isLoading = false;
                 });
         } else {
+            this.isNoResult = false;
             this.expensesData = this.expensesFullData.slice(0, this.expensesRecordCount);
             this.expensesFilteredData = [];
             if (this.sortedBy) {

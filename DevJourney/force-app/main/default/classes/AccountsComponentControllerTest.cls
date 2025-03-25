@@ -82,7 +82,8 @@ private class AccountsComponentControllerTest {
         Test.startTest();
         List<Expense__c> firstExpensesSearchResult = AccountsComponentController.searchExpenses(
                 'Test Expense 1',
-                'Pending',todayDate,
+                'Pending',
+                todayDate,
                 '100',
                 todayDate,
                 'COPY SERVICE'
@@ -99,7 +100,7 @@ private class AccountsComponentControllerTest {
 
         // Assert results
         Assert.areEqual(1, firstExpensesSearchResult.size(), 'Should find 1 expense');
-        Assert.areEqual(5, secondExpensesSearchResult, 'Should find 5 expenses');
+        Assert.areEqual(5, secondExpensesSearchResult.size(), 'Should find 5 expenses');
     }
 
 }

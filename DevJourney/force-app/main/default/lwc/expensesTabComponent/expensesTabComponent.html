@@ -19,9 +19,9 @@
                 </lightning-button>
             </lightning-button-group>
         </lightning-layout-item>
-        <lightning-layout-item size="7">
+        <lightning-layout-item size="8">
             <lightning-layout horizontal-align="spread" vertical-align="center">
-                <lightning-layout-item size="5">
+                <lightning-layout-item size="4">
                     <lightning-input
                         label="Search Expense"
                         placeholder="Search expense by name"
@@ -35,20 +35,25 @@
                     <lightning-button
                         label="Advanced Search"
                         onclick={handleAdvancedSearchClick}
-                        stretch="true">
+                        stretch="true"
+                        icon-name="utility:search">
                     </lightning-button>
                 </lightning-layout-item>
                 <lightning-layout-item size="3">
                     <lightning-button
                         label="Clear search"
                         onclick={handleClearSearch}
-                        stretch="true">
+                        stretch="true"
+                        icon-name="action:filter">
                     </lightning-button>
                 </lightning-layout-item>
             </lightning-layout>
         </lightning-layout-item>
     </lightning-layout>
-    <div class="slds-scrollable table-container">
+    <div lwc:if={isNoResult} class="slds-text-align_center slds-size_1-of-1 slds-m-top_large">
+        <p>No expenses were found</p>
+    </div>
+    <div class="slds-scrollable table-container" if:false={isNoResult}>
         <lightning-datatable
             key-field="Id"
             columns={expensesColumnsGetter}
