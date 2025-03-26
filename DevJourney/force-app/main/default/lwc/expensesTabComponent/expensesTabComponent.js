@@ -284,6 +284,7 @@ export default class ExpensesTabComponent extends LightningElement {
                 );
             }).finally(() => {
                 this.isLoading = false;
+                this.isNoResult = false;
             });
     }
 
@@ -315,7 +316,6 @@ export default class ExpensesTabComponent extends LightningElement {
                     this.isLoading = false;
                 });
         } else {
-            this.isNoResult = false;
             this.loadExpenses();
         }
     }
