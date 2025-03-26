@@ -1,12 +1,12 @@
 import { LightningElement } from 'lwc';
-import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { deleteRecord } from 'lightning/uiRecordApi';
-import { sortArrayOfObjectsByField } from 'c/utilityComponent';
+import { sortArrayOfObjectsByField, showToast } from 'c/utilityComponent';
 
 import CreateAndEditExpenseModal from 'c/createAndEditExpenseModal';
-import LightningConfirm from "lightning/confirm";
+import AdvancedSearchModal from 'c/advancedSearchModal';
+import LightningConfirm from 'lightning/confirm';
 
-import getExpenses from '@salesforce/apex/AccountsComponentController.getExpenses';
+import searchExpenses from '@salesforce/apex/AccountsComponentController.searchExpenses';
 
 import EXPENSE_NAME from '@salesforce/schema/Expense__c.Name';
 import EXPENSE_STATUS from '@salesforce/schema/Expense__c.Status__c';
@@ -26,14 +26,23 @@ export default class ExpensesTabComponent extends LightningElement {
 
     // Table Variables.
     expensesData = [];
-    selectedExpenseIds = [];
     expensesFullData = [];
+    selectedExpenseIds = [];
     expensesRecordCount = 20;
     sortDirection = 'asc';
     sortedBy = '';
 
+    // Search Variables.
+    nameSearchValue = '';
+    statusSearchValue = '';
+    createdDateSearchValue = '';
+    amountSearchValue = '';
+    dueDateSearchValue = '';
+    descriptionSearchValue = '';
+
     // Boolean Variables.
     isLoading = false;
+    isNoResult = false;
 
     /*
      * @description     Getters.
@@ -42,16 +51,67 @@ export default class ExpensesTabComponent extends LightningElement {
         return EXPENSES_COLUMNS;
     }
 
+    get hasSearchParametersGetter() {
+        return this.nameSearchValue || this.statusSearchValue || this.createdDateSearchValue
+            || this.amountSearchValue || this.dueDateSearchValue || this.descriptionSearchValue;
+    }
+
     /*
      * @description     Callbacks.
      */
     connectedCallback() {
-        this.loadExpenses();
+        this.performSearch();
     }
 
     /*
      * @description     Handlers.
      */
+    handleClearSearch() {
+        this.refs.searchExpense.value = '';
+        this.nameSearchValue = '';
+        this.statusSearchValue = '';
+        this.createdDateSearchValue = '';
+        this.amountSearchValue = '';
+        this.dueDateSearchValue = '';
+        this.descriptionSearchValue = '';
+        this.performSearch();
+    }
+
+    async handleAdvancedSearchClick() {
+        try {
+            const modalResponse = await AdvancedSearchModal.open({
+                size: 'small',
+                label: 'Advanced Search',
+                statusSearchValue: this.statusSearchValue,
+                createdDateSearchValue: this.createdDateSearchValue,
+                amountSearchValue: this.amountSearchValue,
+                dueDateSearchValue: this.dueDateSearchValue,
+                descriptionSearchValue: this.descriptionSearchValue
+            });
+            if (modalResponse) {
+                this.statusSearchValue = modalResponse.status;
+                this.createdDateSearchValue = modalResponse.createdDate;
+                this.amountSearchValue = modalResponse.amount;
+                this.dueDateSearchValue = modalResponse.dueDate;
+                this.descriptionSearchValue = modalResponse.description;
+                this.performSearch();
+            }
+        } catch (error) {
+            showToast(
+                this,
+                'Error occurred while opening advanced search',
+                'Error' + error.message,
+                'error'
+            );
+        }
+    }
+
+    handleSearch(event) {
+        this.nameSearchValue = event.target.value.toLowerCase();
+        this.expensesRecordCount = 20;
+        this.performSearch();
+    }
+
     handleSort(event) {
         this.sortedBy = event.detail.fieldName;
         this.sortDirection = event.detail.sortDirection;
@@ -63,6 +123,9 @@ export default class ExpensesTabComponent extends LightningElement {
         if (this.expensesData.length < this.expensesFullData.length) {
             this.expensesRecordCount += 20;
             this.expensesData = this.expensesFullData.slice(0, this.expensesRecordCount);
+        }
+        if (this.sortedBy) {
+            this.expensesData = sortArrayOfObjectsByField(this.expensesData, this.sortedBy, this.sortDirection);
         }
     }
 
@@ -78,15 +141,30 @@ export default class ExpensesTabComponent extends LightningElement {
                 isLoading: true
             });
             if (modalResponse === 'update') {
-                this.toastNewExpenseMessage();
-                this.loadExpenses();
+                showToast(
+                    this,
+                    'New expense has been successfully created!',
+                    '',
+                    'success'
+                );
+                this.performSearch();
             } else if (modalResponse === 'saveAndNew') {
-                this.toastNewExpenseMessage();
-                this.loadExpenses();
+                showToast(
+                    this,
+                    'New expense has been successfully created!',
+                    '',
+                    'success'
+                );
+                this.performSearch();
                 await this.handleNewClick();
             }
         } catch (error) {
-            this.toastErrorMessage();
+            showToast(
+                this,
+                'Error occurred while opening new expense window',
+                'Error: ' + error.message,
+
+            );
         }
     }
 
@@ -100,18 +178,38 @@ export default class ExpensesTabComponent extends LightningElement {
                     isLoading: true
                 });
                 if (modalResponse === 'update') {
-                    this.toastEditExpenseMessage();
-                    this.loadExpenses();
+                    showToast(
+                        this,
+                        'Record has been successfully edited!',
+                        '',
+                        'success'
+                    );
+                    this.performSearch();
                 } else if (modalResponse === 'saveAndNew') {
-                    this.toastEditExpenseMessage();
-                    this.loadExpenses();
+                    showToast(
+                        this,
+                        'Record has been successfully edited!',
+                        '',
+                        'success'
+                    );
+                    this.performSearch();
                     await this.handleNewClick();
                 }
             } else {
-                this.toastIsNotSelectedMessage();
+                showToast(
+                    this,
+                    'Record is not selected!',
+                    'Please select a record',
+                    'info'
+                );
             }
         } catch (error) {
-            this.toastErrorMessage(error);
+            showToast(
+                this,
+                'Error occurred while opening edit record window',
+                'Error: ' + error,
+                'error'
+            );
         }
     }
 
@@ -127,78 +225,72 @@ export default class ExpensesTabComponent extends LightningElement {
                     this.isLoading = true;
                     try {
                         await deleteRecord(this.selectedExpenseIds[0]);
-                        this.loadExpenses();
-                        this.dispatchEvent(new ShowToastEvent({
-                            title: 'Record has been successfully deleted',
-                            message: '',
-                            variant: 'success'
-                        }));
+                        this.performSearch();
+                        showToast(
+                            this,
+                            'Record has been successfully deleted',
+                            '',
+                            'success'
+                        );
                     } catch (error) {
-                        this.toastErrorMessage(error);
+                        showToast(
+                            this,
+                            'Error occurred while deleting record',
+                            'Error: ' + error.message,
+                            'error'
+                        );
                     } finally {
                         this.isLoading = false;
                     }
                 }
             } else {
-                this.toastIsNotSelectedMessage();
+                showToast(
+                    this,
+                    'Record is not selected!',
+                    'Please select a record',
+                    'info'
+                );
             }
         } catch (error) {
-            this.toastErrorMessage(error);
+            showToast(
+                this,
+                'Error occurred while opening delete confirm window',
+                'Error: ' + error.message,
+                'error'
+            );
         }
     }
 
     /*
      * @description     Reusable Code.
      */
-    loadExpenses() {
+    performSearch() {
         this.isLoading = true;
-        getExpenses()
-            .then(result => {
-                this.expensesFullData = result;
-                this.expensesRecordCount = 20;
-                this.expensesData = this.expensesFullData.slice(0, this.expensesRecordCount);
-                this.selectedExpenseIds = [];
+        searchExpenses({
+            name: this.nameSearchValue,
+            status: this.statusSearchValue,
+            createdDate: this.createdDateSearchValue,
+            amount: this.amountSearchValue,
+            dueDate: this.dueDateSearchValue,
+            description: this.descriptionSearchValue
+        }).then(result => {
+            this.expensesFullData = result;
+            this.selectedExpenseIds = [];
+            if (this.sortedBy) {
+                this.expensesFullData = sortArrayOfObjectsByField(this.expensesFullData, this.sortedBy, this.sortDirection);
+            }
+            this.expensesData = this.expensesFullData.slice(0, this.expensesRecordCount);
+            this.isNoResult = this.expensesFullData.length === 0;
             }).catch(error => {
-                this.dispatchEvent(new ShowToastEvent({
-                    title: 'Error occurred while loading expenses',
-                    message: `Error: ${error.message}`,
-                    variant: 'error'
-                }));
+                showToast(
+                    this,
+                    'Error occurred while loading expenses',
+                    'Error: ' + error.message,
+                    'error'
+                );
             }).finally(() => {
                 this.isLoading = false;
             });
-    }
-
-    toastIsNotSelectedMessage() {
-        this.dispatchEvent(new ShowToastEvent({
-            title: 'The record is not selected!',
-            message: 'Please select a record.',
-            variant: 'info'
-        }));
-    }
-
-    toastErrorMessage(error) {
-        this.dispatchEvent(new ShowToastEvent({
-            title: 'Error occurred',
-            message: 'Error: ' + error.message,
-            variant: 'error'
-        }));
-    }
-
-    toastNewExpenseMessage() {
-        this.dispatchEvent(new ShowToastEvent({
-            title: 'New expanse has been successfully created',
-            message: '',
-            variant: 'success'
-        }));
-    }
-
-    toastEditExpenseMessage() {
-        this.dispatchEvent(new ShowToastEvent({
-            title: 'Expanse has been successfully updated',
-            message: '',
-            variant: 'success'
-        }));
     }
 
 }

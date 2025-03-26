@@ -1,22 +1,58 @@
 <template>
-    <lightning-button-group class="slds-m-bottom_small">
-        <lightning-button
-            label="New"
-            icon-name="action:new"
-            onclick={handleNewClick}>
-        </lightning-button>
-        <lightning-button
-            label="Edit"
-            icon-name="action:edit"
-            onclick={handleEditClick}>
-        </lightning-button>
-        <lightning-button
-            label="Delete"
-            icon-name="utility:delete"
-            onclick={handleDeleteClick}>
-        </lightning-button>
-    </lightning-button-group>
-    <div class="slds-scrollable table-container">
+    <lightning-layout vertical-align="center" class="slds-m-bottom_small">
+        <lightning-layout-item size="4">
+            <lightning-button-group>
+                <lightning-button
+                    label="New"
+                    icon-name="action:new"
+                    onclick={handleNewClick}>
+                </lightning-button>
+                <lightning-button
+                    label="Edit"
+                    icon-name="action:edit"
+                    onclick={handleEditClick}>
+                </lightning-button>
+                <lightning-button
+                    label="Delete"
+                    icon-name="utility:delete"
+                    onclick={handleDeleteClick}>
+                </lightning-button>
+            </lightning-button-group>
+        </lightning-layout-item>
+        <lightning-layout-item size="8">
+            <lightning-layout  horizontal-align="spread" vertical-align="center">
+                <lightning-layout-item size="4">
+                    <lightning-input
+                        label="Search Expense"
+                        placeholder="Search expense by name"
+                        type="search"
+                        onchange={handleSearch}
+                        variant="label-hidden"
+                        lwc:ref="searchExpense">
+                    </lightning-input>
+                </lightning-layout-item>
+                <lightning-layout-item size="3">
+                    <lightning-button
+                        label="Advanced Search"
+                        onclick={handleAdvancedSearchClick}
+                        stretch="true"
+                        icon-name="utility:search">
+                    </lightning-button>
+                </lightning-layout-item>
+                <lightning-layout-item size="1">
+                    <lightning-button-icon
+                        onclick={handleClearSearch}
+                        icon-name="action:filter"
+                        lwc:if={hasSearchParametersGetter}>
+                    </lightning-button-icon>
+                </lightning-layout-item>
+            </lightning-layout>
+        </lightning-layout-item>
+    </lightning-layout>
+    <div lwc:if={isNoResult} class="slds-text-align_center slds-size_1-of-1 slds-m-top_large is-no-result-container">
+        <p>No expenses were found</p>
+    </div>
+    <div class="slds-scrollable table-container" lwc:else>
         <lightning-datatable
             key-field="Id"
             columns={expensesColumnsGetter}
