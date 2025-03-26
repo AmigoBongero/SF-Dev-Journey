@@ -39,23 +39,12 @@ public with sharing class AccountsComponentController {
     }
 
     @AuraEnabled
-    public static List<Expense__c> getExpenses() {
-        return [
-            SELECT   Name, Status__c, Amount__c,
-                     Check_Date__c, Description__c
-            FROM     Expense__c
-            ORDER BY Name
-            LIMIT    :LIMIT_CONST
-        ];
-    }
-
-    @AuraEnabled
     public static List<Expense__c> searchExpenses(String name, String status, String createdDate, String amount, String dueDate, String description) {
         String query =
-                'SELECT Name, Status__c, Amount__c, ' +
-                        'Check_Date__c, Description__c ' +
-                'FROM   Expense__c ' +
-                'WHERE ';
+            'SELECT Name, Status__c, Amount__c, ' +
+                    'Check_Date__c, Description__c ' +
+            'FROM   Expense__c ' +
+            'WHERE ';
         List<String> conditions = new List<String>();
 
         if (String.isNotBlank(name)) {

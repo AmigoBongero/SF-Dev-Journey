@@ -6,7 +6,6 @@ import CreateAndEditExpenseModal from 'c/createAndEditExpenseModal';
 import AdvancedSearchModal from 'c/advancedSearchModal';
 import LightningConfirm from 'lightning/confirm';
 
-import getExpenses from '@salesforce/apex/AccountsComponentController.getExpenses';
 import searchExpenses from '@salesforce/apex/AccountsComponentController.searchExpenses';
 
 import EXPENSE_NAME from '@salesforce/schema/Expense__c.Name';
@@ -52,11 +51,16 @@ export default class ExpensesTabComponent extends LightningElement {
         return EXPENSES_COLUMNS;
     }
 
+    get hasSearchParametersGetter() {
+        return this.nameSearchValue || this.statusSearchValue || this.createdDateSearchValue
+            || this.amountSearchValue || this.dueDateSearchValue || this.descriptionSearchValue;
+    }
+
     /*
      * @description     Callbacks.
      */
     connectedCallback() {
-        this.loadExpenses();
+        this.performSearch();
     }
 
     /*
@@ -70,7 +74,7 @@ export default class ExpensesTabComponent extends LightningElement {
         this.amountSearchValue = '';
         this.dueDateSearchValue = '';
         this.descriptionSearchValue = '';
-        this.loadExpenses();
+        this.performSearch();
     }
 
     async handleAdvancedSearchClick() {
@@ -143,7 +147,6 @@ export default class ExpensesTabComponent extends LightningElement {
                     '',
                     'success'
                 );
-                this.loadExpenses();
                 this.performSearch();
             } else if (modalResponse === 'saveAndNew') {
                 showToast(
@@ -152,7 +155,6 @@ export default class ExpensesTabComponent extends LightningElement {
                     '',
                     'success'
                 );
-                this.loadExpenses();
                 this.performSearch();
                 await this.handleNewClick();
             }
@@ -182,7 +184,6 @@ export default class ExpensesTabComponent extends LightningElement {
                         '',
                         'success'
                     );
-                    this.loadExpenses();
                     this.performSearch();
                 } else if (modalResponse === 'saveAndNew') {
                     showToast(
@@ -191,7 +192,6 @@ export default class ExpensesTabComponent extends LightningElement {
                         '',
                         'success'
                     );
-                    this.loadExpenses();
                     this.performSearch();
                     await this.handleNewClick();
                 }
@@ -225,7 +225,6 @@ export default class ExpensesTabComponent extends LightningElement {
                     this.isLoading = true;
                     try {
                         await deleteRecord(this.selectedExpenseIds[0]);
-                        this.loadExpenses();
                         this.performSearch();
                         showToast(
                             this,
@@ -265,16 +264,23 @@ export default class ExpensesTabComponent extends LightningElement {
     /*
      * @description     Reusable Code.
      */
-    loadExpenses() {
+    performSearch() {
         this.isLoading = true;
-        getExpenses()
-            .then(result => {
-                this.expensesFullData = result;
-                this.selectedExpenseIds = [];
-                if (this.sortedBy) {
-                    this.expensesFullData = sortArrayOfObjectsByField(this.expensesFullData, this.sortedBy, this.sortDirection);
-                }
-                this.expensesData = this.expensesFullData.slice(0, this.expensesRecordCount);
+        searchExpenses({
+            name: this.nameSearchValue,
+            status: this.statusSearchValue,
+            createdDate: this.createdDateSearchValue,
+            amount: this.amountSearchValue,
+            dueDate: this.dueDateSearchValue,
+            description: this.descriptionSearchValue
+        }).then(result => {
+            this.expensesFullData = result;
+            this.selectedExpenseIds = [];
+            if (this.sortedBy) {
+                this.expensesFullData = sortArrayOfObjectsByField(this.expensesFullData, this.sortedBy, this.sortDirection);
+            }
+            this.expensesData = this.expensesFullData.slice(0, this.expensesRecordCount);
+            this.isNoResult = this.expensesFullData.length === 0;
             }).catch(error => {
                 showToast(
                     this,
@@ -284,45 +290,7 @@ export default class ExpensesTabComponent extends LightningElement {
                 );
             }).finally(() => {
                 this.isLoading = false;
-                this.isNoResult = false;
             });
-    }
-
-    performSearch() {
-        if (this.hasSearchValues()) {
-            this.isLoading = true;
-            searchExpenses({
-                name: this.nameSearchValue,
-                status: this.statusSearchValue,
-                createdDate: this.createdDateSearchValue,
-                amount: this.amountSearchValue,
-                dueDate: this.dueDateSearchValue,
-                description: this.descriptionSearchValue
-            }).then(result => {
-                this.expensesFullData = result;
-                if (this.sortedBy) {
-                    this.expensesFullData = sortArrayOfObjectsByField(this.expensesFullData, this.sortedBy, this.sortDirection);
-                }
-                this.expensesData = this.expensesFullData.slice(0, this.expensesRecordCount);
-                this.isNoResult = this.expensesFullData.length === 0;
-                }).catch(error => {
-                    showToast(
-                        this,
-                        'Error occurred while searching expenses',
-                        'Error: ' + error.message,
-                        'error'
-                    );
-                }).finally(() => {
-                    this.isLoading = false;
-                });
-        } else {
-            this.loadExpenses();
-        }
-    }
-
-    hasSearchValues() {
-        return this.nameSearchValue || this.statusSearchValue || this.createdDateSearchValue
-            || this.amountSearchValue || this.dueDateSearchValue || this.descriptionSearchValue;
     }
 
 }

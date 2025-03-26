@@ -46,24 +46,29 @@ export default class AdvancedSearchModal extends LightningModal {
     /*
      * @description     Handlers.
      */
-    handleStatusFieldChange(event) {
-        this.statusSearchValue = event.target.value;
-    }
+    handleFieldChange(event) {
+        const fieldName =  event.target.name ?? event.target.fieldName;
+        const fieldValue = event.target.value;
 
-    handleCreatedDateFieldChange(event) {
-        this.createdDateSearchValue = event.target.value;
-    }
-
-    handleAmountFieldChange(event) {
-        this.amountSearchValue = event.target.value;
-    }
-
-    handleDueDateFieldChange(event) {
-        this.dueDateSearchValue = event.target.value;
-    }
-
-    handleDescriptionFieldChange(event) {
-        this.descriptionSearchValue = event.target.value;
+        switch (fieldName) {
+            case EXPENSE_STATUS.fieldApiName:
+                this.statusSearchValue = fieldValue;
+                break;
+            case 'CreatedDate':
+                this.createdDateSearchValue = fieldValue;
+                break;
+            case EXPENSE_AMOUNT.fieldApiName:
+                this.amountSearchValue = fieldValue;
+                break;
+            case EXPENSE_CHECK_DATE.fieldApiName:
+                this.dueDateSearchValue = fieldValue;
+                break;
+            case EXPENSE_DESCRIPTION.fieldApiName:
+                this.descriptionSearchValue = fieldValue;
+                break;
+            default:
+                break;
+        }
     }
 
     handleSearchClick() {

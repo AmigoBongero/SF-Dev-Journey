@@ -55,28 +55,19 @@ private class AccountsComponentControllerTest {
     }
 
     @IsTest
-    static void testGetExpenses() {
-        // Prepare test data
-        List<Id> accountIds = TestDataFactory.createAccountsIds(1);
-        List<Id> casePartyIds = TestDataFactory.createCasePartiesIds(accountIds);
-        TestDataFactory.createExpensesWithCasePartyAndAccount(casePartyIds.get(0), 5, true);
-
-        // Execute
-        Test.startTest();
-        List<Expense__c> expenses = AccountsComponentController.getExpenses();
-        Test.stopTest();
-
-        // Assert results
-        Assert.areEqual(5, expenses.size(), 'Should have 5 expenses');
-    }
-
-    @IsTest
     static void testSearchExpenses() {
         // Prepare test data
         String todayDate = Datetime.now().format('yyyy-MM-dd');
         List<Id> accountIds = TestDataFactory.createAccountsIds(1);
         List<Id> casePartyIds = TestDataFactory.createCasePartiesIds(accountIds);
-        TestDataFactory.createExpensesWithCasePartyAndAccount(casePartyIds.get(0), 5, true);
+        TestDataFactory.createExpensesWithCasePartyAndAccount(
+            casePartyIds.get(0),
+            5,
+            true,
+            'Pending',
+            100,
+            'COPY SERVICE'
+        );
 
         // Execute
         Test.startTest();

@@ -1,5 +1,5 @@
 <template>
-    <lightning-layout vertical-align="center" horizontal-align="spread" class="slds-m-bottom_small">
+    <lightning-layout vertical-align="center" class="slds-m-bottom_small">
         <lightning-layout-item size="4">
             <lightning-button-group>
                 <lightning-button
@@ -20,7 +20,7 @@
             </lightning-button-group>
         </lightning-layout-item>
         <lightning-layout-item size="8">
-            <lightning-layout horizontal-align="spread" vertical-align="center">
+            <lightning-layout  horizontal-align="spread" vertical-align="center">
                 <lightning-layout-item size="4">
                     <lightning-input
                         label="Search Expense"
@@ -39,18 +39,17 @@
                         icon-name="utility:search">
                     </lightning-button>
                 </lightning-layout-item>
-                <lightning-layout-item size="3">
-                    <lightning-button
-                        label="Clear search"
+                <lightning-layout-item size="1">
+                    <lightning-button-icon
                         onclick={handleClearSearch}
-                        stretch="true"
-                        icon-name="action:filter">
-                    </lightning-button>
+                        icon-name="action:filter"
+                        lwc:if={hasSearchParametersGetter}>
+                    </lightning-button-icon>
                 </lightning-layout-item>
             </lightning-layout>
         </lightning-layout-item>
     </lightning-layout>
-    <div lwc:if={isNoResult} class="slds-text-align_center slds-size_1-of-1 slds-m-top_large">
+    <div lwc:if={isNoResult} class="slds-text-align_center slds-size_1-of-1 slds-m-top_large is-no-result-container">
         <p>No expenses were found</p>
     </div>
     <div class="slds-scrollable table-container" lwc:else>

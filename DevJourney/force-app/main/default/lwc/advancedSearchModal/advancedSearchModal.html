@@ -12,28 +12,29 @@
             onload={handleLoad}>
             <lightning-input-field
                 field-name={expenseStatusGetter}
-                onchange={handleStatusFieldChange}
+                onchange={handleFieldChange}
                 value={statusSearchValue}>
             </lightning-input-field>
             <lightning-input
                 label="Created Date"
+                name="CreatedDate"
                 type="date"
-                onchange={handleCreatedDateFieldChange}
+                onchange={handleFieldChange}
                 value={createdDateSearchValue}>
             </lightning-input>
             <lightning-input-field
                 field-name={expenseAmountGetter}
-                onchange={handleAmountFieldChange}
+                onchange={handleFieldChange}
                 value={amountSearchValue}>
             </lightning-input-field>
             <lightning-input-field
                 field-name={expenseDueDateGetter}
-                onchange={handleDueDateFieldChange}
+                onchange={handleFieldChange}
                 value={dueDateSearchValue}>
             </lightning-input-field>
             <lightning-input-field
                 field-name={expenseDescriptionGetter}
-                onchange={handleDescriptionFieldChange}
+                onchange={handleFieldChange}
                 value={descriptionSearchValue}>
             </lightning-input-field>
         </lightning-record-edit-form>

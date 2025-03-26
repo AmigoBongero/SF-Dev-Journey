@@ -31,15 +31,15 @@ public class TestDataFactory {
         return contacts;
     }
 
-    public static List<Expense__c> createExpensesWithCasePartyAndAccount(Id casePartyId, Integer numExpenses, Boolean isInserted) {
+    public static List<Expense__c> createExpensesWithCasePartyAndAccount(Id casePartyId, Integer numExpenses, Boolean isInserted, String status, Integer amount, String description) {
         List<Expense__c> expensesList = new List<Expense__c>();
         for (Integer i = 0; i < numExpenses; i++) {
             Expense__c expense = new Expense__c(
                 Name = 'Test Expense ' + i,
-                Status__c = 'Pending',
-                Amount__c = 100,
+                Status__c = status,
+                Amount__c = amount,
                 Check_Date__c = Date.today(),
-                Description__c = 'COPY SERVICE',
+                Description__c = description,
                 Payee__c = casePartyId
             );
             expensesList.add(expense);
