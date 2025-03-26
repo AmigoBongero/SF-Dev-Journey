@@ -7,7 +7,7 @@
             class="slds-is-relative slds-align_absolute-center slds-m-top_medium">
         </lightning-spinner>
         <lightning-record-edit-form
-            object-api-name="Expense__c"
+            object-api-name={expenseObjectGetter}
             lwc:ref="recordEditForm"
             onload={handleLoad}>
             <lightning-input-field

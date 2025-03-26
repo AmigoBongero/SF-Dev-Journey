@@ -2,6 +2,7 @@ import { api } from 'lwc';
 
 import LightningModal from 'lightning/modal';
 
+import EXPENSE_OBJECT from '@salesforce/schema/Expense__c';
 import EXPENSE_STATUS from '@salesforce/schema/Expense__c.Status__c';
 import EXPENSE_DESCRIPTION from '@salesforce/schema/Expense__c.Description__c';
 import EXPENSE_AMOUNT from '@salesforce/schema/Expense__c.Amount__c';
@@ -38,6 +39,10 @@ export default class AdvancedSearchModal extends LightningModal {
         return EXPENSE_DESCRIPTION;
     }
 
+    get expenseObjectGetter() {
+        return EXPENSE_OBJECT.objectApiName;
+    }
+
     /*
      * @description     Handlers.
      */
@@ -62,13 +67,13 @@ export default class AdvancedSearchModal extends LightningModal {
     }
 
     handleSearchClick() {
-        this.close(JSON.stringify({
+        this.close({
             status: this.statusSearchValue,
             createdDate: this.createdDateSearchValue,
             amount: this.amountSearchValue,
             dueDate: this.dueDateSearchValue,
             description: this.descriptionSearchValue
-        }));
+        });
     }
 
     handleLoad() {

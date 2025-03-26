@@ -1,7 +1,6 @@
 import { LightningElement } from 'lwc';
 import { deleteRecord } from 'lightning/uiRecordApi';
-import { sortArrayOfObjectsByField } from 'c/utilityComponent';
-import { showToast } from 'c/utilityComponent';
+import { sortArrayOfObjectsByField, showToast } from 'c/utilityComponent';
 
 import CreateAndEditExpenseModal from 'c/createAndEditExpenseModal';
 import AdvancedSearchModal from 'c/advancedSearchModal';
@@ -29,7 +28,6 @@ export default class ExpensesTabComponent extends LightningElement {
     // Table Variables.
     expensesData = [];
     expensesFullData = [];
-    expensesFilteredData = [];
     selectedExpenseIds = [];
     expensesRecordCount = 20;
     sortDirection = 'asc';
@@ -72,7 +70,6 @@ export default class ExpensesTabComponent extends LightningElement {
         this.amountSearchValue = '';
         this.dueDateSearchValue = '';
         this.descriptionSearchValue = '';
-        this.expensesFilteredData = [];
         this.loadExpenses();
     }
 
@@ -88,13 +85,12 @@ export default class ExpensesTabComponent extends LightningElement {
                 descriptionSearchValue: this.descriptionSearchValue
             });
             if (modalResponse) {
-                const advancedSearchCriteria = JSON.parse(modalResponse);
-                this.statusSearchValue = advancedSearchCriteria.status;
-                this.createdDateSearchValue = advancedSearchCriteria.createdDate;
-                this.amountSearchValue = advancedSearchCriteria.amount;
-                this.dueDateSearchValue = advancedSearchCriteria.dueDate;
-                this.descriptionSearchValue = advancedSearchCriteria.description;
-                this.doSearch();
+                this.statusSearchValue = modalResponse.status;
+                this.createdDateSearchValue = modalResponse.createdDate;
+                this.amountSearchValue = modalResponse.amount;
+                this.dueDateSearchValue = modalResponse.dueDate;
+                this.descriptionSearchValue = modalResponse.description;
+                this.performSearch();
             }
         } catch (error) {
             showToast(
@@ -109,30 +105,18 @@ export default class ExpensesTabComponent extends LightningElement {
     handleSearch(event) {
         this.nameSearchValue = event.target.value.toLowerCase();
         this.expensesRecordCount = 20;
-        this.doSearch();
+        this.performSearch();
     }
 
     handleSort(event) {
         this.sortedBy = event.detail.fieldName;
         this.sortDirection = event.detail.sortDirection;
-        if (this.nameSearchValue || this.statusSearchValue || this.createdDateSearchValue
-            || this.amountSearchValue || this.dueDateSearchValue || this.descriptionSearchValue || this.expensesFilteredData.length > 0) {
-            this.expensesFilteredData = sortArrayOfObjectsByField(this.expensesFilteredData, this.sortedBy, this.sortDirection);
-            this.expensesData = this.expensesFilteredData.slice(0, this.expensesRecordCount);
-        } else {
-            this.expensesFullData = sortArrayOfObjectsByField(this.expensesFullData, this.sortedBy, this.sortDirection);
-            this.expensesData = this.expensesFullData.slice(0, this.expensesRecordCount);
-        }
+        this.expensesFullData = sortArrayOfObjectsByField(this.expensesFullData, this.sortedBy, this.sortDirection);
+        this.expensesData = this.expensesFullData.slice(0, this.expensesRecordCount);
     }
 
     handleLoadMoreExpenses() {
-        if (this.nameSearchValue || this.statusSearchValue || this.createdDateSearchValue
-            || this.amountSearchValue || this.dueDateSearchValue || this.descriptionSearchValue || this.expensesFilteredData.length > 0) {
-            if (this.expensesData.length < this.expensesFilteredData.length) {
-                this.expensesRecordCount += 20;
-                this.expensesData = this.expensesFilteredData.slice(0, this.expensesRecordCount);
-            }
-        } else if (this.expensesData.length < this.expensesFullData.length) {
+        if (this.expensesData.length < this.expensesFullData.length) {
             this.expensesRecordCount += 20;
             this.expensesData = this.expensesFullData.slice(0, this.expensesRecordCount);
         }
@@ -160,6 +144,7 @@ export default class ExpensesTabComponent extends LightningElement {
                     'success'
                 );
                 this.loadExpenses();
+                this.performSearch();
             } else if (modalResponse === 'saveAndNew') {
                 showToast(
                     this,
@@ -168,6 +153,7 @@ export default class ExpensesTabComponent extends LightningElement {
                     'success'
                 );
                 this.loadExpenses();
+                this.performSearch();
                 await this.handleNewClick();
             }
         } catch (error) {
@@ -197,6 +183,7 @@ export default class ExpensesTabComponent extends LightningElement {
                         'success'
                     );
                     this.loadExpenses();
+                    this.performSearch();
                 } else if (modalResponse === 'saveAndNew') {
                     showToast(
                         this,
@@ -205,6 +192,7 @@ export default class ExpensesTabComponent extends LightningElement {
                         'success'
                     );
                     this.loadExpenses();
+                    this.performSearch();
                     await this.handleNewClick();
                 }
             } else {
@@ -238,6 +226,7 @@ export default class ExpensesTabComponent extends LightningElement {
                     try {
                         await deleteRecord(this.selectedExpenseIds[0]);
                         this.loadExpenses();
+                        this.performSearch();
                         showToast(
                             this,
                             'Record has been successfully deleted',
@@ -281,9 +270,11 @@ export default class ExpensesTabComponent extends LightningElement {
         getExpenses()
             .then(result => {
                 this.expensesFullData = result;
-                this.expensesRecordCount = 20;
                 this.selectedExpenseIds = [];
-                this.doSearch();
+                if (this.sortedBy) {
+                    this.expensesFullData = sortArrayOfObjectsByField(this.expensesFullData, this.sortedBy, this.sortDirection);
+                }
+                this.expensesData = this.expensesFullData.slice(0, this.expensesRecordCount);
             }).catch(error => {
                 showToast(
                     this,
@@ -296,9 +287,8 @@ export default class ExpensesTabComponent extends LightningElement {
             });
     }
 
-    doSearch() {
-        if (this.nameSearchValue || this.statusSearchValue || this.createdDateSearchValue
-            || this.amountSearchValue || this.dueDateSearchValue || this.descriptionSearchValue) {
+    performSearch() {
+        if (this.hasSearchValues()) {
             this.isLoading = true;
             searchExpenses({
                 name: this.nameSearchValue,
@@ -308,14 +298,12 @@ export default class ExpensesTabComponent extends LightningElement {
                 dueDate: this.dueDateSearchValue,
                 description: this.descriptionSearchValue
             }).then(result => {
-                this.expensesFilteredData = result;
+                this.expensesFullData = result;
                 if (this.sortedBy) {
-                    this.expensesFilteredData = sortArrayOfObjectsByField(this.expensesFilteredData, this.sortedBy, this.sortDirection);
+                    this.expensesFullData = sortArrayOfObjectsByField(this.expensesFullData, this.sortedBy, this.sortDirection);
                 }
-                this.expensesData = this.expensesFilteredData.slice(0, this.expensesRecordCount);
-                if (this.expensesFilteredData.length === 0) {
-                    this.isNoResult = true;
-                }
+                this.expensesData = this.expensesFullData.slice(0, this.expensesRecordCount);
+                this.isNoResult = this.expensesFullData.length === 0;
                 }).catch(error => {
                     showToast(
                         this,
@@ -328,12 +316,13 @@ export default class ExpensesTabComponent extends LightningElement {
                 });
         } else {
             this.isNoResult = false;
-            this.expensesData = this.expensesFullData.slice(0, this.expensesRecordCount);
-            this.expensesFilteredData = [];
-            if (this.sortedBy) {
-                this.expensesData = sortArrayOfObjectsByField(this.expensesData, this.sortedBy, this.sortDirection);
-            }
+            this.loadExpenses();
         }
+    }
+
+    hasSearchValues() {
+        return this.nameSearchValue || this.statusSearchValue || this.createdDateSearchValue
+            || this.amountSearchValue || this.dueDateSearchValue || this.descriptionSearchValue;
     }
 
 }

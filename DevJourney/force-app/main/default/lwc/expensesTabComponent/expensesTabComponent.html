@@ -1,6 +1,6 @@
 <template>
     <lightning-layout vertical-align="center" horizontal-align="spread" class="slds-m-bottom_small">
-        <lightning-layout-item size="3">
+        <lightning-layout-item size="4">
             <lightning-button-group>
                 <lightning-button
                     label="New"
@@ -53,7 +53,7 @@
     <div lwc:if={isNoResult} class="slds-text-align_center slds-size_1-of-1 slds-m-top_large">
         <p>No expenses were found</p>
     </div>
-    <div class="slds-scrollable table-container" if:false={isNoResult}>
+    <div class="slds-scrollable table-container" lwc:else>
         <lightning-datatable
             key-field="Id"
             columns={expensesColumnsGetter}

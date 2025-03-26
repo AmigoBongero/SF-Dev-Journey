@@ -36,12 +36,3 @@ export function showToast(context, title, message, variant) {
         variant: variant
     }));
 }
-
-export function showToastWithMode(context, title, message, variant, mode) {
-    context.dispatchEvent(new ShowToastEvent({
-        title: title,
-        message: message,
-        variant: variant,
-        mode: mode
-    }));
-}
